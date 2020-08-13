@@ -20,9 +20,9 @@ services:
 
   django:
     container_name: django
-    build: ./server
+    build: ./django
     volumes:
-      - ./server:/code
+      - ./django:/code
     ports:
       - "8000:8000"
     tty: true
@@ -31,12 +31,12 @@ services:
 
   nuxt:
     container_name: nuxt
-    build: 
-      context: ./client
+    build:
+      context: ./nuxt
       target: build-stage
     tty: true
     volumes:
-      - ./client:/code
+      - ./nuxt:/code
     ports:
       - "3000:3000"
 
