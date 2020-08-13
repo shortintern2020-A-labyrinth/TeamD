@@ -44,7 +44,7 @@ open /Application/Docker.app
 1. Clone the repo
 
 ```sh
-git clone git@github.com:yoshikawa/k8s-base.git
+git clone git@github.com:tekonfo/ei4sittyo.git
 ```
 
 2. Start the server as described below.
@@ -52,7 +52,6 @@ git clone git@github.com:yoshikawa/k8s-base.git
 ### Backend Server
 
 ```sh
-make submoudule
 make
 ```
 
@@ -61,7 +60,6 @@ access: `localhost:8000`
 ### Frontend Server
 
 ```sh
-make submoudule
 make client
 ```
 
@@ -69,7 +67,7 @@ access: `localhost:3000`
 
 ## Contribution
 
-1. [Fork it](https://github.com/yoshikawa/k8s-base/fork)
+1. [Fork it](https://github.com/tekonfo/ei4sittyo/fork)
 2. Create your feature branch
 3. Commit your changes
 4. Push to the branch
