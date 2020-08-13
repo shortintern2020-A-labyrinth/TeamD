@@ -1,0 +1,53 @@
+version: '3.7'
+
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_USER: test
+      MYSQL_DATABASE: test
+      MYSQL_PASSWORD: test
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    volumes:
+      - mysqldata:/var/lib/mysql
+      - ./.docker/mysql/conf:/etc/mysql/conf.d
+
+  django:
+    container_name: django
+    build: ./server
+    volumes:
+      - ./server:/code
+    ports:
+      - "8000:8000"
+    tty: true
+    depends_on:
+      - db
+
+  nuxt:
+    container_name: nuxt
+    build: 
+      context: ./client
+      target: build-stage
+    tty: true
+    volumes:
+      - ./client:/code
+    ports:
+      - "3000:3000"
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./.docker/nginx/conf:/etc/nginx/conf.d
+      - ./.docker/nginx/uwsgi_params:/etc/nginx/uwsgi_params
+    ports:
+      - "80:80"
+
+volumes:
+  mysqldata:
