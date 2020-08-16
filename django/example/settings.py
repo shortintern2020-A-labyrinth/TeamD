@@ -84,8 +84,12 @@ WSGI_APPLICATION = 'example.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'test', #　作成したデータベース名
+        'PASSWORD':  'test', 
+        'USER': 'root', # ログインユーザー
+        'HOST': 'mysql', #コンテナ名
+        'PORT': '3306',
     }
 }
 
