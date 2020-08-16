@@ -13,8 +13,11 @@ yoshikawa/django-starter-kit − learning about Django REST framework
 |Python|3.8.5|
 |Django|3.1|
 |Django REST framework|3.11.1|
+|django-cors-headers|3.4.0|
 
-Please check it! [Django REST framework](https://github.com/encode/django-rest-framework)
+Please check it! 
+[Django REST framework](https://github.com/encode/django-rest-framework)
+[django-cors-headers](https://github.com/adamchainz/django-cors-headers)
 
 ## Usage
 
@@ -23,16 +26,37 @@ Install using `pip`.
 ```sh
 pip install django
 pip install djangorestframework
+pip install django-cors-headers
 ```
 
-Add 'rest_framework' to your INSTALLED_APPS setting.(**We have already set.**)
+Add 'rest_framework',  'corsheaders' to your INSTALLED_APPS setting.(**We have already set.**)
 
 ```python
 INSTALLED_APPS = [
     ...
     'rest_framework',
+    'corsheaders',
 ]
 ```
+
+Add 'corsheaders.middleware.CorsMiddleware', 'django.middleware.common.CommonMiddleware' to your MIDDLEWARE setting.(**We have already set.**)
+
+```python
+MIDDLEWARE = [
+    ...
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+]
+```
+
+Add CORS_ORIGIN_WHITELIST to your setting (for the local-environment).(**We have already set.**)
+
+```python
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000/'
+)
+```
+
 
 ### Backend Server
 
