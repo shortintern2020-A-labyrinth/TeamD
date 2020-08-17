@@ -48,6 +48,8 @@ services:
       - ./.docker/nginx/uwsgi_params:/etc/nginx/uwsgi_params
     ports:
       - "80:80"
+    depends_on:
+      - "django" # djangoの起動を待たないと落ちる
 
 volumes:
   mysqldata:
