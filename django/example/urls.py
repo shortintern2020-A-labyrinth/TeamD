@@ -22,7 +22,7 @@ class UserViewSet(viewsets.ModelViewSet):
 def hello_world(request):
         if request.method == 'POST':
                 return Response({"message": "Got some data!", "data": request.data})
-        return Response({"message": "Hello, world!"})
+        return Response({"message": "Hello, world! from django"})
 
 # Routers provide a way of automatically determining the URL conf.
 router = routers.DefaultRouter()
