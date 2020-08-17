@@ -7,7 +7,7 @@
       </div>
       <v-card>
         <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
+          {{ value }}
         </v-card-title>
         <v-card-text>
           <p>
@@ -90,6 +90,11 @@ export default {
   components: {
     Logo,
     VuetifyLogo,
+  },
+  async asyncData({ $axios }) {
+    // eslint-disable-next-line no-undef
+    const response = await $axios.$get('http://django:8000/hello')
+    return { value: response.message }
   },
 }
 </script>
