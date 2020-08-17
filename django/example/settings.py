@@ -62,9 +62,9 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 
-CORS_ORIGIN_WHITELIST = (
-    'localhost:3000/' #TODO: デプロイ時変更
-)
+CORS_ORIGIN_WHITELIST = [
+    "http://nuxt:3000", #TODO: デプロイ時変更
+]
 
 ROOT_URLCONF = 'example.urls'
 
@@ -94,7 +94,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'test', #　作成したデータベース名
-        'PASSWORD': 'test', 
+        'PASSWORD': 'test',
         'USER': 'root', # ログインユーザー
         'HOST': 'mysql', #コンテナ名
         'PORT': '3306',
