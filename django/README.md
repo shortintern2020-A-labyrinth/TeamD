@@ -9,6 +9,24 @@
 - youtube
   - youtubeAPIを利用するためのロジック
 
+## migrate の手順
+１．model.py上のクラス定義を変更する
+２．マイグレーションファイルの作成
+manage.py makemigrations
+３．マイグレーションで実行されるSQLの確認
+manage.py sqlmigrations マイグレーションID
+４．マイグレーションの実行
+manage.py migrate
+５．データベースクライアント等で適用結果を確認
+
+### rollbackしたいとき
+
+- 特定のmigrateに対して
+  - ./manage.py migrate app_name [一つ前のmigrateID]
+- 全てのmigrate
+  - ./manage.py migrate app_name zero
+
+
 
 # Django-starter-kit
 
