@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     # 3rd party
     'rest_framework',
     'corsheaders',
+    # apps
+    'company.apps.CompanyConfig',
+    # 'example.youtube.apps.YoutubeConfig',
+    # 'example.movie.apps.MovieConfig',
 ]
 
 REST_FRAMEWORK = {
