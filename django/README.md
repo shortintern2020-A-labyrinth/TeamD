@@ -1,3 +1,15 @@
+## プロジェクト構成
+
+- example
+  - projectの設定
+- company
+  - 企業に関する操作をするためのロジック
+- movie
+  - 動画加工に関するロジック
+- youtube
+  - youtubeAPIを利用するためのロジック
+
+
 # Django-starter-kit
 
 Django Starter Kit
@@ -15,7 +27,7 @@ yoshikawa/django-starter-kit − learning about Django REST framework
 |Django REST framework|3.11.1|
 |django-cors-headers|3.4.0|
 
-Please check it! 
+Please check it!
 [Django REST framework](https://github.com/encode/django-rest-framework)
 [django-cors-headers](https://github.com/adamchainz/django-cors-headers)
 
