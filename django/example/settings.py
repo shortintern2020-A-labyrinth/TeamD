@@ -42,8 +42,8 @@ INSTALLED_APPS = [
     'corsheaders',
     # apps
     'company.apps.CompanyConfig',
-    # 'example.youtube.apps.YoutubeConfig',
-    # 'example.movie.apps.MovieConfig',
+    'youtube.apps.YoutubeConfig',
+    'movie.apps.MovieConfig',
 ]
 
 REST_FRAMEWORK = {
