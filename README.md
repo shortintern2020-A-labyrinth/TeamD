@@ -81,3 +81,8 @@ access: `localhost:3000`
 ## Author
 
 [Yoshikawa Taiki](https://github.com/yoshikawa)
+
+## djangoコマンド色々
+
+- migrate
+  - make
