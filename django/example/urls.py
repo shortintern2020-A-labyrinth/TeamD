@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets, routers, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
+from company import views as company_views
 
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -34,5 +35,6 @@ router.register(r'users', UserViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^hello/$', hello_world)
+    url(r'^hello/$', hello_world),
+    path('api/company/', include('company.urls'))
 ]
