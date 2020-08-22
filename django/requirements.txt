@@ -3,3 +3,5 @@ djangorestframework
 django-cors-headers
 mysqlclient
 uwsgi
+pyyaml
+uritemplate

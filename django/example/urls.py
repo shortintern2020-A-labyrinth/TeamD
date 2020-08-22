@@ -4,19 +4,10 @@ from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets, routers, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from company import views as company_views
+from rest_framework.schemas import get_schema_view
 
-# Serializers define the API representation.
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ['url', 'username', 'email', 'is_staff']
-
-
-# ViewSets define the view behavior.
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+API_TITLE = 'Blog API'
+API_DESCRIPTION = 'A Web API for creating and editing blog posts.'
 
 @api_view(['GET','POST'])
 @permission_classes((permissions.AllowAny,))
@@ -27,8 +18,11 @@ def hello_world(request):
 
 # Routers provide a way of automatically determining the URL conf.
 router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
 
+schema_view = get_schema_view(
+    title=API_TITLE,
+    description=API_DESCRIPTION,
+    )
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
@@ -36,5 +30,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^hello/$', hello_world),
-    path('api/company/', include('company.urls'))
+    path('api/company/', include('company.urls')),
+    url(r'^docs/$', schema_view),
 ]
