@@ -1,3 +1,5 @@
+# youtubeに関する操作
+
 # 成功すればURLを返す
 def upload_movie(video):
     # upload
