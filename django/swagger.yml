@@ -1,0 +1,388 @@
+swagger: "2.0"
+info:
+  description: ""
+  version: "1.0.0"
+  title: "A4失調API"
+host: "localhost:8080"
+tags:
+  - name: "company"
+    description: "会社関連API"
+  - name: "video"
+    description: "動画関連API(若者)"
+  # - name: "tiktok"
+  #   description: "tiktokに対しての操作関連API"
+  - name: "admin"
+    description: "管理者操作関連API"
+schemes:
+  - "https"
+  - "http"
+paths:
+  /api/company/register/:
+    post:
+      tags:
+        - "company"
+      summary: "登録申請"
+      description: "登録申請\n"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "email"
+          type: "string"
+          description: "email"
+          required: true
+        - in: "query"
+          name: "password"
+          type: "string"
+          description: "password"
+          required: true
+        - in: "query"
+          name: "company name"
+          type: "integer"
+          description: "company name"
+          required: true
+        - in: "query"
+          name: "company description"
+          type: "integer"
+          description: "company description"
+          required: true
+        - in: "query"
+          name: "url"
+          type: "integer"
+          description: "複数OK urlとタイプを記入"
+
+      responses:
+        200:
+          "description": "A successful response."
+  /api/company/login/:
+    post:
+      tags:
+        - "company"
+      summary: "login"
+      description: "login"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "password"
+          type: "string"
+          description: "パスワード"
+          required: true
+        - in: "query"
+          name: "email"
+          type: "string"
+          description: "メールアドレス"
+          required: true
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                description: The user token
+  /api/urltype/:
+    get:
+      summary: ""
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "password"
+          type: "string"
+          description: "パスワード"
+          required: true
+        - in: "query"
+          name: "email"
+          type: "string"
+          description: "メールアドレス"
+          required: true
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                description: The user token
+  /api/categories/:
+    get:
+      summary: ""
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "password"
+          type: "string"
+          description: "パスワード"
+          required: true
+        - in: "query"
+          name: "email"
+          type: "string"
+          description: "メールアドレス"
+          required: true
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                description: The user token
+  /api/locations/:
+    get:
+      summary: ""
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "password"
+          type: "string"
+          description: "パスワード"
+          required: true
+        - in: "query"
+          name: "email"
+          type: "string"
+          description: "メールアドレス"
+          required: true
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                description: The user token
+  /api/topics/:
+    get:
+      summary: ""
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "password"
+          type: "string"
+          description: "パスワード"
+          required: true
+        - in: "query"
+          name: "email"
+          type: "string"
+          description: "メールアドレス"
+          required: true
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                description: The user token
+
+  /api/company/logout/:
+    post:
+      tags:
+        - "company"
+      summary: "logout"
+      description: "logout"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "token"
+          type: "string"
+          description: "トークン"
+          required: true
+      responses:
+        200:
+          "description": "A successful response."
+  /api/company/edit/:
+    put:
+      tags:
+        - "company"
+      summary: "概要修正"
+      description: "login"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "domain_id"
+          type: "integer"
+          description: "Domain id"
+          required: true
+      responses:
+        200:
+          "description": "A successful response."
+  /api/company/video/:
+    get:
+      tags:
+        - "company"
+      summary: "company内のvideo一覧取得"
+      description: "video一覧情報取得\n"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "domain_id"
+          type: "integer"
+          description: "Domain id"
+          required: true
+      responses:
+        200:
+          "description": "A successful response."
+    post:
+      tags:
+        - "company"
+      summary: "video投稿"
+      description: "video投稿"
+      consumes:
+        - "application/json"
+      parameters:
+        - $ref: '#/definitions/PostVideoRequest'
+      responses:
+        200:
+          "description": "A successful response."
+    delete:
+      tags:
+        - "company"
+      summary: "company内のvideo削除"
+      description: "video一覧情報取得\n"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "domain_id"
+          type: "integer"
+          description: "Domain id"
+          required: true
+      responses:
+        200:
+          "description": "A successful response."
+  /api/company/material/preview/:
+    post:
+      tags:
+        - "company"
+      summary: "materialのpreview用のリクエスト"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "domain_id"
+          type: "integer"
+          description: "Domain id"
+          required: true
+      responses:
+        200:
+          "description": "A successful response."
+  /api/video/:
+    get:
+      tags:
+        - "video"
+      summary: "動画"
+      description: "登録申請\n"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "domain_id"
+          type: "integer"
+          description: "Domain id"
+          required: true
+      responses:
+        200:
+          "description": "A successful response."
+  /api/admin/accept/company/:
+    get:
+      tags:
+        - "admin"
+      summary: "メールからの承認"
+      description: "編集"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "domain_id"
+          type: "integer"
+          description: "Domain id"
+          required: true
+      responses:
+        200:
+          "description": "A successful response."
+
+definitions:
+  PostVideoRequest:
+    type: "object"
+    properties:
+      data:
+        type: "object"
+        properties:
+          title:
+            type: "string"
+          description:
+            type: "string"
+          category:
+            type: "string"
+          keywords:
+            type: "array"
+            items:
+              type: "string"
+              description: "動画に関連するキーワード"
+          movies:
+            type: "array"
+            items:
+              $ref: '#/definitions/Material'
+  PostMaterialRequest:
+    type: "object"
+    properties:
+      movies:
+        type: "array"
+        items:
+          $ref: '#/definitions/Material'
+  Material:
+    type: "object"
+    properties:
+      content:
+        type: "string"
+        example: "eefeafafe"
+        description: "byte列"
+      text:
+        type: "string"
+        example: "牛"
+      order:
+        type: "integer"
+        example: "1"
