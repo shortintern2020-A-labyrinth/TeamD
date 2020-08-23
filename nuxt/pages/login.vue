@@ -25,7 +25,7 @@
           </v-col>
         </v-row>
         <v-card-actions>
-          <v-btn text small>サインアップ</v-btn>
+          <v-btn text small to="signup">サインアップ</v-btn>
 
           <v-spacer></v-spacer>
 
