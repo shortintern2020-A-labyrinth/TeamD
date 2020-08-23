@@ -25,10 +25,16 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title v-text="title" />
+      <v-app-bar-nav-icon v-if="isLogin" @click.stop="drawer = !drawer" />
+      <nuxt-link to="/">
+        <v-toolbar-title>
+          {{ title }}
+        </v-toolbar-title>
+      </nuxt-link>
       <v-spacer />
-      ログイン
+      <v-btn color="primary">
+        ログイン
+      </v-btn>
     </v-app-bar>
   </div>
 </template>
@@ -39,6 +45,7 @@ export default {
     return {
       clipped: false,
       drawer: false,
+      isLogin: false,
       items: [
         {
           icon: 'mdi-apps',
