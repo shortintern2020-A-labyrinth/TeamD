@@ -10,7 +10,7 @@
             <v-text-field
               v-model="email"
               :rules="emailRules"
-              label="E-mail"
+              label="メールアドレス※"
               required
             ></v-text-field>
           </v-col>
@@ -19,7 +19,7 @@
             <v-text-field
               v-model="password"
               :counter="10"
-              label="password"
+              label="パスワード※"
               required
             ></v-text-field>
           </v-col>
