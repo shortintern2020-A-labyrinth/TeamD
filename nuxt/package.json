@@ -1,5 +1,5 @@
 {
-  "name": "sample",
+  "name": "rakutenPV",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -14,12 +14,12 @@
   },
   "dependencies": {
     "@nuxt/typescript-runtime": "^1.0.0",
-    "@nuxtjs/axios": "^5.12.1",
+    "@nuxtjs/axios": "^5.12.0",
     "@nuxtjs/pwa": "^3.0.0-beta.20",
-    "nuxt": "^2.14.1"
+    "nuxt": "^2.14.0"
   },
   "devDependencies": {
-    "@nuxt/types": "^2.14.1",
+    "@nuxt/types": "^2.14.0",
     "@nuxt/typescript-build": "^2.0.2",
     "@nuxtjs/eslint-config": "^3.1.0",
     "@nuxtjs/eslint-config-typescript": "^3.0.0",
@@ -28,14 +28,14 @@
     "@vue/test-utils": "^1.0.3",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
-    "babel-jest": "^26.3.0",
-    "eslint": "^7.6.0",
+    "babel-jest": "^26.1.0",
+    "eslint": "^7.5.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-nuxt": "^1.0.0",
     "eslint-plugin-prettier": "^3.1.4",
-    "jest": "^26.3.0",
+    "jest": "^26.1.0",
     "prettier": "^2.0.5",
-    "ts-jest": "^26.2.0",
-    "vue-jest": "^3.0.6"
+    "ts-jest": "^26.1.3",
+    "vue-jest": "^3.0.4"
   }
 }

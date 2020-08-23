@@ -1,8 +1,4 @@
-# sample
-
-This is Sample Project.
-
-```sh
+# rakutenPV
 ? Project name: sample
 ? Programming language: TypeScript
 ? Package manager: Npm
@@ -10,11 +6,9 @@ This is Sample Project.
 ? Nuxt.js modules: Axios, Progressive Web App (PWA)
 ? Linting tools: ESLint, Prettier
 ? Testing framework: Jest
-? Rendering mode: Universal (SSR / SSG)
-? Deployment target: Server (Node.js hosting)
+? Rendering mode: Single Page App
+? Deployment target: Static (Static/JAMStack hosting)
 ? Development tools: Semantic Pull Requests
-```
-
 
 ## Build Setup
 
