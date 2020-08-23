@@ -40,7 +40,6 @@ def video_view(request):
     elif request.method == 'DELETE':
         print()
 
-
 # バリデーション
 def VideoPostValidation(data):
     return True
@@ -69,6 +68,7 @@ def VideoView(request):
         # youtubeにアップロード
         youtube_url = upload_movie(video)
 
+        # response message
         res = {
             "message": "success!!!",
             "youtube_url": youtube_url

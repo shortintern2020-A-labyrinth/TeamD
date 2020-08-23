@@ -1,5 +1,7 @@
 ## プロジェクト構成
 
+https://www.django-rest-framework.org/tutorial/quickstart/
+
 - example
   - projectの設定
 - company
@@ -18,6 +20,8 @@ manage.py sqlmigrations マイグレーションID
 ４．マイグレーションの実行
 manage.py migrate
 ５．データベースクライアント等で適用結果を確認
+
+
 
 ### rollbackしたいとき
 
