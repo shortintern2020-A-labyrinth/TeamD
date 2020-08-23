@@ -6,7 +6,7 @@ import json
 from .models import Question
 from .serializers import QuestionSerializer
 from movie.models import make_movie
-from youtube.models import upload_movie
+from youtube.models import upload_youtube
 
 class BookAPIView(generics.ListAPIView):
     queryset = Question.objects.all()
@@ -37,7 +37,16 @@ def VideoView(request):
         video = make_movie(data)
 
         # youtubeにアップロード
-        youtube_url = upload_movie(video)
+        '''
+        入力例
+        file = 'movie/sample.mp4'
+        title = "Video title"
+        description = "test description"
+        category = "22"
+        keywords = "tag"
+        privacyStatus = "public"
+        '''
+        youtube_url = upload_youtube(file,title,description,category,keywords,privacyStatus)
 
         res = {
             "message": "success!!!",
