@@ -13,9 +13,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Video',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=60)),
-                ('description', models.CharField(max_length=255)),
+                ('description', models.TextField(max_length=5000)),
                 ('youtube_url', models.CharField(max_length=45)),
                 ('company_id', models.IntegerField()),
             ],
