@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                                         primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=60)),
                 ('description', models.TextField(max_length=5000)),
-                ('youtube_url', models.CharField(max_length=45)),
+                ('youtube_url', models.CharField(max_length=255)),
                 ('company_id', models.IntegerField()),
             ],
         ),
