@@ -7,16 +7,45 @@ from .models import Question
 from .serializers import QuestionSerializer
 from movie.models import make_movie
 from youtube.models import upload_movie
+from video.models import video_post_validation
+
 
 class BookAPIView(generics.ListAPIView):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
-#
+
+@api_view(['GET', 'POST'])
+def video_view(request):
+    if request.method == 'GET':
+        return Response({})
+    elif request.method == 'POST':
+        data = json.loads(request.body)
+        if not video_post_validation(data):
+            return Response(
+                {
+                    'message': 'error'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(
+            {
+                'message': 'success'
+            },
+            status=status.HTTP_200_OK
+        )
+    elif request.method == 'PUT':
+        print()
+    elif request.method == 'DELETE':
+        print()
+
+# バリデーション
 def VideoPostValidation(data):
     return True
 
-@api_view(['GET','POST'])
+
+@api_view(['GET', 'POST'])
 def VideoView(request):
     if request.method == 'GET':
         return Response({"message": "Hello, world! from django"})
@@ -39,6 +68,7 @@ def VideoView(request):
         # youtubeにアップロード
         youtube_url = upload_movie(video)
 
+        # response message
         res = {
             "message": "success!!!",
             "youtube_url": youtube_url
