@@ -264,10 +264,32 @@ paths:
       consumes:
         - "application/json"
       parameters:
-        - $ref: '#/definitions/PostVideoRequest'
+        - in: "query"
+          name: "name"
+          type: "string"
+          description: "YouTubeのタイトル"
+          required: true
+        - in: "query"
+          name: "description"
+          type: "string"
+          description: "　YouTubeの概要欄"
+          required: true
+        - in: "query"
+          name: "youtube_url"
+          type: "string"
+          description: "投稿する動画のファイルパス"
+          required: true
+        - in: "query"
+          name: "company_id"
+          type: "integer"
+          description: "投稿元企業のid"
+          required: true
       responses:
         200:
-          "description": "A successful response."
+          "description": "動画投稿の成功"
+        400:
+          description: "動画投稿の失敗"
+
     delete:
       tags:
         - "company"
@@ -365,14 +387,14 @@ definitions:
           movies:
             type: "array"
             items:
-              $ref: '#/definitions/Material'
+              $ref: "#/definitions/Material"
   PostMaterialRequest:
     type: "object"
     properties:
       movies:
         type: "array"
         items:
-          $ref: '#/definitions/Material'
+          $ref: "#/definitions/Material"
   Material:
     type: "object"
     properties:
