@@ -81,7 +81,7 @@ export default {
         light: {
           primary: colors.red.lighten1,
           accent: colors.grey.lighten4,
-          secondary: colors.yellow.lighten3,
+          secondary: colors.yellow.accent3,
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,

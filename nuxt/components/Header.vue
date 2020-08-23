@@ -32,7 +32,7 @@
         </v-toolbar-title>
       </nuxt-link>
       <v-spacer />
-      <v-btn color="primary">
+      <v-btn to="login" color="primary">
         ログイン
       </v-btn>
     </v-app-bar>
