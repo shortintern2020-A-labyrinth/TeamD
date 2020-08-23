@@ -1,10 +1,10 @@
 from django.urls import path
 
 from .views import BookAPIView, VideoView
-from .util.models import sendMail
+from .util.models import post_mail
 
 urlpatterns = [
     path('', BookAPIView.as_view(), name='home'),
     path('video/', VideoView, name='home'),
-    path('sendmail', sendMail, name='mail')
+    path('sendmail', post_mail, name='mail')
 ]
