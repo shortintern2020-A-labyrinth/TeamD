@@ -20,13 +20,13 @@ class Video(models.Model):
         null=False,
         blank=False
     )
-    description = models.CharField(
-        max_length=255,
+    description = models.TextField(
+        max_length=5000,
         null=False,
         blank=False
     )
     youtube_url = models.CharField(
-        max_length=45,
+        max_length=255,
         null=False,
         blank=False,
     )
