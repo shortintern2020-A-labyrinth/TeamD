@@ -262,7 +262,7 @@ paths:
       summary: "video投稿"
       description: "video投稿"
       consumes:
-        - "application/json"
+        - "multipart/form-data"
       parameters:
         - in: "query"
           name: "title"
@@ -298,6 +298,7 @@ paths:
           required: true
           items:
             type: string
+            format: binary
       responses:
         200:
           "description": "動画投稿の成功"
@@ -381,27 +382,27 @@ paths:
           "description": "A successful response."
 
 definitions:
-  PostVideoRequest:
-    type: "object"
-    properties:
-      data:
-        type: "object"
-        properties:
-          title:
-            type: "string"
-          description:
-            type: "string"
-          category:
-            type: "string"
-          keywords:
-            type: "array"
-            items:
-              type: "string"
-              description: "動画に関連するキーワード"
-          movies:
-            type: "array"
-            items:
-              $ref: "#/definitions/Material"
+  # PostVideoRequest:
+  #   type: "object"
+  #   properties:
+  #     data:
+  #       type: "object"
+  #       properties:
+  #         title:
+  #           type: "string"
+  #         description:
+  #           type: "string"
+  #         category:
+  #           type: "string"
+  #         keywords:
+  #           type: "array"
+  #           items:
+  #             type: "string"
+  #             description: "動画に関連するキーワード"
+  #         movies:
+  #           type: "array"
+  #           items:
+  #             $ref: "#/definitions/Material"
   PostMaterialRequest:
     type: "object"
     properties:
