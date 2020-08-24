@@ -115,33 +115,28 @@ paths:
                 type: string
                 description: The user token
   /api/categories/:
-    get:
+    post:
       summary: ""
       description: ""
       consumes:
         - "application/json"
       produces:
         - "application/json"
-      parameters:
-        - in: "query"
-          name: "password"
-          type: "string"
-          description: "パスワード"
-          required: true
-        - in: "query"
-          name: "email"
-          type: "string"
-          description: "メールアドレス"
-          required: true
       responses:
         200:
           description: OK
           schema:
-            type: object
-            properties:
-              token:
-                type: string
-                description: The user token
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 18
+                name:
+                  type: string
+                  example: ショートムービー
+
   /api/locations/:
     get:
       summary: ""
