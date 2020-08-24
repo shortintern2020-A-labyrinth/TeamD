@@ -53,11 +53,10 @@ export default {
   methods: {
     login() {
       try {
-        const response = this.$auth.loginWith('local', {
+        this.$auth.loginWith('local', {
           password: this.password,
           email: this.email,
         })
-        console.log(response)
       } catch (error) {
         console.log(error)
       }
