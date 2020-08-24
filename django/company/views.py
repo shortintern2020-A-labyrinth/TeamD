@@ -6,7 +6,7 @@ import json
 from .models import Question
 from .serializers import QuestionSerializer
 from movie.models import make_movie
-from youtube.models import upload_movie
+# from youtube.models import upload_movie
 from video.models import video_post_validation
 
 
@@ -69,8 +69,13 @@ def VideoView(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # video整形
-        video = make_movie(data)
+        '''
+        input = ["material/sample.mp4","material/sample2.mp4","material/sample.mp4"]
+        combine_material(input)  #=>output.mp4が作成
+        combine_material(input,mmmmm.mp4) #=>mmmmm.mp4が作成
+        '''
+        # material結合
+        combine_material(input)
 
         # youtubeにアップロード
         '''

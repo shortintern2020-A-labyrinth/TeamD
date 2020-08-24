@@ -12,6 +12,8 @@ NPMBUILD=$(NPM) build
 NPMDEV=$(NPM) run-script docker-dev
 NUXT=$(EXEC) nuxt
 DJANGO=$(EXEC) django
+DB=$(EXEC) db
+REDIS=$(EXEC) redis
 SUBMODULE=git submodule
 
 all: docker/up api/migrate api/run ## develop backend
@@ -50,6 +52,12 @@ nuxt/ash: ## nuxt container ash
 
 django/bash: ## django container bash
 	$(DJANGO) bash
+
+db/bash: ## db container bash
+	$(DB) bash
+
+redis/bash: ## redis container bash
+	$(REDIS) bash
 
 submodule: submodule/init submodule/update ## git submodule init & update
 
