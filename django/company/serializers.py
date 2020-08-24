@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
-from .models import Question
+from .models import Company
 
-class QuestionSerializer(serializers.ModelSerializer):
+class CompanySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Question
+        model = Company
         fields = '__all__'
