@@ -15,7 +15,7 @@ class AuthMiddleware(object):
     # ここにlogin確認処理を実装する
     def process_view(self, request, view_func, view_args, view_kwargs):
         #ログインと会員申請のAPIはログイン状態の確認取らない
-        if request.path == "/api/company/login/" or request.path == "/api/company/register/":
+        if request.path == "/api/company/login/" or request.path == "/api/company/register/" or request.path == "/api/company/logout/":
             return None
         else:
             if 'Authorization' not in request.headers:

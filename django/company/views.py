@@ -56,6 +56,7 @@ def randomSTR(n):
 @csrf_exempt
 @api_view(['POST'])
 def login(request):
+    print(request.headers)
     try:
         #emailとpasswordの一致確認
         data = json.loads(request.body)
@@ -84,7 +85,13 @@ def login(request):
 @csrf_exempt
 @api_view(['POST'])
 def logout(request):
-    return Response({'message': 'logout'})
+    request.session.clear()
+    return Response(
+            {
+                'message': 'logged out successfully.'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 @csrf_exempt
 @api_view(['GET'])
