@@ -48,6 +48,10 @@ def VideoPostValidation(data):
 def login(request):
     return Response({"token": "testtokentest"})
 
+@api_view(['POST'])
+def logout(request):
+    return Response({"message": "success"})
+
 @api_view(['GET', 'POST'])
 def VideoView(request):
     if request.method == 'GET':
