@@ -34,3 +34,20 @@ class Video(models.Model):
         null=False,
         blank=False
     )
+
+class Company(models.Model):
+    name = models.CharField(
+            max_length=60,
+            null=False,
+            blank=False
+    )
+    email = models.EmailField()
+    password = models.CharField(max_length=50)
+    description = models.TextField(
+        null=False,
+        blank=False
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_accepted = models.SmallIntegerField()
+    tokens =  models.TextField()
+    
