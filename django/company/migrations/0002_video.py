@@ -19,6 +19,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(max_length=5000)),
                 ('youtube_url', models.CharField(max_length=255)),
                 ('company_id', models.IntegerField()),
+                ('category_id', models.IntegerField())
             ],
         ),
     ]
