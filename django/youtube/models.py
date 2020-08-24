@@ -25,7 +25,7 @@ RETRIABLE_EXCEPTIONS = (httplib2.HttpLib2Error,
                         http.client.ResponseNotReady,
                         http.client.BadStatusLine)
 RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
-CLIENT_SECRETS_FILE = "client_id.json"
+CLIENT_SECRETS_FILE = "youtube/client_id.json"
 MISSING_CLIENT_SECRETS_MESSAGE = """
 WARNING: Please configure OAuth 2.0
 
@@ -39,8 +39,7 @@ https://console.developers.google.com/
 
 For more information about the client_secrets.json file format, please visit:
 https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
-""" % os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                   CLIENT_SECRETS_FILE))
+""" % os.path.abspath(os.path.join(os.path.dirname(__file__),CLIENT_SECRETS_FILE))
 
 YOUTUBE_UPLOAD_SCOPE = "https://www.googleapis.com/auth/youtube.upload"
 YOUTUBE_API_SERVICE_NAME = "youtube"
@@ -51,11 +50,9 @@ VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
 
 
 def get_authenticated_service(args):
-    flow = flow_from_clientsecrets(CLIENT_SECRETS_FILE,
-                                   scope=YOUTUBE_UPLOAD_SCOPE,
-                                   message=MISSING_CLIENT_SECRETS_MESSAGE)
+    flow = flow_from_clientsecrets(CLIENT_SECRETS_FILE, scope=YOUTUBE_UPLOAD_SCOPE, message=MISSING_CLIENT_SECRETS_MESSAGE)
 
-    storage = Storage("%s-oauth2.json" % sys.argv[0])
+    storage = Storage("youtube/main.py-oauth2.json")
     credentials = storage.get()
 
     if credentials is None or credentials.invalid:
