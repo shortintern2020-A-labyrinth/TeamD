@@ -3,19 +3,17 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 
 import json
-from .models import Question, Company
-from .serializers import QuestionSerializer
-from movie.models import make_movie
-from youtube.models import upload_movie
+from .models import Company
+from .serializers import CompanySerializer
 from video.models import video_post_validation
 from .util.models import post_mail
 from django.utils import timezone
 import hashlib
+from django.views.decorators.csrf import csrf_exempt
 
-
-class BookAPIView(generics.ListAPIView):
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
+class CompanyAPIView(generics.ListAPIView):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
 
 
 @api_view(['GET', 'POST'])
@@ -48,17 +46,18 @@ def VideoPostValidation(data):
     return True
 
 #企業の仮登録
+@csrf_exempt
 def register_temporary_company(request):
     company_name = request.POST['name']
     email = request.POST['email']
     password = request.POST['password']
     description = request.POST['description']
-    is_accepted = 0 #仮登録
+    is_accepted = 0 # 仮登録
 
      # 会員登録用トークン生成（メールアドレス + パスワード + システム日付のハッシュ値とする）
     date = timezone.now()
     tmp_str = email + password + date.strftime('%Y%m%d%H%M%S%f')
-    token = hashlib.sha1(str.encode('utf-8')).hexdigest()    # utf-8でエンコードしないとエラーになるらしい
+    token = hashlib.sha1(tmp_str.encode('utf-8')).hexdigest()
 
     #compnayテーブルにインサート
     company = Company(name=company_name, email=email, password=password, description=description, is_accepted=is_accepted, token=token)
@@ -78,7 +77,7 @@ def accept_temporary_company(request):
         #更新
         uniq_company = Company.objects.get(token=param_value)
         uniq_company.is_accepted = 1
-        b.save() #UPDATE
+        uniq_company.save() #UPDATE
     else:
         # query_paramが指定されていない場合の処理
         return Response(
@@ -87,46 +86,3 @@ def accept_temporary_company(request):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
-
-
-@api_view(['GET', 'POST'])
-def VideoView(request):
-    if request.method == 'GET':
-        return Response({"message": "Hello, world! from django"})
-    elif request.method == 'POST':
-        # request body取得
-        data = json.loads(request.body)
-
-        # バリデーション
-        if not VideoPostValidation(data):
-            return Response(
-                {
-                    "message": "validation error, please check it",
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # video整形
-        video = make_movie(data)
-
-        # youtubeにアップロード
-        '''
-        入力例
-        file = 'movie/sample.mp4'
-        title = "Video title"
-        description = "test description"
-        category = "22"
-        keywords = "tag"
-        privacyStatus = "public"
-        '''
-        youtube_url = upload_youtube(file,title,description,category,keywords,privacyStatus)
-
-        # response message
-        res = {
-            "message": "success!!!",
-            "youtube_url": youtube_url
-        }
-
-        return Response(res)
-    elif request.method == 'DELETE':
-        return Response({"message": "Hello, world! from django"})
