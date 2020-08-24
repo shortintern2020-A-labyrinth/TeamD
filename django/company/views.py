@@ -6,7 +6,7 @@ import json
 from .models import Question
 from .serializers import QuestionSerializer
 from movie.models import make_movie
-from youtube.models import upload_movie
+# from youtube.models import upload_movie
 from video.models import video_post_validation
 
 
@@ -44,6 +44,13 @@ def video_view(request):
 def VideoPostValidation(data):
     return True
 
+@api_view(['POST'])
+def login(request):
+    return Response({"token": "testtokentest"})
+
+@api_view(['POST'])
+def logout(request):
+    return Response({"message": "success"})
 
 @api_view(['GET', 'POST'])
 def VideoView(request):

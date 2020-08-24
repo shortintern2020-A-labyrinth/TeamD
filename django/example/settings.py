@@ -65,7 +65,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_WHITELIST = [
-    "http://nuxt:3000", #TODO: デプロイ時変更
+    "http://localhost:3000", #TODO: デプロイ時変更
 ]
 
 ROOT_URLCONF = 'example.urls'
@@ -103,6 +103,16 @@ DATABASES = {
     }
 }
 
+SESSION_ENGINE = 'redis_sessions.session'
+
+SESSION_REDIS = {
+    'host': 'redis',
+    'port': 6379,
+    'db': 0,
+    'prefix': 'session',
+    'socket_timeout': 1,
+    'retry_on_timeout': False
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators

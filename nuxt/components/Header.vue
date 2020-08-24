@@ -25,15 +25,26 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app>
-      <v-app-bar-nav-icon v-if="isLogin" @click.stop="drawer = !drawer" />
+      <v-app-bar-nav-icon
+        v-if="$auth.state.loggedIn"
+        @click.stop="drawer = !drawer"
+      />
       <nuxt-link to="/">
         <v-toolbar-title>
           {{ title }}
         </v-toolbar-title>
       </nuxt-link>
       <v-spacer />
-      <v-btn to="login" color="primary">
+      <v-btn v-if="!$auth.state.loggedIn" to="login" color="primary">
         ログイン
+      </v-btn>
+      <v-btn
+        v-if="$auth.state.loggedIn"
+        to="login"
+        color="primary"
+        @click="logout"
+      >
+        ログアウト
       </v-btn>
     </v-app-bar>
   </div>
@@ -41,11 +52,15 @@
 
 <script>
 export default {
+  methods: {
+    logout() {
+      this.$auth.logout()
+    },
+  },
   data() {
     return {
       clipped: false,
       drawer: false,
-      isLogin: false,
       items: [
         {
           icon: 'mdi-apps',

@@ -17,6 +17,13 @@ services:
     volumes:
       - mysqldata:/var/lib/mysql
       - ./.docker/mysql/conf:/etc/mysql/conf.d
+  
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - "redisdata:/data"
 
   django:
     container_name: django
@@ -28,6 +35,7 @@ services:
     tty: true
     depends_on:
       - db
+      - redis
 
   nuxt:
     container_name: nuxt
@@ -53,3 +61,4 @@ services:
 
 volumes:
   mysqldata:
+  redisdata:
