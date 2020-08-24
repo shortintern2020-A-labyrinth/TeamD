@@ -56,14 +56,30 @@ def randomSTR(n):
 @csrf_exempt
 @api_view(['POST'])
 def login(request):
-    # random でsession作成
-    session = randomSTR(10)
-    current_time = time.time()
+    try:
+        #emailとpasswordの一致確認
+        data = json.loads(request.body)
+        email = data['email']
+        password = data['password']
+        company = Company.objects.get(email=email)
+        print(company)
+        if password == company.password:
+            # random でsession作成
+            session = randomSTR(10)
+            current_time = time.time()
+            # session key: session, value: current_time
+            request.session[session] = current_time
 
-    # session key: session, value: current_time
-    request.session[session] = current_time
-
-    return Response({'token': session})
+            return Response({'token': session})
+        else:
+            raise Exception 
+    except:
+        return Response(
+            {
+                'message': 'input data is not correct'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 @csrf_exempt
 @api_view(['POST'])
