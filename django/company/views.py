@@ -8,6 +8,7 @@ from .serializers import QuestionSerializer
 from movie.models import make_movie
 from youtube.models import upload_movie
 from video.models import video_post_validation
+from .util.models import post_mail
 from django.utils import timezone
 import hashlib
 
@@ -63,6 +64,29 @@ def register_temporary_company(request):
     company = Blog(name=company_name, email=email, password=password, description=description, is_accepted=is_accepted, token=token)
     company.save()
 
+    #運営に申請メール送信
+    subject="企業からの申請依頼のお知らせ"
+    to_email="A4sittyo@gmail.com"
+    body="企業名: " + company_name + "\n メールアドレス:" + email + "\n 企業概要: " + description + "\n　申請する rakutenpv.app/api//accept/company/?token=" + token
+    post_mail(subject, email, to_email, body)
+
+#仮登録企業の承認
+def accept_temporary_company(request):
+    if "token" in request.GET:
+        # query_paramが指定されている場合の処理
+        param_value = request.GET.get("token")
+        #更新
+        uniq_company = Company.objects.get(token=param_value)
+        uniq_company.is_accepted = 1
+        b.save() #UPDATE
+    else:
+        # query_paramが指定されていない場合の処理
+        return Response(
+            {
+                "message": "something wrong happened",
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 @api_view(['GET', 'POST'])
