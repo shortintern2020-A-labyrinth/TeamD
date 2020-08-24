@@ -3,6 +3,9 @@ import cv2
 from PIL import Image, ImageFont, ImageDraw
 import numpy as np
 
+def make_movie():
+    return
+
 '''
 -----使用例------
 from models import combine_material

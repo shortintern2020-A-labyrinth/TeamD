@@ -11,3 +11,5 @@ httplib2
 # To use Auth Token
 django-redis-cache
 django-redis-sessions
+opencv-python
+Pillow
