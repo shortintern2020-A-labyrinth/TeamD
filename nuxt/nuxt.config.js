@@ -37,7 +37,7 @@ export default {
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: [],
+  plugins: ['@/plugins/axios/index'],
   /*
    ** Auto import components
    ** See https://nuxtjs.org/api/configuration-components
@@ -79,13 +79,13 @@ export default {
       local: {
         endpoints: {
           login: {
-            url: 'api/company/login/',
+            url: 'company/login/',
             method: 'post',
             propertyName: 'token',
           },
-          user: { url: 'api/company/', method: 'get', propertyName: false },
+          user: { url: 'company/', method: 'get', propertyName: false },
           logout: {
-            url: 'api/company/logout/',
+            url: 'company/logout/',
             method: 'post',
             propertyName: false,
           },
