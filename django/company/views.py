@@ -21,14 +21,6 @@ def getRequestFormData(req):
 
     return data
 
-class BookAPIView(generics.ListAPIView):
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
-
-class CompanyAPIView(generics.ListAPIView):
-    queryset = Company.objects.all()
-    serializer_class = CompanySerializer
-
 @api_view(['GET', 'POST'])
 def video_view(request):
     if request.method == 'GET':
@@ -56,14 +48,17 @@ def video_view(request):
     elif request.method == 'DELETE':
         print()
 
-# バリデーション
+def login():
+    return Response({'token': 'test_token_test'})
 
+def logout():
+    return Response({'message': 'logout'})
+
+def video_view():
+    return Response({'message': 'success'})
 
 def VideoPostValidation(data):
     return True
-
-# 企業の仮登録
-
 
 @csrf_exempt
 def register_temporary_company(request):
