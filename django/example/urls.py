@@ -1,9 +1,25 @@
 from django.urls import path, include
 from django.conf.urls import url, include
-from rest_framework import routers, permissions
+from rest_framework import routers, permissions, serializers, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.schemas import get_schema_view
+from django.contrib.auth.models import User
+# Serializers define the API representation.
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ['url', 'username', 'email', 'is_staff']
+
+
+# ViewSets define the view behavior.
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+# Routers provide a way of automatically determining the URL conf.
+router = routers.DefaultRouter()
+router.register(r'users', UserViewSet)
 
 API_TITLE = 'Blog API'
 API_DESCRIPTION = 'A Web API for creating and editing blog posts.'
@@ -15,8 +31,6 @@ def hello_world(request):
                 return Response({"message": "Got some data!", "data": request.data})
         return Response({"message": "Hello, world! from django"})
 
-# Routers provide a way of automatically determining the URL conf.
-router = routers.DefaultRouter()
 
 schema_view = get_schema_view(
     title=API_TITLE,

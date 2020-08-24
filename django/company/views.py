@@ -6,7 +6,7 @@ import json
 from .models import Question
 from .serializers import QuestionSerializer
 from movie.models import make_movie
-from youtube.models import upload_movie
+# from youtube.models import upload_movie
 from video.models import video_post_validation
 
 
