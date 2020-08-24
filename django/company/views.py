@@ -78,7 +78,6 @@ def register_temporary_company(request):
         is_accepted = 0  # 仮登録
 
         # 会員登録用トークン生成（メールアドレス + パスワード + システム日付のハッシュ値とする）
-
         date = timezone.now()
         tmp_str = email + password + date.strftime('%Y%m%d%H%M%S%f')
         token = hashlib.sha1(tmp_str.encode('utf-8')).hexdigest()
@@ -95,7 +94,7 @@ def register_temporary_company(request):
 
         return JsonResponse(
             {
-                'message': 'ok'
+                'message': 'success'
             },
             status=status.HTTP_200_OK
         )
