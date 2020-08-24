@@ -75,7 +75,7 @@ def VideoView(request):
         keywords = "tag"
         privacyStatus = "public"
         '''
-        youtube_url = upload_youtube(file,title,description,category,keywords,privacyStatus)
+        upload_youtube(file,title,description,category,keywords,privacyStatus)
 
         # response message
         res = {
