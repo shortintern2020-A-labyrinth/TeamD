@@ -1,3 +1,4 @@
+from django.movie.models import insert_text
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -61,6 +62,19 @@ def VideoView(request):
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
+        #テキスト挿入
+        '''
+        font = 'C:\Windows\Fonts\meiryo.ttc'
+        fontsize = 64
+        fontcolor = (255, 255, 255, 0)
+        position = "bottom"
+        message = [['1text1',1,3,font,fontsize,fontcolor,position],
+                    ['22text22',3,6,font,80,fontcolor,"center"],
+                    ['333text333',6,10,font,36,(100,100,100,0),"bottom"],]
+        input = "movie/sample.mp4"
+        insert_text(input,message,output="output.mp4")  #=>output.mp4
+        '''
+        insert_text(input,message)
 
         '''
         input = ["material/sample.mp4","material/sample2.mp4","material/sample.mp4"]
