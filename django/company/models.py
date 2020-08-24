@@ -43,7 +43,7 @@ class Company(models.Model):
     )
     email = models.EmailField()
     password = models.CharField(
-        max_length=140,
+        max_length=128,
         null=False,
         blank=False
     )
