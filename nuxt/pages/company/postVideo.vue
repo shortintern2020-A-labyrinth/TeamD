@@ -52,7 +52,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
 
-        <v-btn color="secondary" bold>Submit</v-btn>
+        <v-btn color="secondary" bold @click="submit">Submit</v-btn>
       </v-card-actions>
     </v-container>
   </v-form>
@@ -75,6 +75,10 @@ export default {
       const files = e.target.files || e.dataTransfer.files
       // ファイルが選択されたら変数に入れる
       this.uploadFile = files[0]
+    },
+    async submit() {
+      const res = await this.$axios.$post('company/video/')
+      console.log(res)
     },
   },
 }
