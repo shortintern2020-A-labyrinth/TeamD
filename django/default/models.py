@@ -6,8 +6,7 @@ import json
 def get_video_category():
     categories = Category.objects.all().values()
     list_categories = [category for category in categories]
-    json_categories = json.dumps(list_categories, ensure_ascii=False)
-    return json_categories
+    return list_categories
 
 
 # カテゴリーをデータベースに新規作成（migrate時に実行）
