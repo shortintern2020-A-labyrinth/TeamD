@@ -3,17 +3,18 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 
 import json
-from .models import Question
-from .serializers import QuestionSerializer
-from movie.models import insert_text,combine_material
-from youtube.models import upload_youtube
-# from youtube.models import upload_movie
+from .models import Company
+from .serializers import CompanySerializer
 from video.models import video_post_validation
+from .util.models import post_mail
+from django.utils import timezone
+import hashlib
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
-
-class BookAPIView(generics.ListAPIView):
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
+class CompanyAPIView(generics.ListAPIView):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
 
 
 @api_view(['GET', 'POST'])
@@ -45,70 +46,58 @@ def video_view(request):
 def VideoPostValidation(data):
     return True
 
-@api_view(['POST'])
-def login(request):
-    return Response({"token": "testtokentest"})
-
-@api_view(['POST'])
-def logout(request):
-    return Response({"message": "success"})
-
-@api_view(['GET', 'POST'])
-def VideoView(request):
+#企業の仮登録
+@csrf_exempt
+def register_temporary_company(request):
     if request.method == 'GET':
-        return Response({"message": "Hello, world! from django"})
+        return Response({})
     elif request.method == 'POST':
-        # request body取得
         data = json.loads(request.body)
+        name = data['name']
+        email = data['email']
+        password = data['password']
+        description = data['description']
+        is_accepted = 0 # 仮登録
 
-        # バリデーション
-        if not VideoPostValidation(data):
-            return Response(
-                {
-                    "message": "validation error, please check it",
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        #テキスト挿入
-        '''
-        font = 'C:\Windows\Fonts\meiryo.ttc'
-        fontsize = 64
-        fontcolor = (255, 255, 255, 0)
-        position = "bottom"
-        message = [['1text1',1,3,font,fontsize,fontcolor,position],
-                    ['22text22',3,6,font,80,fontcolor,"center"],
-                    ['333text333',6,10,font,36,(100,100,100,0),"bottom"],]
-        input = "movie/sample.mp4"
-        insert_text(input,message,output="output.mp4")  #=>output.mp4
-        '''
-        insert_text(input,message)
+         # 会員登録用トークン生成（メールアドレス + パスワード + システム日付のハッシュ値とする）
+        date = timezone.now()
+        tmp_str = email + password + date.strftime('%Y%m%d%H%M%S%f')
+        token = hashlib.sha1(tmp_str.encode('utf-8')).hexdigest()
+        #compnayテーブルにインサート
+        print 
+        company = Company(name=name, email=email, password=password, description=description, is_accepted=is_accepted, tokens=token)
+        company.save()
+        #運営に申請メール送信
+        subject="企業からの申請依頼のお知らせ"
+        to_email="A4sittyo@gmail.com"
+        body="企業名: " + name + "\n メールアドレス:" + email + "\n 企業概要: " + description + "\n　申請する rakutenpv.app/api//accept/company/?token=" + token
+        post_mail(subject, email, [to_email], body)
 
-        '''
-        input = ["material/sample.mp4","material/sample2.mp4","material/sample.mp4"]
-        combine_material(input)  #=>output.mp4が作成
-        combine_material(input,mmmmm.mp4) #=>mmmmm.mp4が作成
-        '''
-        # material結合
-        combine_material(input)
-
-        # youtubeにアップロード
-        '''
-        入力例
-        file = 'movie/sample.mp4'
-        title = "Video title"
-        description = "test description"
-        category = "22"
-        keywords = "tag"
-        privacyStatus = "public"
-        '''
-        upload_youtube(file,title,description,category,keywords,privacyStatus)
-
-        # response message
-        res = {
-            "message": "success!!!",
-            "youtube_url": youtube_url
-        }
-
-        return Response(res)
+        return JsonResponse(
+            {
+                'message': 'ok'
+            },
+            status=status.HTTP_200_OK
+        )
+    elif request.method == 'PUT':
+        print()
     elif request.method == 'DELETE':
-        return Response({"message": "Hello, world! from django"})
+        print()
+
+#仮登録企業の承認
+def accept_temporary_company(request):
+    if "token" in request.GET:
+        # query_paramが指定されている場合の処理
+        param_value = request.GET.get("token")
+        #更新
+        uniq_company = Company.objects.get(token=param_value)
+        uniq_company.is_accepted = 1
+        uniq_company.save() #UPDATE
+    else:
+        # query_paramが指定されていない場合の処理
+        return Response(
+            {
+                "message": "something wrong happened",
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
