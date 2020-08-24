@@ -66,7 +66,16 @@ def VideoView(request):
         video = make_movie(data)
 
         # youtubeにアップロード
-        youtube_url = upload_movie(video)
+        '''
+        入力例
+        file = 'movie/sample.mp4'
+        title = "Video title"
+        description = "test description"
+        category = "22"
+        keywords = "tag"
+        privacyStatus = "public"
+        '''
+        youtube_url = upload_youtube(file,title,description,category,keywords,privacyStatus)
 
         # response message
         res = {
