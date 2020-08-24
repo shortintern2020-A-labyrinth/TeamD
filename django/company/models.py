@@ -34,12 +34,27 @@ class Video(models.Model):
         null=False,
         blank=False
     )
-    category_id = models.IntegerField(
+
+class Company(models.Model):
+    name = models.CharField(
+            max_length=60,
+            null=False,
+            blank=False
+    )
+    email = models.EmailField()
+    password = models.CharField(
+        max_length=128,
         null=False,
         blank=False
     )
-
-
+    description = models.TextField(
+        null=False,
+        blank=False
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_accepted = models.SmallIntegerField()
+    tokens =  models.TextField()
+    
 class Category(models.Model):
     id = models.IntegerField(
         null=False,

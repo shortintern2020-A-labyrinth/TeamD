@@ -126,18 +126,17 @@ $ curl -X POST -d username=new -d email=new@example.com -d is_staff=false -H 'Ac
 }
 ```
 
-## Contribution
+企業の仮登録（POST）
 
-1. [Fork it](https://github.com/yoshikawa/django-starter-kit/fork)
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. reate new Pull Request
+```sh
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"name":"hoge","email":"hogehoge@hoge.com","password":"testtest","description":"datejfdksfdsagewagewage"}' http://127.0.0.1:8000/api/company/register
+```
 
-## Licence
+MySQLで企業の情報を見るには
 
-[WTFPL](https://github.com/yoshikawa/django-starter-kit/blob/master/LICENSE)
-
-## Author
-
-[Yoshikawa Taiki](https://github.com/yoshikawa)
+```sh
+make db/bash
+mysql -utest -ptest
+use test
+select * from company_company;
+```
