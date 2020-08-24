@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import register_temporary_company
+from .views import register_temporary_company, login, logout, video_view
 from .util.models import post_mail
 
 urlpatterns = [
