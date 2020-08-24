@@ -38,14 +38,14 @@
       <v-btn v-if="!$auth.state.loggedIn" to="login" color="primary">
         ログイン
       </v-btn>
-      <v-btn
-        v-if="$auth.state.loggedIn"
-        to="login"
-        color="primary"
-        @click="logout"
-      >
-        ログアウト
-      </v-btn>
+      <div v-if="$auth.state.loggedIn">
+        <v-btn to="company/postVideo" color="primary">
+          動画投稿
+        </v-btn>
+        <v-btn to="login" color="info" @click="logout">
+          ログアウト
+        </v-btn>
+      </div>
     </v-app-bar>
   </div>
 </template>
