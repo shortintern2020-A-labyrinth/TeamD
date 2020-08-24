@@ -77,15 +77,12 @@ def register_temporary_company(request):
         description = data['description']
         is_accepted = 0  # 仮登録
 
-        print(name)
-
         # 会員登録用トークン生成（メールアドレス + パスワード + システム日付のハッシュ値とする）
 
         date = timezone.now()
         tmp_str = email + password + date.strftime('%Y%m%d%H%M%S%f')
         token = hashlib.sha1(tmp_str.encode('utf-8')).hexdigest()
         # compnayテーブルにインサート
-        print
         company = Company(name=name, email=email, password=password,
                           description=description, is_accepted=is_accepted, tokens=token)
         company.save()
