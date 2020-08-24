@@ -1,4 +1,3 @@
-from django.movie.models import insert_text
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -6,8 +5,8 @@ from rest_framework.decorators import api_view, permission_classes
 import json
 from .models import Question
 from .serializers import QuestionSerializer
-from movie.models import make_movie
-from youtube.models import upload_movie
+from movie.models import insert_text,combine_movie
+from youtube.models import upload_youtube
 from video.models import video_post_validation
 
 
