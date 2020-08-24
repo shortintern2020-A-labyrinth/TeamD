@@ -23,7 +23,6 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 SECRET_KEY = 'yjh4(sa-t&%0t&s+9o=i)^99)04kt0j+0rvw_f@$65=gel5idv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# branchhhhhhhhhhhhh
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
@@ -127,9 +126,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ja'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tokyo'
 
 USE_I18N = True
 
@@ -142,3 +141,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# mail(テスト用)
+# コンソールにメール送信内容表示
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'django'
+EMAIL_PORT = 25
+
+# mail (本番用) -> 申請通り次第SMTPサーバとしてsendgrid使う予定
+# EMAIL_HOST = 'smtp.sendgrid.net'
+# EMAIL_HOST_USER = 'hoge@gmail.com'
+# EMAIL_HOST_PASSWORD = 'hogefuga'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
