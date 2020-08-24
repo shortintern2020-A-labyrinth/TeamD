@@ -1,6 +1,7 @@
 # このMiddlewareが発動するのはcompanyに対するリクエストだけかもしれない
 from django.http import JsonResponse
 from rest_framework import status
+import time
 
 # TODO: これは要調査
 class AuthMiddleware(object):
@@ -27,11 +28,10 @@ class AuthMiddleware(object):
                 )
 
             # tokenを取得
-            print(request.path)
             token = request.headers['Authorization']
 
             # sessionからvalueを取得
-            token_time = request.sessions[token]
+            token_time = request.session[token]
 
             # tokenが失効しているかどうかを確認(1時間でタイムアウト)
             current_time = time.time()
@@ -47,6 +47,6 @@ class AuthMiddleware(object):
                 )
             else:
                 #セッション更新
-                request.sessions[token] = time.time()
+                request.session[token] = time.time()
             
             return None
