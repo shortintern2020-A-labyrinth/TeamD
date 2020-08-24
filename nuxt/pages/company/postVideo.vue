@@ -21,8 +21,8 @@
 
         <v-col cols="12">
           <v-select
+            v-model="selectedCategory"
             :items="categories"
-            :v-model="selectedCategory"
             label="動画カテゴリ"
             outlined
           ></v-select>
@@ -31,8 +31,8 @@
         <!-- TODO: 本当はここは入力フォームを複数個作成するべきたけど、めんどくさくてできていない -->
         <v-col cols="12">
           <v-text-field
-            :v-model="keywords"
-            label="キーワード(半角コンマ,区切りで複数入力できます)"
+            v-model="keywords"
+            label="キーワード(半角スペース区切りで複数入力できます)"
           ></v-text-field>
         </v-col>
 
@@ -68,17 +68,49 @@ export default {
     selectedCategory: '',
     // カンマ区切りのkeywordが複数個入力されている
     keywords: '',
-    uploadFile: {},
+    companyID: 1,
+    uploadFiles: [],
   }),
   methods: {
-    changeFile(e) {
-      const files = e.target.files || e.dataTransfer.files
+    changeFile(file) {
       // ファイルが選択されたら変数に入れる
-      this.uploadFile = files[0]
+      this.uploadFiles[0] = file
     },
+
     async submit() {
-      const res = await this.$axios.$post('company/video/')
-      console.log(res)
+      const formData = new FormData()
+      formData.append('title', this.title)
+      formData.append('description', this.description)
+      // TODO: とりあえず固定値を入力している
+      formData.append('category_id', 1)
+      // TODO: とりあえず固定値を入力している
+      formData.append('company_id', 1)
+
+      // keywordsのset
+      const keywords = this.keywords.split(' ')
+      for (let i = 0; i < keywords.length; i++) {
+        const keyword = keywords[i]
+        formData.append('keywords[]', keyword)
+      }
+
+      // moviesのset
+      for (let i = 0; i < this.uploadFiles.length; i++) {
+        const movie = this.uploadFiles[i]
+        formData.append('movies[]', movie)
+      }
+
+      await this.$axios
+        .$post('company/video/', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then((response) => {
+          console.log(response.data.status)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     },
   },
 }

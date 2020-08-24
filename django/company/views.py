@@ -1,6 +1,7 @@
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
+from django import forms
 
 import json
 from .models import Question
@@ -10,17 +11,26 @@ from movie.models import make_movie
 from video.models import video_post_validation
 
 
+# TODO: @コウダイ これパースしてfileとか利用してみて欲しい
+def getRequestFormData(req):
+    data = {}
+    print(req.POST)
+    print(req.FILES)
+
+    return data
+
 class BookAPIView(generics.ListAPIView):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-
 
 @api_view(['GET', 'POST'])
 def video_view(request):
     if request.method == 'GET':
         return Response({})
     elif request.method == 'POST':
-        data = json.loads(request.body)
+        # multipart/form-dataをパースする
+        data = getRequestFormData(request)
+
         if not video_post_validation(data):
             return Response(
                 {
