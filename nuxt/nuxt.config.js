@@ -56,13 +56,16 @@ export default {
     '@nuxtjs/pwa',
     '@nuxtjs/auth',
   ],
+  router: {
+    middleware: ['user_auth'],
+  },
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
     // TODO: ここは環境変数を読み込めるようにする
-    host: 'django',
+    host: 'localhost',
     port: 8000,
   },
   auth: {

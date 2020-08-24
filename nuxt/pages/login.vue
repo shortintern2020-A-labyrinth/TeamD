@@ -29,7 +29,7 @@
 
           <v-spacer></v-spacer>
 
-          <v-btn color="secondary" bold>Submit</v-btn>
+          <v-btn color="secondary" bold @click="login">Submit</v-btn>
         </v-card-actions>
       </v-container>
     </v-form>
@@ -38,11 +38,30 @@
 
 <script>
 export default {
+  // loginされたら、/companyにリダイレクトされる
+  middleware({ store, redirect }) {
+    if (store.$auth.loggedIn) {
+      redirect('/company/')
+    }
+  },
   data: () => ({
     valid: false,
     password: '',
     email: '',
     emailRules: [(v) => !!v || 'E-mail is required'],
   }),
+  methods: {
+    login() {
+      try {
+        const response = this.$auth.loginWith('local', {
+          password: this.password,
+          email: this.email,
+        })
+        console.log(response)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+  },
 }
 </script>
