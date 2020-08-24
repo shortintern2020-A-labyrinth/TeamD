@@ -21,5 +21,5 @@ class Migration(migrations.Migration):
                 ('company_id', models.IntegerField()),
                 ('category_id', models.IntegerField())
             ],
-        ),
+        )
     ]

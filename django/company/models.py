@@ -38,3 +38,16 @@ class Video(models.Model):
         null=False,
         blank=False
     )
+
+
+class Category(models.Model):
+    id = models.IntegerField(
+        null=False,
+        blank=False,
+        primary_key=True
+    )
+    name = models.CharField(
+        max_length=255,
+        null=False,
+        blank=False
+    )
