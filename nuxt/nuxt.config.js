@@ -79,7 +79,7 @@ export default {
       local: {
         endpoints: {
           login: {
-            url: 'api/company/login',
+            url: 'api/company/login/',
             method: 'post',
             propertyName: 'token',
           },

@@ -65,7 +65,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_WHITELIST = [
-    "http://nuxt:3000", #TODO: デプロイ時変更
+    "http://localhost:3000", #TODO: デプロイ時変更
 ]
 
 ROOT_URLCONF = 'example.urls'
