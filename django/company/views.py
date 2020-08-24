@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django import forms
 
-import json
+import json, random, string, time
 from .models import Company
 from .serializers import CompanySerializer
 from video.models import video_post_validation
@@ -48,13 +48,31 @@ def video_view(request):
     elif request.method == 'DELETE':
         print()
 
-def login():
-    return Response({'token': 'test_token_test'})
+# session用
+def randomSTR(n):
+   randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
+   return ''.join(randlst)
 
-def logout():
+@csrf_exempt
+@api_view(['POST'])
+def login(request):
+    # random でsession作成
+    session = randomSTR(10)
+    current_time = time.time()
+
+    # session key: session, value: current_time
+    request.session[session] = current_time
+
+    return Response({'token': session})
+
+@csrf_exempt
+@api_view(['POST'])
+def logout(request):
     return Response({'message': 'logout'})
 
-def video_view():
+@csrf_exempt
+@api_view(['GET'])
+def video_view(request):
     return Response({'message': 'success'})
 
 def VideoPostValidation(data):
