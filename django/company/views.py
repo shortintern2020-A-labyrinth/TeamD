@@ -63,13 +63,17 @@ def register_temporary_company(request):
 
          # 会員登録用トークン生成（メールアドレス + パスワード + システム日付のハッシュ値とする）
         date = timezone.now()
-        # tmp_str = email + password + date.strftime('%Y%m%d%H%M%S%f')
-        # token = hashlib.sha1(tmp_str.encode('utf-8')).hexdigest()
-        token = "testtest"
+        tmp_str = email + password + date.strftime('%Y%m%d%H%M%S%f')
+        token = hashlib.sha1(tmp_str.encode('utf-8')).hexdigest()
         #compnayテーブルにインサート
         print 
         company = Company(name=name, email=email, password=password, description=description, is_accepted=is_accepted, tokens=token)
         company.save()
+        #運営に申請メール送信
+        subject="企業からの申請依頼のお知らせ"
+        to_email="A4sittyo@gmail.com"
+        body="企業名: " + company_name + "\n メールアドレス:" + email + "\n 企業概要: " + description + "\n　申請する rakutenpv.app/api//accept/company/?token=" + token
+        post_mail(subject, email, to_email, body)
 
         return JsonResponse(
             {
@@ -81,12 +85,6 @@ def register_temporary_company(request):
         print()
     elif request.method == 'DELETE':
         print()
-
-    #運営に申請メール送信
-    # subject="企業からの申請依頼のお知らせ"
-    # to_email="A4sittyo@gmail.com"
-    # body="企業名: " + company_name + "\n メールアドレス:" + email + "\n 企業概要: " + description + "\n　申請する rakutenpv.app/api//accept/company/?token=" + token
-    # post_mail(subject, email, to_email, body)
 
 #仮登録企業の承認
 def accept_temporary_company(request):
