@@ -8,7 +8,7 @@ uritemplate
 google-api-python-client
 oauth2client
 httplib2
-opencv
+opencv-python
 pillow
 # To use Auth Token
 django-redis-cache

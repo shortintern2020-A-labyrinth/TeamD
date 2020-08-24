@@ -1,0 +1,41 @@
+# バリデーション
+        if not VideoPostValidation(data):
+            return Response(
+                {
+                    "message": "validation error, please check it",
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        #テキスト挿入
+        '''
+        font = 'C:\Windows\Fonts\meiryo.ttc'
+        fontsize = 64
+        fontcolor = (255, 255, 255, 0)
+        position = "bottom"
+        message = [['1text1',1,3,font,fontsize,fontcolor,position],
+                    ['22text22',3,6,font,80,fontcolor,"center"],
+                    ['333text333',6,10,font,36,(100,100,100,0),"bottom"],]
+        input = "movie/sample.mp4"
+        insert_text(input,message,output="output.mp4")  #=>output.mp4
+        '''
+        insert_text(input,message)
+
+        '''
+        input = ["material/sample.mp4","material/sample2.mp4","material/sample.mp4"]
+        combine_material(input)  #=>output.mp4が作成
+        combine_material(input,mmmmm.mp4) #=>mmmmm.mp4が作成
+        '''
+        # material結合
+        combine_material(input)
+
+        # youtubeにアップロード
+        '''
+        入力例
+        file = 'movie/sample.mp4'
+        title = "Video title"
+        description = "test description"
+        category = "22"
+        keywords = "tag"
+        privacyStatus = "public"
+        '''
+        upload_youtube(file,title,description,category,keywords,privacyStatus)

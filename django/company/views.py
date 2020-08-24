@@ -3,15 +3,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 
 import json
-<<<<<<< HEAD
 from .models import Company
 from .serializers import CompanySerializer
-=======
-from .models import Question
-from .serializers import QuestionSerializer
-from movie.models import make_movie
-# from youtube.models import upload_movie
->>>>>>> develop
 from video.models import video_post_validation
 from .util.models import post_mail
 from django.utils import timezone
@@ -65,8 +58,6 @@ def register_temporary_company(request):
         password = data['password']
         description = data['description']
         is_accepted = 0 # 仮登録
-
-        print(name)
 
          # 会員登録用トークン生成（メールアドレス + パスワード + システム日付のハッシュ値とする）
         date = timezone.now()
