@@ -262,10 +262,10 @@ paths:
       summary: "video投稿"
       description: "video投稿"
       consumes:
-        - "application/json"
+        - "multipart/form-data"
       parameters:
         - in: "query"
-          name: "name"
+          name: "title"
           type: "string"
           description: "YouTubeのタイトル"
           required: true
@@ -275,15 +275,30 @@ paths:
           description: "　YouTubeの概要欄"
           required: true
         - in: "query"
-          name: "youtube_url"
+          name: "category_id"
           type: "string"
-          description: "投稿する動画のファイルパス"
+          description: "動画のカテゴリーID"
           required: true
         - in: "query"
           name: "company_id"
           type: "integer"
           description: "投稿元企業のid"
           required: true
+        - in: "query"
+          name: "keywords"
+          type: "array"
+          description: "動画のキーワード"
+          required: false
+          items:
+            type: string
+        - in: "query"
+          name: "movies"
+          type: "array"
+          description: "アップロードされた動画（型などは仮設定）"
+          required: true
+          items:
+            type: string
+            format: binary
       responses:
         200:
           "description": "動画投稿の成功"
@@ -367,27 +382,27 @@ paths:
           "description": "A successful response."
 
 definitions:
-  PostVideoRequest:
-    type: "object"
-    properties:
-      data:
-        type: "object"
-        properties:
-          title:
-            type: "string"
-          description:
-            type: "string"
-          category:
-            type: "string"
-          keywords:
-            type: "array"
-            items:
-              type: "string"
-              description: "動画に関連するキーワード"
-          movies:
-            type: "array"
-            items:
-              $ref: "#/definitions/Material"
+  # PostVideoRequest:
+  #   type: "object"
+  #   properties:
+  #     data:
+  #       type: "object"
+  #       properties:
+  #         title:
+  #           type: "string"
+  #         description:
+  #           type: "string"
+  #         category:
+  #           type: "string"
+  #         keywords:
+  #           type: "array"
+  #           items:
+  #             type: "string"
+  #             description: "動画に関連するキーワード"
+  #         movies:
+  #           type: "array"
+  #           items:
+  #             $ref: "#/definitions/Material"
   PostMaterialRequest:
     type: "object"
     properties:
