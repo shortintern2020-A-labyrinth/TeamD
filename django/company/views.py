@@ -47,7 +47,7 @@ def video_view(request):
 def VideoPostValidation(data):
     return True
 
-#企業の仮登路
+#企業の仮登録
 def register_temporary_company(request):
     company_name = request.POST['name']
     email = request.POST['email']
@@ -61,7 +61,7 @@ def register_temporary_company(request):
     token = hashlib.sha1(str.encode('utf-8')).hexdigest()    # utf-8でエンコードしないとエラーになるらしい
 
     #compnayテーブルにインサート
-    company = Blog(name=company_name, email=email, password=password, description=description, is_accepted=is_accepted, token=token)
+    company = Company(name=company_name, email=email, password=password, description=description, is_accepted=is_accepted, token=token)
     company.save()
 
     #運営に申請メール送信
