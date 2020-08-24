@@ -1,5 +1,5 @@
 #引数まとめるのは今度やります。頑張ります。
-import http.client 
+import http.client
 import httplib2
 import os
 import random
@@ -135,3 +135,6 @@ def upload_youtube(file,title,description,category,keywords,privacyStatus):
         initialize_upload(youtube, args)
     except HttpError as e:
         print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
+
+def upload_movie():
+    return
