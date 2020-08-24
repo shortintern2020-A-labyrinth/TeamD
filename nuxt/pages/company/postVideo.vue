@@ -74,7 +74,7 @@ export default {
     changeFile(e) {
       const files = e.target.files || e.dataTransfer.files
       // ファイルが選択されたら変数に入れる
-      this.uploadfile = files[0]
+      this.uploadFile = files[0]
     },
   },
 }
