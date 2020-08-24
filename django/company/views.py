@@ -1,6 +1,7 @@
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
+from django import forms
 
 import json
 from .models import Company
@@ -12,17 +13,29 @@ import hashlib
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
+# TODO: @コウダイ これパースしてfileとか利用してみて欲しい
+def getRequestFormData(req):
+    data = {}
+    print(req.POST)
+    print(req.FILES)
+
+    return data
+
+class BookAPIView(generics.ListAPIView):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
 class CompanyAPIView(generics.ListAPIView):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
-
 
 @api_view(['GET', 'POST'])
 def video_view(request):
     if request.method == 'GET':
         return Response({})
     elif request.method == 'POST':
-        data = json.loads(request.body)
+        # multipart/form-dataをパースする
+        data = getRequestFormData(request)
+
         if not video_post_validation(data):
             return Response(
                 {
