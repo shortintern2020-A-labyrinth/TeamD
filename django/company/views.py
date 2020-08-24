@@ -3,8 +3,15 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 
 import json
+<<<<<<< HEAD
 from .models import Company
 from .serializers import CompanySerializer
+=======
+from .models import Question
+from .serializers import QuestionSerializer
+from movie.models import make_movie
+# from youtube.models import upload_movie
+>>>>>>> develop
 from video.models import video_post_validation
 from .util.models import post_mail
 from django.utils import timezone

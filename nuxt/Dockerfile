@@ -6,6 +6,7 @@ RUN npm install
 COPY . .
 RUN npm run build
 RUN npm run generate
+RUN npm install --save @nuxtjs/auth
 
 # 本番環境
 FROM nginx:stable-alpine as production-stage
