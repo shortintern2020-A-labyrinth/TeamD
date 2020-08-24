@@ -55,3 +55,14 @@ class Company(models.Model):
     is_accepted = models.SmallIntegerField()
     tokens =  models.TextField()
     
+class Category(models.Model):
+    id = models.IntegerField(
+        null=False,
+        blank=False,
+        primary_key=True
+    )
+    name = models.CharField(
+        max_length=255,
+        null=False,
+        blank=False
+    )
