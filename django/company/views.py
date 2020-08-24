@@ -12,7 +12,7 @@ class BookAPIView(generics.ListAPIView):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
-#
+# バリデーション
 def VideoPostValidation(data):
     return True
 
@@ -48,6 +48,7 @@ def VideoView(request):
         '''
         youtube_url = upload_youtube(file,title,description,category,keywords,privacyStatus)
 
+        # response message
         res = {
             "message": "success!!!",
             "youtube_url": youtube_url
