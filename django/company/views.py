@@ -5,8 +5,9 @@ from rest_framework.decorators import api_view, permission_classes
 import json
 from .models import Question
 from .serializers import QuestionSerializer
-from movie.models import insert_text,combine_movie
+from movie.models import insert_text,combine_material
 from youtube.models import upload_youtube
+# from youtube.models import upload_movie
 from video.models import video_post_validation
 
 
@@ -44,6 +45,13 @@ def video_view(request):
 def VideoPostValidation(data):
     return True
 
+@api_view(['POST'])
+def login(request):
+    return Response({"token": "testtokentest"})
+
+@api_view(['POST'])
+def logout(request):
+    return Response({"message": "success"})
 
 @api_view(['GET', 'POST'])
 def VideoView(request):

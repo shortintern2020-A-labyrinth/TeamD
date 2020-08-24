@@ -54,12 +54,45 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
+    '@nuxtjs/auth',
   ],
+  router: {
+    middleware: ['user_auth'],
+  },
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    // TODO: ここは環境変数を読み込めるようにする
+    host: 'localhost',
+    port: 8000,
+  },
+  auth: {
+    redirect: {
+      login: '/login', // 未ログイン時に認証ルートへアクセスした際のリダイレクトURL
+      logout: '/login', // ログアウト時のリダイレクトURL
+      callback: false, // Oauth認証等で必要となる コールバックルート
+      home: '/company', // ログイン後のリダイレクトURL
+    },
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: 'api/company/login/',
+            method: 'post',
+            propertyName: 'token',
+          },
+          user: { url: 'api/company/', method: 'get', propertyName: false },
+          logout: {
+            url: 'api/company/logout/',
+            method: 'post',
+            propertyName: false,
+          },
+        },
+      },
+    },
+  },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
