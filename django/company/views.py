@@ -72,8 +72,8 @@ def register_temporary_company(request):
         #運営に申請メール送信
         subject="企業からの申請依頼のお知らせ"
         to_email="A4sittyo@gmail.com"
-        body="企業名: " + company_name + "\n メールアドレス:" + email + "\n 企業概要: " + description + "\n　申請する rakutenpv.app/api//accept/company/?token=" + token
-        post_mail(subject, email, to_email, body)
+        body="企業名: " + name + "\n メールアドレス:" + email + "\n 企業概要: " + description + "\n　申請する rakutenpv.app/api//accept/company/?token=" + token
+        post_mail(subject, email, [to_email], body)
 
         return JsonResponse(
             {
