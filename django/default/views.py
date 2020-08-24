@@ -11,10 +11,8 @@ def category_view(request):
     if request.method == 'GET':
         return Response({})
     elif request.method == 'POST':
-
         # [{'id':18, 'name':'ショートムービー'}, ・・・]
         categories = get_video_category()
-
         return Response(
             categories,
             status=status.HTTP_200_OK
