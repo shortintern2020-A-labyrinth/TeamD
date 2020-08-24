@@ -17,9 +17,11 @@ def accept_company(request):
         try:
             # query_paramが指定されている場合の処理
             token = request.GET.get("token")
+            print(token)
             # 更新
             company = Company.objects.get(tokens=token)
-            company.update(is_accepted=1)
+            company.is_accepted = 1
+            company.save()
             return Response(
                 {
                     'message': 'update success'
