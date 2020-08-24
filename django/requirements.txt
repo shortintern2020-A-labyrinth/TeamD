@@ -5,3 +5,6 @@ mysqlclient
 uwsgi
 pyyaml
 uritemplate
+google-api-python-client
+oauth2client
+httplib2
