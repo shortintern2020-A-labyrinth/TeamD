@@ -7,6 +7,6 @@ urlpatterns = [
     path('', BookAPIView.as_view(), name='home'),
     path('sendmail', post_mail, name='mail'),
     path('login/', login, name='login'),
-    path('logout', logout, name='logout'),
+    path('logout/', logout, name='logout'),
     path('video/', video_view, name='home'),
 ]
