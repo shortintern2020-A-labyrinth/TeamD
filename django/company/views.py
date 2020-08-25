@@ -123,45 +123,61 @@ def logout(request):
 
 @csrf_exempt
 def register_temporary_company(request):
-    if request.method == 'GET':
-        return Response({})
-    elif request.method == 'POST':
-        data = json.loads(request.body)
-        name = data['name']
-        email = data['email']
-        password = data['password']
-        description = data['description']
-        is_accepted = 0  # 仮登録
+    try:
+        if request.method == 'GET':
+            return Response({})
+        elif request.method == 'POST':
+            data = json.loads(request.body)
+            name = data['name']
+            email = data['email']
+            password = data['password']
+            description = data['description']
 
-        # 会員登録用トークン生成（メールアドレス + パスワード + システム日付のハッシュ値とする）
-        date = timezone.now()
-        tmp_str = email + password + date.strftime('%Y%m%d%H%M%S%f')
-        token = hashlib.sha1(tmp_str.encode('utf-8')).hexdigest()
-        # compnayテーブルにインサート
-        company = Company(name=name, email=email, password=password,
-                          description=description, is_accepted=is_accepted, tokens=token)
-        company.save()
-        # 運営に申請メール送信
-        subject = "企業からの申請依頼のお知らせ"
-        to_email = "A4sittyo@gmail.com"
-        body = "企業名: " + name + "\n メールアドレス:" + email + "\n 企業概要: " + \
-            description + "\n　申請する rakutenpv.app/api/admin/accept/company?token=" + token
-        post_mail(subject, email, [to_email], body)
+            # 会員登録用トークン生成（メールアドレス + パスワード + システム日付のハッシュ値とする）
+            date = timezone.now()
+            tmp_str = email + password + date.strftime('%Y%m%d%H%M%S%f')
+            token = hashlib.sha1(tmp_str.encode('utf-8')).hexdigest()
+            # compnayテーブルにインサート
+            company = Company(name=name, email=email, password=password,
+                              description=description, is_accepted=0, tokens=token)
+            company.save()
 
+            # urlsの登録
+            urls = data['urls']
+            for url in urls:
+                value = url['value']
+                type = url['type']
+                urls = Urls(value=value, type=type, company_id=company.id)
+                urls.save()
+
+            # 運営に申請メール送信
+            subject = "企業からの申請依頼のお知らせ"
+            to_email = "A4sittyo@gmail.com"
+            body = "企業名: " + name + "\n メールアドレス:" + email + "\n 企業概要: " + \
+                description + "\n　申請する rakutenpv.app/api/admin/accept/company?token=" + token
+            post_mail(subject, email, [to_email], body)
+
+            return JsonResponse(
+                {
+                    'message': 'registerd successfully!'
+                },
+                status=status.HTTP_200_OK
+            )
+        elif request.method == 'PUT':
+            print()
+        elif request.method == 'DELETE':
+            print()
+    except:
         return JsonResponse(
             {
-                'message': 'success'
+                'message': 'register failed!'
             },
-            status=status.HTTP_200_OK
+            status=status.HTTP_400_BAD_REQUEST
         )
-    elif request.method == 'PUT':
-        print()
-    elif request.method == 'DELETE':
-        print()
 
 
 @api_view(['PUT'])
-def update_company_description(request):
+def update_company_details(request):
     try:
         data = json.loads(request.body)
         company_id = data['id']
@@ -169,6 +185,14 @@ def update_company_description(request):
         company = Company.objects.get(id=company_id)
         company.description = description
         company.save()
+        # urlsの登録
+        urls = data['urls']
+        if urls:
+            for url in urls:
+                value = url['value']
+                type = url['type']
+                urls = Urls(value=value, type=type, company_id=company.id)
+                urls.save()
         return JsonResponse(
             {
                 'message': 'success'

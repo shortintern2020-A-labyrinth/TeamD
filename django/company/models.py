@@ -41,7 +41,9 @@ class Company(models.Model):
             null=False,
             blank=False
     )
-    email = models.EmailField()
+    email = models.EmailField(
+        unique=True
+    )
     password = models.CharField(
         max_length=128,
         null=False,
@@ -63,6 +65,20 @@ class Category(models.Model):
     )
     name = models.CharField(
         max_length=255,
+        null=False,
+        blank=False
+    )
+
+class Urls(models.Model):
+    value = models.TextField(
+        null=False,
+        blank=False
+    )
+    type = models.IntegerField(
+        null=False,
+        blank=False,
+    )
+    company_id = models.IntegerField(
         null=False,
         blank=False
     )
