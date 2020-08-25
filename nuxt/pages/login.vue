@@ -58,6 +58,7 @@ export default {
         email: this.email,
         password: this.password,
       }
+      this.$toast.show('ログイン中...')
       await this.$axios
         .$post('company/login/', data, {
           headers: {
@@ -65,6 +66,7 @@ export default {
           },
         })
         .then((response) => {
+          this.$toast.success('認証成功！！！')
           this.$auth.setToken('local', response.token)
           // TODO: これでユーザー登録しないとisLoggedINが認証されない
           this.$auth.setUser({ name: 'hogehoge' })
@@ -72,6 +74,7 @@ export default {
         })
         .catch((error) => {
           console.log(error)
+          this.$toast.error('認証エラーが発生しました')
         })
     },
   },
