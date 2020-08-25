@@ -15,6 +15,7 @@ import hashlib
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from session.redis import SessionRedis
+from movie.models import combine_material
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -52,6 +53,17 @@ def video_view(request):
         file_infos = [save_video(video)
                       for video in request.FILES.getlist('movies')]
         data['file_infos'] = file_infos
+
+        #コーダイからdataを受け取る
+        #動画をつなげて/tmp/output.mp4にする
+        path_ary = [d.get('path')[1:] for d in data['file_infos']]
+        output = combine_material(path_ary)
+        data['file_infos'] = data['file_infos'].append(output)
+        '''
+        #youtube投稿
+        upload_youtube(output['path'],data['title'],data['description'],data['category_id'],data['keywords'],'public')
+        '''
+
         return Response(
             {
                 'message': 'success'
@@ -154,3 +166,32 @@ def register_temporary_company(request):
         print()
     elif request.method == 'DELETE':
         print()
+
+@api_view(['PUT'])
+def update_company_description(request):
+    try:
+        data = json.loads(request.body)
+        company_id = data['id']
+        description = data['description']
+        company = Company.objects.get(id=company_id)
+        company.description = description 
+        company.save()
+        return JsonResponse(
+            {
+                'message': 'success'
+            },
+            status=status.HTTP_200_OK
+        )
+    except:
+        return Response(
+            {
+                'message': 'failed'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # 運営に申請メール送信
+    # subject="企業からの申請依頼のお知らせ"
+    # to_email="A4sittyo@gmail.com"
+    # body="企業名: " + company_name + "\n メールアドレス:" + email + "\n 企業概要: " + description + "\n　申請する rakutenpv.app/api//accept/company/?token=" + token
+    # post_mail(subject, email, to_email, body)
