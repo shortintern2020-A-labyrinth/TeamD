@@ -87,7 +87,8 @@ export default {
       const data = {
         email: this.email,
         password: this.password,
-        company_name: this.companyName,
+        name: this.companyName,
+        description: this.companyDesc,
       }
       await this.$axios
         .$post('company/register/', data, {
