@@ -51,39 +51,27 @@ export default {
     emailRules: [(v) => !!v || 'E-mail is required'],
   }),
   methods: {
-    // こっちだとデータが送信されていなくて、emailとpasswordが入らない
-    login() {
-      const sendData = {
+    async login() {
+      const data = {
         email: this.email,
         password: this.password,
       }
-      try {
-        this.$auth.login('local', { data: sendData })
-      } catch (error) {
-        console.log(error)
-      }
+      await this.$axios
+        .$post('company/login/', data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          this.$auth.setToken('local', response.token)
+          // TODO: これでユーザー登録しないとisLoggedINが認証されない
+          this.$auth.setUser({ name: 'hogehoge' })
+          this.$router.push('/company/')
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     },
-
-    // こっちなら行けるけど、authモジュールがloginを認識されてくれない
-    // async login() {
-    //   const data = {
-    //     email: this.email,
-    //     password: this.password,
-    //   }
-    //   await this.$axios
-    //     .$post('company/login/', data, {
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //     })
-    //     .then((response) => {
-    //       this.$auth.setToken('local', response.token)
-    //       this.$router.push('/company/')
-    //     })
-    //     .catch((error) => {
-    //       console.log(error)
-    //     })
-    // },
   },
 }
 </script>
