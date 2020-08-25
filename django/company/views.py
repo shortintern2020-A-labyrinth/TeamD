@@ -3,10 +3,13 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django import forms
 
-import json, random, string, time
+import json
+import random
+import string
+import time
 from .models import Company
 from .serializers import CompanySerializer
-from video.models import video_post_validation, material_video_validation, save_video, remove_video
+from video.models import video_post_validation, material_video_validation, save_video, remove_video, get_video_post
 from .util.models import post_mail
 from django.utils import timezone
 import hashlib
@@ -24,10 +27,21 @@ class CompanyAPIView(generics.ListAPIView):
     serializer_class = CompanySerializer
 
 
+@csrf_exempt
 @api_view(['GET', 'POST'])
 def video_view(request):
     if request.method == 'GET':
-        return Response({})
+        company_id = int(request.GET.get('company_id'))
+
+        # [{'name':'hoge', 'youtube_url':'hoge.com', ・・・},・・・]
+        videos = get_video_post(company_id)
+        return Response(
+            {
+                'message': 'success!',
+                'videos': videos
+            },
+            status=status.HTTP_200_OK
+        )
     elif request.method == 'POST':
         if not video_post_validation(request.POST):
             return Response(
@@ -62,15 +76,19 @@ def video_view(request):
         print()
 
 # session用
+
+
 def randomSTR(n):
-   randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
-   return ''.join(randlst)
+    randlst = [random.choice(string.ascii_letters + string.digits)
+               for i in range(n)]
+    return ''.join(randlst)
+
 
 @csrf_exempt
 @api_view(['POST'])
 def login(request):
     try:
-        #emailとpasswordの一致確認
+        # emailとpasswordの一致確認
         data = json.loads(request.body)
         email = data['email']
         password = data['password']
@@ -94,24 +112,18 @@ def login(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+
 @csrf_exempt
 @api_view(['POST'])
 def logout(request):
     request.session.clear()
     return Response(
-            {
-                'message': 'logged out successfully.'
-            },
-            status=status.HTTP_200_OK
-        )
+        {
+            'message': 'logged out successfully.'
+        },
+        status=status.HTTP_200_OK
+    )
 
-@csrf_exempt
-@api_view(['GET'])
-def video_view(request):
-    return Response({'message': 'success'})
-
-def VideoPostValidation(data):
-    return True
 
 @csrf_exempt
 def register_temporary_company(request):

@@ -28,6 +28,13 @@ def material_video_validation(data):
         return False
 
 
+# 投稿動画の取得
+def get_video_post(company_id):
+    videos = Video.objects.filter(company_id=company_id).values()
+    list_videos = [video for video in videos]
+    return list_videos
+
+
 # 動画の保存
 def save_video(video):
     file_info = {}
