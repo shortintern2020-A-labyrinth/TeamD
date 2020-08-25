@@ -8,7 +8,7 @@ import random
 import string
 import time
 from .models import Company
-from video.models import video_post_validation, material_video_validation, save_video, remove_video, get_video_post
+from video.models import video_post_validation, material_video_validation, save_video, remove_video, get_video_post, get_request_data
 from .util.models import post_mail
 from django.utils import timezone
 import hashlib
@@ -17,12 +17,12 @@ from django.http import JsonResponse
 from session.redis import SessionRedis
 from movie.models import combine_material
 
+
 @csrf_exempt
 @api_view(['GET', 'POST'])
 def video_view(request):
     if request.method == 'GET':
         company_id = int(request.GET.get('company_id'))
-
         # [{'name':'hoge', 'youtube_url':'hoge.com', ・・・},・・・]
         videos = get_video_post(company_id)
         return Response(
@@ -33,6 +33,7 @@ def video_view(request):
             status=status.HTTP_200_OK
         )
     elif request.method == 'POST':
+        # 動画公開時の情報に対してバリデーション
         if not video_post_validation(request.POST):
             return Response(
                 {
@@ -40,6 +41,7 @@ def video_view(request):
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
+        # 素材動画に対してバリデーション
         if not material_video_validation(request.FILES):
             return Response(
                 {
@@ -54,8 +56,8 @@ def video_view(request):
                       for video in request.FILES.getlist('movies')]
         data['file_infos'] = file_infos
 
-        #コーダイからdataを受け取る
-        #動画をつなげて/tmp/output.mp4にする
+        # コーダイからdataを受け取る
+        # 動画をつなげて/tmp/output.mp4にする
         path_ary = [d.get('path')[1:] for d in data['file_infos']]
         output = combine_material(path_ary)
         data['file_infos'] = data['file_infos'].append(output)
@@ -115,6 +117,7 @@ def login(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+
 @csrf_exempt
 @api_view(['POST'])
 def logout(request):
@@ -167,6 +170,7 @@ def register_temporary_company(request):
     elif request.method == 'DELETE':
         print()
 
+
 @api_view(['PUT'])
 def update_company_description(request):
     try:
@@ -174,7 +178,7 @@ def update_company_description(request):
         company_id = data['id']
         description = data['description']
         company = Company.objects.get(id=company_id)
-        company.description = description 
+        company.description = description
         company.save()
         return JsonResponse(
             {
