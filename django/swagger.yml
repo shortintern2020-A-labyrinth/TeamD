@@ -229,6 +229,15 @@ paths:
           type: "integer"
           description: "companyのid"
           required: true
+        - in: "query"
+          name: "description"
+          type: "string"
+          description: "企業概要"
+          required: true
+        - in: "query"
+          name: "urls"
+          type: "string"
+          description: "複数OK urlとタイプを記入(array型。下記Moels参照)"
       responses:
         200:
           "description": "success"
