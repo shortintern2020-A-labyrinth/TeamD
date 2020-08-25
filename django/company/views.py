@@ -75,24 +75,33 @@ def randomSTR(n):
 @csrf_exempt
 @api_view(['POST'])
 def login(request):
-    # emailとpasswordの一致確認
-    data = json.loads(request.body)
-    email = data['email']
-    password = data['password']
-    company = Company.objects.get(email=email)
-    is_accepted = company.is_accepted
-    if password == company.password and is_accepted == 1:
+    try:
+        # emailとpasswordの一致確認
+        data = json.loads(request.body)
+        email = data['email']
+        password = data['password']
+        company = Company.objects.get(email=email)
+        is_accepted = company.is_accepted
+        if password == company.password and is_accepted == 1:
 
-        # random でsession作成
-        session = randomSTR(10)
-        current_time = time.time()
+            # random でsession作成
+            session = randomSTR(10)
+            current_time = time.time()
 
-        # session key: session, value: current_time
-        sessionRedis = SessionRedis()
-        sessionRedis.setToken(session, current_time, company.id)
+            # session key: session, value: current_time
+            sessionRedis = SessionRedis()
+            sessionRedis.setToken(session, current_time, company.id)
 
-        return Response({'token': session})
-
+            return Response({'token': session})
+        else:
+            raise Exception
+    except:
+        return Response(
+            {
+                'message': 'input data is not correct or not accepted yet'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 @csrf_exempt
 @api_view(['POST'])

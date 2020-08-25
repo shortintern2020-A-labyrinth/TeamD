@@ -38,12 +38,12 @@
 export default {
   data: () => ({
     valid: false,
-    title: 'testTITLE',
-    description: 'testDESC',
+    title: '',
+    description: '',
     categories: ['競馬', '伝統工芸'],
     selectedCategory: '',
-    // カンマ区切りのkeywordが複数個入力されている
-    keywords: '333 4444',
+    // 空白区切りのkeywordが複数個入力されている
+    keywords: '',
     companyID: 1,
     uploadFiles: [],
   }),
