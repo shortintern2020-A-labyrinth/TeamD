@@ -3,8 +3,10 @@ import cv2
 from PIL import Image, ImageFont, ImageDraw
 import numpy as np
 
+
 def make_movie():
     return
+
 
 '''
 -----使用例------
@@ -51,14 +53,16 @@ mp4ファイルしか対応していない
 秒数がかぶっていると先のものが優先される(2つの描画を同時にできない)
 position増やす
 '''
-def combine_material(input,output='output.mp4'):
+
+
+def combine_material(input, output='output.mp4'):
     # mp4指定(暫定)
     fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
     # listの最初の動画から情報の取得しそれを全体の設定とする
     movie = cv2.VideoCapture(input[0])
     fps = movie.get(cv2.CAP_PROP_FPS)
     H = movie.get(cv2.CAP_PROP_FRAME_HEIGHT)
-    W  = movie.get(cv2.CAP_PROP_FRAME_WIDTH)
+    W = movie.get(cv2.CAP_PROP_FRAME_WIDTH)
     #print(fps, int(W), int(H))
     # 出力先のファイルを作成
     out = cv2.VideoWriter(output, int(fourcc), fps, (int(W), int(H)))
@@ -67,7 +71,7 @@ def combine_material(input,output='output.mp4'):
         #print("reading "+ name)
         # 最初の1フレームを読み込む
         if material.isOpened() == True:
-            ret,frame = material.read()
+            ret, frame = material.read()
         else:
             ret = False
         # フレームの読み込みに成功している間フレームを書き出し続ける
@@ -75,10 +79,11 @@ def combine_material(input,output='output.mp4'):
             # 読み込んだフレームを書き込み
             out.write(frame)
             # 次のフレームを読み込み
-            ret,frame = material.read()
+            ret, frame = material.read()
     return output
 
-def insert_text(input,message,output='output.mp4'):
+
+def insert_text(input, message, output='output.mp4'):
     # input動画から情報の取得しそれを全体の設定とする
     movie = cv2.VideoCapture(input)
     Fs = int(movie.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -94,17 +99,17 @@ def insert_text(input,message,output='output.mp4'):
     out = cv2.VideoWriter(output, fourcc, int(fps / step), (W, H))
     ext_index = np.arange(0, Fs, step)
 
-    j = 0# messageの番号
+    j = 0  # messageの番号
     section = message[j]
-    #section[0]:text:"string"
-    #section[1]:start
-    #section[2]:end
-    #section[3]:font
-    #section[4]:fontsize:int
-    #section[5]:fontcolor:(255, 255, 255, 0)
-    #section[6]:position:"center"or"bottom"
+    # section[0]:text:"string"
+    # section[1]:start
+    # section[2]:end
+    # section[3]:font
+    # section[4]:fontsize:int
+    # section[5]:fontcolor:(255, 255, 255, 0)
+    # section[6]:position:"center"or"bottom"
     for i in range(Fs):
-        #print(i)
+        # print(i)
         flag, frame = movie.read()
         check = i == ext_index
         time = i / int(fps/step)
@@ -117,9 +122,10 @@ def insert_text(input,message,output='output.mp4'):
                     frame = Image.fromarray(frame)
                     draw = ImageDraw.Draw(frame)
                     w, h = draw.textsize(section[0], font)
-                    #position決め打ち(左右は現時点では真ん中のみ)
+                    # position決め打ち(左右は現時点では真ん中のみ)
                     if section[6] == "bottom":
-                        position = (int((W - w) / 2), int(H - (font_size * 1.5)))
+                        position = (int((W - w) / 2),
+                                    int(H - (font_size * 1.5)))
                     if section[6] == "center":
                         position = (int((W - w) / 2), int((H - h) / 2))
                     draw.text(position, section[0], font=font, fill=section[5])

@@ -8,12 +8,14 @@ import random
 import string
 import time
 from .models import Company
-from video.models import video_post_validation, material_video_validation, save_video, remove_video, get_video_post
+from video.models import video_post_validation, material_video_validation, save_video, remove_video, get_video_post, get_request_data
 from .util.models import post_mail
 from django.utils import timezone
 import hashlib
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+# from movie.models import make_movie
+# from youtube.models import upload_youtube
 
 
 @csrf_exempt
@@ -21,7 +23,6 @@ from django.http import JsonResponse
 def video_view(request):
     if request.method == 'GET':
         company_id = int(request.GET.get('company_id'))
-
         # [{'name':'hoge', 'youtube_url':'hoge.com', ・・・},・・・]
         videos = get_video_post(company_id)
         return Response(
@@ -32,6 +33,7 @@ def video_view(request):
             status=status.HTTP_200_OK
         )
     elif request.method == 'POST':
+        # 動画公開時の情報に対してバリデーション
         if not video_post_validation(request.POST):
             return Response(
                 {
@@ -39,6 +41,7 @@ def video_view(request):
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
+        # 素材動画に対してバリデーション
         if not material_video_validation(request.FILES):
             return Response(
                 {
@@ -46,13 +49,10 @@ def video_view(request):
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
-        # data['title']='タイトル', data['description']='概要'・・・
-        data = json.loads(json.dumps(request.POST))
-
-        # file_infos = [{'name':'ファイル名', 'path':'/tmp/ファイル名'}, ・・・]
-        file_infos = [save_video(video)
-                      for video in request.FILES.getlist('movies')]
-        data['file_infos'] = file_infos
+        data = get_request_data(request)
+        print(data)
+        # make_movie(data)  # 動画の加工
+        # upload_youtube(data)  # 動画をYouTubeにアップロード
         return Response(
             {
                 'message': 'success'

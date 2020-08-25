@@ -172,5 +172,6 @@ EMAIL_PORT = 25
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
 
+# 動画を一時保存するフォルダ
 MEDIA_URL = '/tmp/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'tmp')
