@@ -48,5 +48,5 @@ class AuthMiddleware(object):
             else:
                 #セッション更新
                 request.session[token] = time.time()
-            
+
             return None

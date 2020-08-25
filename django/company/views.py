@@ -72,7 +72,7 @@ def login(request):
 
             return Response({'token': session})
         else:
-            raise Exception 
+            raise Exception
     except:
         return Response(
             {
