@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django import forms
 
-import json
-from .models import Company, Question
+import json, random, string, time
+from .models import Company
 from .serializers import CompanySerializer
 from video.models import video_post_validation, material_video_validation, save_video, remove_video
 from .util.models import post_mail
@@ -61,8 +61,58 @@ def video_view(request):
     elif request.method == 'DELETE':
         print()
 
+# session用
+def randomSTR(n):
+   randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
+   return ''.join(randlst)
 
-# 企業の仮登録
+@csrf_exempt
+@api_view(['POST'])
+def login(request):
+    try:
+        #emailとpasswordの一致確認
+        data = json.loads(request.body)
+        email = data['email']
+        password = data['password']
+        company = Company.objects.get(email=email)
+        is_accepted = company.is_accepted
+        if password == company.password and is_accepted == 1:
+            # random でsession作成
+            session = randomSTR(10)
+            current_time = time.time()
+            # session key: session, value: current_time
+            request.session[session] = current_time
+
+            return Response({'token': session})
+        else:
+            raise Exception 
+    except:
+        return Response(
+            {
+                'message': 'input data is not correct or not accepted yet'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+@csrf_exempt
+@api_view(['POST'])
+def logout(request):
+    request.session.clear()
+    return Response(
+            {
+                'message': 'logged out successfully.'
+            },
+            status=status.HTTP_200_OK
+        )
+
+@csrf_exempt
+@api_view(['GET'])
+def video_view(request):
+    return Response({'message': 'success'})
+
+def VideoPostValidation(data):
+    return True
+
 @csrf_exempt
 def register_temporary_company(request):
     if request.method == 'GET':
@@ -80,7 +130,6 @@ def register_temporary_company(request):
         tmp_str = email + password + date.strftime('%Y%m%d%H%M%S%f')
         token = hashlib.sha1(tmp_str.encode('utf-8')).hexdigest()
         # compnayテーブルにインサート
-        print
         company = Company(name=name, email=email, password=password,
                           description=description, is_accepted=is_accepted, tokens=token)
         company.save()
@@ -93,7 +142,7 @@ def register_temporary_company(request):
 
         return JsonResponse(
             {
-                'message': 'ok'
+                'message': 'success'
             },
             status=status.HTTP_200_OK
         )
@@ -101,23 +150,3 @@ def register_temporary_company(request):
         print()
     elif request.method == 'DELETE':
         print()
-
-# 仮登録企業の承認
-
-
-def accept_temporary_company(request):
-    if "token" in request.GET:
-        # query_paramが指定されている場合の処理
-        param_value = request.GET.get("token")
-        # 更新
-        uniq_company = Company.objects.get(token=param_value)
-        uniq_company.is_accepted = 1
-        uniq_company.save()  # UPDATE
-    else:
-        # query_paramが指定されていない場合の処理
-        return Response(
-            {
-                "message": "something wrong happened",
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )

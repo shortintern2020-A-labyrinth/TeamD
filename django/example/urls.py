@@ -50,6 +50,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^hello/$', hello_world),
     path('api/company/', include('company.urls')),
+    path('api/admin/', include('admins.urls')),
     path('api/', include('default.urls')),
     url(r'^docs/$', schema_view),
 ]
