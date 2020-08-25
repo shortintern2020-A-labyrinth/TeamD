@@ -35,20 +35,19 @@ def video_view(request):
         if not video_post_validation(request.POST):
             return Response(
                 {
-                    'message': 'error'
+                    'message': 'video_post_validation error'
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
         if not material_video_validation(request.FILES):
             return Response(
                 {
-                    'message': 'error'
+                    'message': 'material_video_validation error'
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
         # data['title']='タイトル', data['description']='概要'・・・
         data = json.loads(json.dumps(request.POST))
-
         # file_infos = [{'name':'ファイル名', 'path':'/tmp/ファイル名'}, ・・・]
         file_infos = [save_video(video)
                       for video in request.FILES.getlist('movies')]
