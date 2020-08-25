@@ -8,14 +8,14 @@ import random
 import string
 import time
 from .models import Company
-from video.models import video_post_validation, material_video_validation, save_video, remove_video, get_video_post, get_request_data
+from video.models import video_post_validation, material_video_validation, save_video, remove_video, get_video_post, get_request_data, set_video_post
 from .util.models import post_mail
 from django.utils import timezone
 import hashlib
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from session.redis import SessionRedis
-from movie.models import combine_material
+# from movie.models import combine_material, make_movie
 
 
 @csrf_exempt
@@ -49,23 +49,12 @@ def video_view(request):
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
-        # data['title']='タイトル', data['description']='概要'・・・
-        data = json.loads(json.dumps(request.POST))
-        # file_infos = [{'name':'ファイル名', 'path':'/tmp/ファイル名'}, ・・・]
-        file_infos = [save_video(video)
-                      for video in request.FILES.getlist('movies')]
-        data['file_infos'] = file_infos
-
-        # コーダイからdataを受け取る
-        # 動画をつなげて/tmp/output.mp4にする
-        path_ary = [d.get('path')[1:] for d in data['file_infos']]
-        output = combine_material(path_ary)
-        data['file_infos'] = data['file_infos'].append(output)
-        '''
-        #youtube投稿
-        upload_youtube(output['path'],data['title'],data['description'],data['category_id'],data['keywords'],'public')
-        '''
-
+        data = get_request_data(request)  # リクエストパラメータの取得
+        set_video_post(data)
+        # 仮保存した動画を削除する
+        for file_path in data['delete']:
+            remove_video(file_path)
+        # make_movie(data)  # 動画加工
         return Response(
             {
                 'message': 'success'

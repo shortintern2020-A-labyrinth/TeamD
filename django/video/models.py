@@ -6,9 +6,9 @@ import os
 # 動画情報のバリデーション
 def video_post_validation(data):
     try:
-        if data['title'] == '' or data['description'] == '' or data['category_id'] == '':
+        if data['title'] == '' or data['description'] == '' or data['category_id'] == '' or data['token'] == '':
             return False
-        if data['title'] == None or data['description'] == None or data['category_id'] == None:
+        if data['title'] == None or data['description'] == None or data['category_id'] == None or data['token'] == '':
             return False
         return True
     except:
@@ -37,18 +37,16 @@ def get_video_post(company_id):
 
 # 動画の保存
 def save_video(video):
-    file_info = {}
     fs = FileSystemStorage()
     file_name = fs.save(video.name, video)
     file_path = fs.url(file_name)
-    file_info['name'] = file_name
-    file_info['path'] = file_path
-    return file_info
+    return file_path
 
 
 # 動画の削除
-def remove_video(file_name):
+def remove_video(file_path):
     fs = FileSystemStorage()
+    file_name = file_path[5:]
     fs.delete(file_name)
 
 
@@ -63,29 +61,37 @@ def get_request_data(request):
     data['youtube']['category_id'] = '' if not 'category_id' in post else post[
         'category_id']
     data['youtube']['keywords'] = '' if not 'keywords' in post else post['keywords']
-    data['youtube']['files'] = []  # [{'name':'', 'path':''}]
+    data['youtube']['paths'] = []  # [path1, path2,,,,]
 
-    insert_text = [] if 'insert-text' in post else post.getlist('insert-text')
+    insert_text = [
+    ] if not 'insert-text' in post else post.getlist('insert-text')
     insert_position = [
-    ] if 'insert-position' in post else post.getlist('insert-position')
-    videos = request.FILES.getlist('movies')
+    ] if not 'insert-position' in post else post.getlist('insert-position')
+    videos = [] if not 'movies' in request.FILES else request.FILES.getlist(
+        'movies')
 
     data['edit'] = {}
     data['edit']['insert'] = {}
     data['edit']['material'] = {}
-
-    # [{'name':hoge, 'path':'~.mp4'},{},{}]
-    data['edit']['material']['files'] = [
-        save_video(video) for video in videos]
+    data['edit']['material']['paths'] = [
+        save_video(video) for video in videos]  # [path1, path2,,,]
     data['edit']['insert']['text'] = [
         text for text in insert_text]  # テキスト1, テキスト2, ・・・・
     data['edit']['insert']['position'] = [
         position for position in insert_position]  # 'bottom', 'center', ・・・
-    data['edit']['insert']['files'] = []  # [newpath1, newpath2, ・・・]
+    data['edit']['insert']['paths'] = []  # [newpath1, newpath2, ・・・]
     data['edit']['combine'] = {}
-    # [{'name':'hoge', 'path':'hoge/fuga.mp4'}]
-    data['edit']['combine']['files'] = []
+    data['edit']['combine']['paths'] = []
 
-    data['paths'] = []  # 削除するファイルのパス配列 [{'name':'', 'path':''}, {}, ・・・・]
+    # 削除するファイルのパス配列 [path1, path2 ,,,,]
+    data['delete'] = data['edit']['material']['paths']
+    data['token'] = '' if not 'token' in post else post['token']
 
     return data
+
+
+# 投稿したビデオをデータベースに追加
+def set_video_post(data):
+    video = Video(name=data['youtube']['title'], description=data['youtube']
+                  ['description'], youtube_url='hoge/fuga.com', company_id=1)  # TODO: tokenからcompany_id取得しておく
+    video.save()
