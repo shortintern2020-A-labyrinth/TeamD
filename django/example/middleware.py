@@ -1,7 +1,8 @@
 # このMiddlewareが発動するのはcompanyに対するリクエストだけかもしれない
 from django.http import JsonResponse
 from rest_framework import status
-import time
+import time, datetime
+from session.redis import SessionRedis
 
 # TODO: これは要調査
 class AuthMiddleware(object):
@@ -31,14 +32,16 @@ class AuthMiddleware(object):
             token = request.headers['Authorization']
 
             # sessionからvalueを取得
-            token_time = request.session[token]
+            sessionRedis = SessionRedis()
+            str_time, company_id = sessionRedis.get(token)
+            token_time = float(str_time)
 
             # tokenが失効しているかどうかを確認(1時間でタイムアウト)
             current_time = time.time()
             time_difference = current_time - token_time
             if time_difference > 3600:
                 #セッション破棄
-                request.session.clear()
+                sessionRedis.delete(token)
                 return JsonResponse(
                     {
                         'message': 'session timeout!'

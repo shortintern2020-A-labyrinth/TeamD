@@ -18,3 +18,4 @@ opencv-python
 Pillow
 # .Env
 django-environ
+redis

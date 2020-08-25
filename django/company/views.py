@@ -14,8 +14,8 @@ from django.utils import timezone
 import hashlib
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-# from movie.models import make_movie
-# from youtube.models import upload_youtube
+from session.redis import SessionRedis
+from movie.models import combine_material
 
 
 @csrf_exempt
@@ -37,7 +37,7 @@ def video_view(request):
         if not video_post_validation(request.POST):
             return Response(
                 {
-                    'message': 'error'
+                    'message': 'video_post_validation error'
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
@@ -45,14 +45,27 @@ def video_view(request):
         if not material_video_validation(request.FILES):
             return Response(
                 {
-                    'message': 'error'
+                    'message': 'material_video_validation error'
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
-        data = get_request_data(request)
-        print(data)
-        # make_movie(data)  # 動画の加工
-        # upload_youtube(data)  # 動画をYouTubeにアップロード
+        # data['title']='タイトル', data['description']='概要'・・・
+        data = json.loads(json.dumps(request.POST))
+        # file_infos = [{'name':'ファイル名', 'path':'/tmp/ファイル名'}, ・・・]
+        file_infos = [save_video(video)
+                      for video in request.FILES.getlist('movies')]
+        data['file_infos'] = file_infos
+
+        # コーダイからdataを受け取る
+        # 動画をつなげて/tmp/output.mp4にする
+        path_ary = [d.get('path')[1:] for d in data['file_infos']]
+        output = combine_material(path_ary)
+        data['file_infos'] = data['file_infos'].append(output)
+        '''
+        #youtube投稿
+        upload_youtube(output['path'],data['title'],data['description'],data['category_id'],data['keywords'],'public')
+        '''
+
         return Response(
             {
                 'message': 'success'
@@ -84,11 +97,14 @@ def login(request):
         company = Company.objects.get(email=email)
         is_accepted = company.is_accepted
         if password == company.password and is_accepted == 1:
+
             # random でsession作成
             session = randomSTR(10)
             current_time = time.time()
+
             # session key: session, value: current_time
-            request.session[session] = current_time
+            sessionRedis = SessionRedis()
+            sessionRedis.setToken(session, current_time, company.id)
 
             return Response({'token': session})
         else:
@@ -105,7 +121,9 @@ def login(request):
 @csrf_exempt
 @api_view(['POST'])
 def logout(request):
-    request.session.clear()
+    token = request.headers['Authorization']
+    sessionRedis = SessionRedis()
+    sessionRedis.delete(token)
     return Response(
         {
             'message': 'logged out successfully.'
@@ -151,3 +169,33 @@ def register_temporary_company(request):
         print()
     elif request.method == 'DELETE':
         print()
+
+
+@api_view(['PUT'])
+def update_company_description(request):
+    try:
+        data = json.loads(request.body)
+        company_id = data['id']
+        description = data['description']
+        company = Company.objects.get(id=company_id)
+        company.description = description
+        company.save()
+        return JsonResponse(
+            {
+                'message': 'success'
+            },
+            status=status.HTTP_200_OK
+        )
+    except:
+        return Response(
+            {
+                'message': 'failed'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # 運営に申請メール送信
+    # subject="企業からの申請依頼のお知らせ"
+    # to_email="A4sittyo@gmail.com"
+    # body="企業名: " + company_name + "\n メールアドレス:" + email + "\n 企業概要: " + description + "\n　申請する rakutenpv.app/api//accept/company/?token=" + token
+    # post_mail(subject, email, to_email, body)
