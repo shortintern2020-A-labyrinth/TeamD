@@ -138,6 +138,30 @@ def register_temporary_company(request):
     elif request.method == 'DELETE':
         print()
 
+
+@api_view(['PUT'])
+def update_company_description(request):
+    try:
+        data = json.loads(request.body)
+        company_id = data['id']
+        description = data['description']
+        company = Company.objects.get(id=company_id)
+        company.description = description 
+        company.save()
+        return JsonResponse(
+            {
+                'message': 'success'
+            },
+            status=status.HTTP_200_OK
+        )
+    except:
+        return Response(
+            {
+                'message': 'failed'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     # 運営に申請メール送信
     # subject="企業からの申請依頼のお知らせ"
     # to_email="A4sittyo@gmail.com"
