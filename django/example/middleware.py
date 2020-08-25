@@ -41,7 +41,7 @@ class AuthMiddleware(object):
             time_difference = current_time - token_time
             if time_difference > 3600:
                 #セッション破棄
-                request.session.clear()
+                sessionRedis.delete(token)
                 return JsonResponse(
                     {
                         'message': 'session timeout!'
