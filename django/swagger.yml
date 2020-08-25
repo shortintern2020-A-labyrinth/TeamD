@@ -217,21 +217,23 @@ paths:
     put:
       tags:
         - "company"
-      summary: "概要修正"
-      description: "login"
+      summary: "企業概要修正"
+      description: "企業のdescription修正"
       consumes:
         - "application/json"
       produces:
         - "application/json"
       parameters:
         - in: "query"
-          name: "domain_id"
+          name: "id"
           type: "integer"
-          description: "Domain id"
+          description: "companyのid"
           required: true
       responses:
         200:
-          "description": "A successful response."
+          "description": "success"
+        400:
+          "description": "failed"
   /api/company/video/:
     get:
       tags:
