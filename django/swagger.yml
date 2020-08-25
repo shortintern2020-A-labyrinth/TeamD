@@ -55,7 +55,7 @@ paths:
 
       responses:
         200:
-          "description": "A successful response."
+          "description": "success"
   /api/company/login/:
     post:
       tags:
@@ -212,7 +212,7 @@ paths:
           required: true
       responses:
         200:
-          "description": "A successful response."
+          "description": "logged out successfully."
   /api/company/edit/:
     put:
       tags:
@@ -374,7 +374,9 @@ paths:
           required: true
       responses:
         200:
-          "description": "A successful response."
+          "description": "update success"
+        400:
+          "description": "update error"
 
 definitions:
   # PostVideoRequest:
