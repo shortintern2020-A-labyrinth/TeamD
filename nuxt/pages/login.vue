@@ -51,16 +51,39 @@ export default {
     emailRules: [(v) => !!v || 'E-mail is required'],
   }),
   methods: {
+    // こっちだとデータが送信されていなくて、emailとpasswordが入らない
     login() {
+      const sendData = {
+        email: this.email,
+        password: this.password,
+      }
       try {
-        this.$auth.loginWith('local', {
-          password: this.password,
-          email: this.email,
-        })
+        this.$auth.login('local', { data: sendData })
       } catch (error) {
         console.log(error)
       }
     },
+
+    // こっちなら行けるけど、authモジュールがloginを認識されてくれない
+    // async login() {
+    //   const data = {
+    //     email: this.email,
+    //     password: this.password,
+    //   }
+    //   await this.$axios
+    //     .$post('company/login/', data, {
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //     })
+    //     .then((response) => {
+    //       this.$auth.setToken('local', response.token)
+    //       this.$router.push('/company/')
+    //     })
+    //     .catch((error) => {
+    //       console.log(error)
+    //     })
+    // },
   },
 }
 </script>
