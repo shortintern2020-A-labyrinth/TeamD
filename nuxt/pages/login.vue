@@ -51,15 +51,26 @@ export default {
     emailRules: [(v) => !!v || 'E-mail is required'],
   }),
   methods: {
-    login() {
-      try {
-        this.$auth.loginWith('local', {
-          password: this.password,
-          email: this.email,
-        })
-      } catch (error) {
-        console.log(error)
+    async login() {
+      const data = {
+        email: this.email,
+        password: this.password,
       }
+      await this.$axios
+        .$post('company/login/', data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          this.$auth.setToken('local', response.token)
+          // TODO: これでユーザー登録しないとisLoggedINが認証されない
+          this.$auth.setUser({ name: 'hogehoge' })
+          this.$router.push('/company/')
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     },
   },
 }
