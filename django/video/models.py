@@ -1,11 +1,52 @@
 from company.models import Video
+from django.core.files.storage import FileSystemStorage
+import os
 
 
-# バリデーション
+# 動画情報のバリデーション
 def video_post_validation(data):
-    print(data)
-    if data['title'] == '' or data['description'] == '' or data['category_id'] == '' or data['company_id'] == '' or len(data['movies']) == 0:
+    try:
+        if data['title'] == '' or data['description'] == '' or data['category_id'] == '' or data['company_id'] == '':
+            return False
+        if data['title'] == None or data['description'] == None or data['category_id'] == None or data['company_id'] == None:
+            return False
+        return True
+    except:
         return False
-    if data['title'] == None or data['description'] == None or data['category_id'] == None or data['company_id'] == None or len(data['movies']) == 0:
+
+
+# 素材動画のバリデーション
+def material_video_validation(data):
+    try:
+        videos = data.getlist('movies')
+        if len(videos) == 0:
+            return False
+        if videos == None:
+            return False
+        return True
+    except:
         return False
-    return True
+
+
+# 投稿動画の取得
+def get_video_post(company_id):
+    videos = Video.objects.filter(company_id=company_id).values()
+    list_videos = [video for video in videos]
+    return list_videos
+
+
+# 動画の保存
+def save_video(video):
+    file_info = {}
+    fs = FileSystemStorage()
+    file_name = fs.save(video.name, video)
+    file_path = fs.url(file_name)
+    file_info['name'] = file_name
+    file_info['path'] = file_path
+    return file_info
+
+
+# 動画の削除
+def remove_video(file_name):
+    fs = FileSystemStorage()
+    fs.delete(file_name)

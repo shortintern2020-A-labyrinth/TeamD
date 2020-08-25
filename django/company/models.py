@@ -2,6 +2,18 @@ from django.db import models
 
 # Create your models here.
 
+
+class Question(models.Model):
+    question_text = models.CharField(max_length=200)
+    pub_date = models.DateTimeField('date published')
+
+
+class Choice(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    choice_text = models.CharField(max_length=200)
+    votes = models.IntegerField(default=0)
+
+
 class Video(models.Model):
     name = models.CharField(
         max_length=60,
@@ -42,7 +54,7 @@ class Company(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_accepted = models.SmallIntegerField()
     tokens =  models.TextField()
-
+    
 class Category(models.Model):
     id = models.IntegerField(
         null=False,
