@@ -28,6 +28,8 @@
               v-model="password"
               :counter="10"
               label="パスワード※"
+              append-icon="mdi-eye-off"
+              type="password"
               required
             ></v-text-field>
           </v-col>

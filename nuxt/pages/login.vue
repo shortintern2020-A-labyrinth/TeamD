@@ -19,6 +19,8 @@
             <v-text-field
               v-model="password"
               :counter="10"
+              append-icon="mdi-eye-off"
+              type="password"
               label="パスワード※"
               required
             ></v-text-field>
