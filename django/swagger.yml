@@ -246,13 +246,24 @@ paths:
         - "application/json"
       parameters:
         - in: "query"
-          name: "domain_id"
-          type: "integer"
-          description: "Domain id"
+          name: "token"
+          type: "string"
+          description: "company_idを取得するためのトークン"
           required: true
       responses:
         200:
-          "description": "A successful response."
+          description: OK
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                youtube_url:
+                  type: string
+                  example: http://~~~~.com
+                name:
+                  type: string
+                  example: 謎の伝統工芸！
     post:
       tags:
         - "company"
@@ -261,41 +272,46 @@ paths:
       consumes:
         - "multipart/form-data"
       parameters:
-        - in: "query"
+        - in: "formData"
           name: "title"
           type: "string"
           description: "YouTubeのタイトル"
           required: true
-        - in: "query"
+        - in: "formData"
           name: "description"
           type: "string"
           description: "　YouTubeの概要欄"
           required: true
-        - in: "query"
+        - in: "formData"
           name: "category_id"
           type: "string"
           description: "動画のカテゴリーID"
           required: true
-        - in: "query"
-          name: "company_id"
+        - in: "formData"
+          name: "token"
           type: "integer"
-          description: "投稿元企業のid"
+          description: "company_idを取得するためのトークン"
           required: true
-        - in: "query"
+        - in: "formData"
           name: "keywords"
-          type: "array"
+          type: "string"
           description: "動画のキーワード"
           required: false
-          items:
-            type: string
-        - in: "query"
+        - in: "formData"
           name: "movies"
-          type: "array"
+          type: "file"
           description: "アップロードされた動画（型などは仮設定）"
           required: true
-          items:
-            type: string
-            format: binary
+        - in: "formData"
+          name: "insert-text"
+          type: "string"
+          description: "挿入したい文字"
+          required: false
+        - in: "formData"
+          name: "insert-position"
+          type: "string"
+          description: "文字の挿入位置"
+          required: false
       responses:
         200:
           "description": "動画投稿の成功"
@@ -381,27 +397,6 @@ paths:
           "description": "update error"
 
 definitions:
-  # PostVideoRequest:
-  #   type: "object"
-  #   properties:
-  #     data:
-  #       type: "object"
-  #       properties:
-  #         title:
-  #           type: "string"
-  #         description:
-  #           type: "string"
-  #         category:
-  #           type: "string"
-  #         keywords:
-  #           type: "array"
-  #           items:
-  #             type: "string"
-  #             description: "動画に関連するキーワード"
-  #         movies:
-  #           type: "array"
-  #           items:
-  #             $ref: "#/definitions/Material"
   PostMaterialRequest:
     type: "object"
     properties:

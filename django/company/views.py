@@ -8,20 +8,21 @@ import random
 import string
 import time
 from .models import Company, Urls
-from video.models import video_post_validation, material_video_validation, save_video, remove_video, get_video_post
+from video.models import video_post_validation, material_video_validation, save_video, remove_video, get_video_post, get_request_data
 from .util.models import post_mail
 from django.utils import timezone
 import hashlib
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from session.redis import SessionRedis
 from movie.models import combine_material
+
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
 def video_view(request):
     if request.method == 'GET':
         company_id = int(request.GET.get('company_id'))
-
         # [{'name':'hoge', 'youtube_url':'hoge.com', ・・・},・・・]
         videos = get_video_post(company_id)
         return Response(
@@ -32,30 +33,31 @@ def video_view(request):
             status=status.HTTP_200_OK
         )
     elif request.method == 'POST':
+        # 動画公開時の情報に対してバリデーション
         if not video_post_validation(request.POST):
             return Response(
                 {
-                    'message': 'error'
+                    'message': 'video_post_validation error'
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
+        # 素材動画に対してバリデーション
         if not material_video_validation(request.FILES):
             return Response(
                 {
-                    'message': 'error'
+                    'message': 'material_video_validation error'
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
         # data['title']='タイトル', data['description']='概要'・・・
         data = json.loads(json.dumps(request.POST))
-
         # file_infos = [{'name':'ファイル名', 'path':'/tmp/ファイル名'}, ・・・]
         file_infos = [save_video(video)
                       for video in request.FILES.getlist('movies')]
         data['file_infos'] = file_infos
 
-        #コーダイからdataを受け取る
-        #動画をつなげて/tmp/output.mp4にする
+        # コーダイからdataを受け取る
+        # 動画をつなげて/tmp/output.mp4にする
         path_ary = [d.get('path')[1:] for d in data['file_infos']]
         output = combine_material(path_ary)
         data['file_infos'] = data['file_infos'].append(output)
@@ -95,11 +97,14 @@ def login(request):
         company = Company.objects.get(email=email)
         is_accepted = company.is_accepted
         if password == company.password and is_accepted == 1:
+
             # random でsession作成
             session = randomSTR(10)
             current_time = time.time()
+
             # session key: session, value: current_time
-            request.session[session] = current_time
+            sessionRedis = SessionRedis()
+            sessionRedis.setToken(session, current_time, company.id)
 
             return Response({'token': session})
         else:
@@ -116,7 +121,9 @@ def login(request):
 @csrf_exempt
 @api_view(['POST'])
 def logout(request):
-    request.session.clear()
+    token = request.headers['Authorization']
+    sessionRedis = SessionRedis()
+    sessionRedis.delete(token)
     return Response(
         {
             'message': 'logged out successfully.'
@@ -179,6 +186,7 @@ def register_temporary_company(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+
 @api_view(['PUT'])
 def update_company_description(request):
     try:
@@ -186,7 +194,7 @@ def update_company_description(request):
         company_id = data['id']
         description = data['description']
         company = Company.objects.get(id=company_id)
-        company.description = description 
+        company.description = description
         company.save()
         return JsonResponse(
             {
