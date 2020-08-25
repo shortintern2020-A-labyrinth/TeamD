@@ -370,9 +370,9 @@ paths:
         - "application/json"
       parameters:
         - in: "query"
-          name: "domain_id"
-          type: "integer"
-          description: "Domain id"
+          name: "token"
+          type: "string"
+          description: "token"
           required: true
       responses:
         200:

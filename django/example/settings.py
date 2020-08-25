@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+import environ
+
+# Read .env file.
+env = environ.Env()
+env.read_env('.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -66,7 +72,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000", #TODO: デプロイ時変更
+    "http://localhost:3000",  # TODO: デプロイ時変更
 ]
 
 ROOT_URLCONF = 'example.urls'
@@ -96,10 +102,10 @@ WSGI_APPLICATION = 'example.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test', #　作成したデータベース名
-        'PASSWORD': 'test',
-        'USER': 'root', # ログインユーザー
-        'HOST': 'mysql', #コンテナ名
+        'NAME': env('DATABASE_NAME'),  # 　作成したデータベース名
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'USER': env('DATABASE_USER'),  # ログインユーザー
+        'HOST': env('DATABASE_HOST'),  # コンテナ名
         'PORT': '3306',
     }
 }
@@ -107,7 +113,7 @@ DATABASES = {
 SESSION_ENGINE = 'redis_sessions.session'
 
 SESSION_REDIS = {
-    'host': 'redis',
+    'host': env('REDIS_HOST'),
     'port': 6379,
     'db': 0,
     'prefix': 'session',
@@ -165,3 +171,6 @@ EMAIL_PORT = 25
 # EMAIL_HOST_PASSWORD = 'hogefuga'
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
+
+MEDIA_URL = '/tmp/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'tmp')

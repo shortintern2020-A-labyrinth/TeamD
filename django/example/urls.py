@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.schemas import get_schema_view
 from django.contrib.auth.models import User
+from django.conf import settings
+from django.conf.urls.static import static
 # Serializers define the API representation.
 
 
@@ -52,3 +54,5 @@ urlpatterns = [
     path('api/', include('default.urls')),
     url(r'^docs/$', schema_view),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

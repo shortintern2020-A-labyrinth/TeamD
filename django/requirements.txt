@@ -13,5 +13,8 @@ pillow
 # To use Auth Token
 django-redis-cache
 django-redis-sessions
+# OpenCV(Edit movie)
 opencv-python
 Pillow
+# .Env
+django-environ

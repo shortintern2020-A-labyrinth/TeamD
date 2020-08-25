@@ -1,4 +1,5 @@
 {
+    "editor.formatOnSave": true,
     // lintツール
     "python.linting.pylintEnabled": true,
     "python.linting.pylintArgs": [
