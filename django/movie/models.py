@@ -2,10 +2,6 @@
 import cv2
 from PIL import Image, ImageFont, ImageDraw
 import numpy as np
-
-def make_movie():
-    return
-
 '''
 -----使用例------
 from models import combine_material,insert_text
@@ -51,7 +47,7 @@ mp4ファイルしか対応していない
 秒数がかぶっていると先のものが優先される(2つの描画を同時にできない)
 position増やす
 '''
-def combine_material(input,output='output.mp4'):
+def combine_material(input,output='tmp/output.mp4'):
     # mp4指定(暫定)
     fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
     # listの最初の動画から情報の取得しそれを全体の設定とする
@@ -76,7 +72,9 @@ def combine_material(input,output='output.mp4'):
             out.write(frame)
             # 次のフレームを読み込み
             ret,frame = material.read()
-    return output
+    #data[file_infos] =　data[file_infos].append([{'name':'出力名'},{'path':'出力path'}]) とういう状態をコーダイが欲しい
+    #views.pyで data[file_infos] = data[file_infos].append(combine_movie(data[file_infos]))で呼び出す
+    return {'name':output,'path':output}
 
 def insert_text(input,message,output='output.mp4'):
     # input動画から情報の取得しそれを全体の設定とする

@@ -14,7 +14,7 @@ from django.utils import timezone
 import hashlib
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-
+from movie.models import combine_material
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -53,6 +53,17 @@ def video_view(request):
         file_infos = [save_video(video)
                       for video in request.FILES.getlist('movies')]
         data['file_infos'] = file_infos
+
+        #コーダイからdataを受け取る
+        #動画をつなげて/tmp/output.mp4にする
+        path_ary = [d.get('path')[1:] for d in data['file_infos']]
+        output = combine_material(path_ary)
+        data['file_infos'] = data['file_infos'].append(output)
+        '''
+        #youtube投稿
+        upload_youtube(output['path'],data['title'],data['description'],data['category_id'],data['keywords'],'public')
+        '''
+
         return Response(
             {
                 'message': 'success'
