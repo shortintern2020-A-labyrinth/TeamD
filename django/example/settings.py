@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 import environ
 
 # Read .env file.
@@ -170,3 +171,6 @@ EMAIL_HOST_USER = env('SENDGRID_USER')
 EMAIL_HOST_PASSWORD = env('SENDGRID_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+MEDIA_URL = '/tmp/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'tmp')
