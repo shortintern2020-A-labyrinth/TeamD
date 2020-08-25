@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -65,7 +66,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000", #TODO: デプロイ時変更
+    "http://localhost:3000",  # TODO: デプロイ時変更
 ]
 
 ROOT_URLCONF = 'example.urls'
@@ -95,10 +96,10 @@ WSGI_APPLICATION = 'example.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test', #　作成したデータベース名
+        'NAME': 'test',  # 　作成したデータベース名
         'PASSWORD': 'test',
-        'USER': 'root', # ログインユーザー
-        'HOST': 'mysql', #コンテナ名
+        'USER': 'root',  # ログインユーザー
+        'HOST': 'mysql',  # コンテナ名
         'PORT': '3306',
     }
 }
@@ -164,3 +165,6 @@ EMAIL_PORT = 25
 # EMAIL_HOST_PASSWORD = 'hogefuga'
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
+
+MEDIA_URL = '/tmp/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'tmp')

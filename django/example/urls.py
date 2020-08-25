@@ -5,7 +5,11 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.schemas import get_schema_view
 from django.contrib.auth.models import User
+from django.conf import settings
+from django.conf.urls.static import static
 # Serializers define the API representation.
+
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
@@ -16,6 +20,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
 
 # Routers provide a way of automatically determining the URL conf.
 router = routers.DefaultRouter()
@@ -33,7 +38,6 @@ def hello_world(request):
     return Response({"message": "Hello, world! from django"})
 
 
-
 schema_view = get_schema_view(
     title=API_TITLE,
     description=API_DESCRIPTION,
@@ -49,3 +53,5 @@ urlpatterns = [
     path('api/', include('default.urls')),
     url(r'^docs/$', schema_view),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
