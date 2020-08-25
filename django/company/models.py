@@ -41,7 +41,9 @@ class Company(models.Model):
             null=False,
             blank=False
     )
-    email = models.EmailField()
+    email = models.EmailField(
+        unique=True
+    )
     password = models.CharField(
         max_length=128,
         null=False,
