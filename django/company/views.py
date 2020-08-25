@@ -8,23 +8,12 @@ import random
 import string
 import time
 from .models import Company
-from .serializers import CompanySerializer
 from video.models import video_post_validation, material_video_validation, save_video, remove_video, get_video_post
 from .util.models import post_mail
 from django.utils import timezone
 import hashlib
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-
-
-# class BookAPIView(generics.ListAPIView):
-#     queryset = Question.objects.all()
-#     serializer_class = QuestionSerializer
-
-
-class CompanyAPIView(generics.ListAPIView):
-    queryset = Company.objects.all()
-    serializer_class = CompanySerializer
 
 
 @csrf_exempt
