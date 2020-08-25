@@ -14,7 +14,7 @@ from django.utils import timezone
 import hashlib
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-
+from session.redis import SessionRedis
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -75,36 +75,31 @@ def randomSTR(n):
 @csrf_exempt
 @api_view(['POST'])
 def login(request):
-    try:
-        # emailとpasswordの一致確認
-        data = json.loads(request.body)
-        email = data['email']
-        password = data['password']
-        company = Company.objects.get(email=email)
-        is_accepted = company.is_accepted
-        if password == company.password and is_accepted == 1:
-            # random でsession作成
-            session = randomSTR(10)
-            current_time = time.time()
-            # session key: session, value: current_time
-            request.session[session] = current_time
+    # emailとpasswordの一致確認
+    data = json.loads(request.body)
+    email = data['email']
+    password = data['password']
+    company = Company.objects.get(email=email)
+    is_accepted = company.is_accepted
+    if password == company.password and is_accepted == 1:
 
-            return Response({'token': session})
-        else:
-            raise Exception
-    except:
-        return Response(
-            {
-                'message': 'input data is not correct or not accepted yet'
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        # random でsession作成
+        session = randomSTR(10)
+        current_time = time.time()
+
+        # session key: session, value: current_time
+        sessionRedis = SessionRedis()
+        sessionRedis.setToken(session, current_time, company.id)
+
+        return Response({'token': session})
 
 
 @csrf_exempt
 @api_view(['POST'])
 def logout(request):
-    request.session.clear()
+    token = request.headers['Authorization']
+    sessionRedis = SessionRedis()
+    sessionRedis.delete(token)
     return Response(
         {
             'message': 'logged out successfully.'
