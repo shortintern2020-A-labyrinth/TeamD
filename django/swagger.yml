@@ -212,7 +212,7 @@ paths:
           required: true
       responses:
         200:
-          "description": "A successful response."
+          "description": "logged out successfully."
   /api/company/edit/:
     put:
       tags:
