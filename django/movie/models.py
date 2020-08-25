@@ -1,7 +1,7 @@
 # 動画加工するだけ
-import cv2
-from PIL import Image, ImageFont, ImageDraw
-import numpy as np
+# import cv2
+# from PIL import Image, ImageFont, ImageDraw
+# import numpy as np
 '''
 -----使用例------
 from models import combine_material,insert_text
