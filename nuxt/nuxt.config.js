@@ -1,5 +1,8 @@
 import colors from 'vuetify/es5/util/colors'
 
+// dotenvの読み込み
+require('dotenv').config()
+
 export default {
   /*
    ** Nuxt rendering mode
@@ -46,7 +49,7 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: ['@nuxt/typescript-build', '@nuxtjs/vuetify'],
+  buildModules: ['@nuxt/typescript-build', '@nuxtjs/vuetify', '@nuxtjs/dotenv'],
   /*
    ** Nuxt.js modules
    */
@@ -57,6 +60,11 @@ export default {
     '@nuxtjs/auth',
     '@nuxtjs/toast',
   ],
+  dotenv: {
+    /* module options */
+    filename:
+      process.env.NODE_ENV !== 'prod' ? './env/.env.prod' : './env/.env.dev',
+  },
   toast: {
     position: 'top-center',
     duration: 500,
