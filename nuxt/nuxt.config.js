@@ -55,7 +55,12 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     '@nuxtjs/auth',
+    '@nuxtjs/toast',
   ],
+  toast: {
+    position: 'top-center',
+    duration: 500,
+  },
   router: {
     middleware: ['user_auth'],
   },
