@@ -62,7 +62,7 @@
 
           <v-spacer></v-spacer>
 
-          <v-btn color="secondary" bold>Submit</v-btn>
+          <v-btn color="secondary" bold @click="signup">Submit</v-btn>
         </v-card-actions>
       </v-container>
     </v-form>
@@ -81,5 +81,29 @@ export default {
     emailRules: [(v) => !!v || 'E-mail is required'],
     companyPattern: ['企業サイト', '商品販売サイト'],
   }),
+  methods: {
+    async signup() {
+      // TODO: とりあえずこれだけ
+      const data = {
+        email: this.email,
+        password: this.password,
+        name: this.companyName,
+        description: this.companyDesc,
+      }
+      await this.$axios
+        .$post('company/register/', data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          console.log(response)
+          this.$router.push('/company/login/')
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+  },
 }
 </script>
