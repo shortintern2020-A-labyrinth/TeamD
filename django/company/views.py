@@ -14,6 +14,7 @@ from django.utils import timezone
 import hashlib
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from session.redis import SessionRedis
 from movie.models import combine_material
 
 @csrf_exempt
@@ -35,20 +36,19 @@ def video_view(request):
         if not video_post_validation(request.POST):
             return Response(
                 {
-                    'message': 'error'
+                    'message': 'video_post_validation error'
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
         if not material_video_validation(request.FILES):
             return Response(
                 {
-                    'message': 'error'
+                    'message': 'material_video_validation error'
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
         # data['title']='タイトル', data['description']='概要'・・・
         data = json.loads(json.dumps(request.POST))
-
         # file_infos = [{'name':'ファイル名', 'path':'/tmp/ファイル名'}, ・・・]
         file_infos = [save_video(video)
                       for video in request.FILES.getlist('movies')]
@@ -95,11 +95,14 @@ def login(request):
         company = Company.objects.get(email=email)
         is_accepted = company.is_accepted
         if password == company.password and is_accepted == 1:
+
             # random でsession作成
             session = randomSTR(10)
             current_time = time.time()
+
             # session key: session, value: current_time
-            request.session[session] = current_time
+            sessionRedis = SessionRedis()
+            sessionRedis.setToken(session, current_time, company.id)
 
             return Response({'token': session})
         else:
@@ -112,11 +115,12 @@ def login(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-
 @csrf_exempt
 @api_view(['POST'])
 def logout(request):
-    request.session.clear()
+    token = request.headers['Authorization']
+    sessionRedis = SessionRedis()
+    sessionRedis.delete(token)
     return Response(
         {
             'message': 'logged out successfully.'
