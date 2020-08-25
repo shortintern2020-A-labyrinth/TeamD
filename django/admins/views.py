@@ -26,7 +26,7 @@ def accept_company(request):
             email = company.email
             subject = "申請承認のおしらせ"
             from_email = "A4sittyo@gmail.com"
-            body = "申請が承認されました!\n"
+            body = "申請が承認されました!\n ログインできるようになりました！"
             post_mail(subject, from_email, [email], body)
             return Response(
                 {
