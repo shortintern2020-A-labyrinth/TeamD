@@ -98,12 +98,14 @@ export default {
             'Content-Type': 'application/json',
           },
         })
-        .then((response) => {
-          console.log(response)
-          this.$router.push('/company/login/')
+        .then(() => {
+          this.$toast.success('登録メールを送りました！承認してください')
         })
         .catch((error) => {
           console.log(error)
+          this.$toast.error(
+            '申請中にエラーが発生しました。再度送信してください'
+          )
         })
     },
   },
