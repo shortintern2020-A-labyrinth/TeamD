@@ -188,7 +188,7 @@ def register_temporary_company(request):
 
 
 @api_view(['PUT'])
-def update_company_description(request):
+def update_company_details(request):
     try:
         data = json.loads(request.body)
         company_id = data['id']
@@ -196,6 +196,14 @@ def update_company_description(request):
         company = Company.objects.get(id=company_id)
         company.description = description
         company.save()
+        # urlsの登録
+        urls = data['urls']
+        if urls:
+            for url in urls:
+                value = url['value']
+                type = url['type']
+                urls = Urls(value=value, type=type, company_id=company.id)
+                urls.save()
         return JsonResponse(
             {
                 'message': 'success'
