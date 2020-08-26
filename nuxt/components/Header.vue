@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-app-bar :clipped-left="clipped" fixed app>
-      <nuxt-link to="/">
+      <nuxt-link to="/company">
         <v-toolbar-title>{{ title }}</v-toolbar-title>
       </nuxt-link>
       <v-spacer />

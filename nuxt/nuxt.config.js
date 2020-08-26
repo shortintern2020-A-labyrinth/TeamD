@@ -69,9 +69,7 @@ export default {
     position: 'top-center',
     duration: 1500,
   },
-  router: {
-    middleware: ['user_auth'],
-  },
+  router: {},
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options

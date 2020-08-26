@@ -36,6 +36,7 @@
 
 <script>
 export default {
+  middleware: 'user_auth',
   data: () => ({
     valid: false,
     companyName: '',

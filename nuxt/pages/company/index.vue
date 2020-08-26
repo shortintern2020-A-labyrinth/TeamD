@@ -13,6 +13,7 @@
 import VideoCard from '../../components/videoCard'
 
 export default {
+  middleware: 'user_auth',
   components: {
     VideoCard,
   },

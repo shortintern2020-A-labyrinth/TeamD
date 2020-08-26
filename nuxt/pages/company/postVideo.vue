@@ -74,6 +74,7 @@
 
 <script>
 export default {
+  middleware: 'user_auth',
   created() {
     this.$axios
       .$get('categories/')
