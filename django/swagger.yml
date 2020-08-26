@@ -51,8 +51,11 @@ paths:
         - in: "query"
           name: "urls"
           type: "string"
-          description: "複数OK urlとタイプを記入(array型。下記Moels参照)"
-
+          description: "複数OK urlとタイプを記入(array型。下記Moels参照)
+                      \ntype:
+                      \n1 : 企業サイトURL
+                      \n2: 商品販売サイトURL
+                      \n3: GoogleFormURL"
       responses:
         200:
           "description": "success"
@@ -237,7 +240,11 @@ paths:
         - in: "query"
           name: "urls"
           type: "string"
-          description: "複数OK urlとタイプを記入(array型。下記Moels参照)"
+          description: "複数OK urlとタイプを記入(array型。下記Moels参照)
+                      \ntype:
+                      \n1 : 企業サイトURL
+                      \n2: 商品販売サイトURL
+                      \n3: GoogleFormURL"
       responses:
         200:
           "description": "success"
