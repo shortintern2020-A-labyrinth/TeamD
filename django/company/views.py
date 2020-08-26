@@ -257,6 +257,8 @@ def update_company_details(request):
       if urls:
           for url in urls:
               value = url['value']
+              if value == '':
+                continue
               type = url['type']
               try:
                   urls = Urls.objects.get(type=type, company_id=company.id)
