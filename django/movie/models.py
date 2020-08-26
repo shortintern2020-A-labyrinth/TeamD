@@ -152,11 +152,13 @@ def insert_text(input, message, output='output.mp4'):
                     draw = ImageDraw.Draw(frame)
                     w, h = draw.textsize(section[0], font)
                     # position決め打ち(左右は現時点では真ん中のみ)
-                    if section[6] == "bottom":
+                    if section[6] == "下":
                         position = (int((W - w) / 2),
                                     int(H - (font_size * 1.5)))
-                    if section[6] == "center":
+                    elif section[6] == "中央":
                         position = (int((W - w) / 2), int((H - h) / 2))
+                    else:
+                        position = 0, 0
                     draw.text(position, section[0], font=font, fill=section[5])
                     frame = np.array(frame)
                 elif section[1] > time:
