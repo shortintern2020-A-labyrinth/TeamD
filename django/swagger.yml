@@ -119,7 +119,7 @@ paths:
                 type: string
                 description: The user token
   /api/categories/:
-    post:
+    get:
       summary: ""
       description: ""
       consumes:
