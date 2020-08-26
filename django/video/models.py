@@ -93,5 +93,5 @@ def set_video_post(data):
     company_id = None if type(company_id) != int else int(company_id)
     if company_id != None:
         video = Video(name=data['youtube']['title'], description=data['youtube']
-                      ['description'], youtube_url='hoge/fuga.com', company_id=company_id)
+                      ['description'], youtube_url='hoge/fuga.com', company_id=company_id,category_id=int(data['youtube']['category_id']))
         video.save()
