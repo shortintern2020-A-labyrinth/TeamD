@@ -1,4 +1,5 @@
 # coding: UTF-8
+from django.youtube.models import upload_movie
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -17,8 +18,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from session.redis import SessionRedis
 from company.util.models import get_company_id
-# from movie.models import combine_material, make_movie
-
+from movie.models import making_movie
+from youtube.models import upload_movie
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -55,10 +56,17 @@ def video_view(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         data = get_request_data(request)  # リクエストパラメータの取得
+        
+        data = making_movie(data) #動画加工
+
+        #data = upload_movie(data) #動画アップロード
+
+        '''
         # 仮保存した動画を削除する
         for file_path in data['delete']:
             remove_video(file_path)
         set_video_post(data)
+        '''
 
         # make_movie(data)  # 動画加工
         return Response(

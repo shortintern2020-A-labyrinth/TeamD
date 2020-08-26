@@ -4,8 +4,35 @@ from PIL import Image, ImageFont, ImageDraw
 import numpy as np
 
 
-def make_movie():
-    return
+
+def making_movie(data):
+    print(data)
+    num_material = len(data['edit']['material']['paths'])  # マテリアル(素材動画)の数
+    font = 'fonts/ProN.ttc'  # 事前にダウンロードしておく
+    fontsize = 64
+    fontcolor = (255, 255, 255, 0)
+    for i in range(num_material):
+        # 動画時間取得
+        print(data['edit']['material']['paths'][i])
+        sec = movie_time(data['edit']['material']['paths'][i])
+        message = [[data['edit']['insert']['text'][i],
+                    2.0,
+                    sec-2.0,
+                    font,
+                    fontsize,
+                    fontcolor,
+                    data['edit']['insert']['position'][i]]]
+        out = insert_text(data['edit']['material']['paths'][i],message, 'tmp/insert_text'+str(i)+'.mp4')
+        data['edit']['insert']['paths'].append(out)
+        data['delete'].append(out)
+    if num_material == 1:
+        data['edit']['combine']['paths'] = data['edit']['insert']['paths']
+    else:
+        out = combine_material(
+            data['edit']['insert']['paths'], output='tmp/combine_out.mp4')
+        data['edit']['combine']['paths'].append(out)
+        data['delete'].append(out)
+    return data
 
 
 '''
@@ -146,3 +173,9 @@ def insert_text(input, message, output='output.mp4'):
         else:
             pass
     return output
+
+def movie_time(input):
+    movie = cv2.VideoCapture(input)
+    Fs = int(movie.get(cv2.CAP_PROP_FRAME_COUNT))
+    fps = movie.get(cv2.CAP_PROP_FPS)
+    return round(Fs*fps)
