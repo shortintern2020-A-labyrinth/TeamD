@@ -90,10 +90,11 @@ def return_preview(request):
         # remove_video(data['delete'])
         #編集後の動画返却
         path = data['edit']['combine']['paths']
+        edited_file = open(ipath, "rb")
         return Response(
             {
                 'message': 'success',
-                'path': path
+                'path': edited_file
             },
             status=status.HTTP_200_OK
         )
