@@ -1,6 +1,8 @@
+# coding: UTF-8
 from company.models import Video
 from django.core.files.storage import FileSystemStorage
 import os
+from company.util.models import get_company_id
 
 
 # 動画情報のバリデーション
@@ -39,12 +41,13 @@ def get_video_post(company_id):
 def save_video(video):
     fs = FileSystemStorage()
     file_name = fs.save(video.name, video)
-    file_path = fs.url(file_name)
+    file_path = '/tmp/{}'.format(file_name)  # fs.url(file_name)だと文字コードが変わってしまう
     return file_path
 
 
 # 動画の削除
 def remove_video(file_path):
+    get_video(file_path)
     fs = FileSystemStorage()
     file_name = file_path[5:]
     fs.delete(file_name)
@@ -92,6 +95,9 @@ def get_request_data(request):
 
 # 投稿したビデオをデータベースに追加
 def set_video_post(data):
-    video = Video(name=data['youtube']['title'], description=data['youtube']
-                  ['description'], youtube_url='hoge/fuga.com', company_id=1)  # TODO: tokenからcompany_id取得しておく
-    video.save()
+    _, company_id = get_company_id(data['token'])
+    company_id = None if type(company_id) != int else int(company_id)
+    if company_id != None:
+        video = Video(name=data['youtube']['title'], description=data['youtube']
+                      ['description'], youtube_url='hoge/fuga.com', company_id=company_id)
+        video.save()

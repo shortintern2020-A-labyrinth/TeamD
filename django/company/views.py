@@ -1,3 +1,4 @@
+# coding: UTF-8
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -15,6 +16,7 @@ import hashlib
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from session.redis import SessionRedis
+from company.util.models import get_company_id
 # from movie.models import combine_material, make_movie
 
 
@@ -22,16 +24,19 @@ from session.redis import SessionRedis
 @api_view(['GET', 'POST'])
 def video_view(request):
     if request.method == 'GET':
-        company_id = int(request.GET.get('company_id'))
-        # [{'name':'hoge', 'youtube_url':'hoge.com', ・・・},・・・]
-        videos = get_video_post(company_id)
-        return Response(
-            {
-                'message': 'success!',
-                'videos': videos
-            },
-            status=status.HTTP_200_OK
-        )
+        token = request.GET.get('token')
+        _, company_id = get_company_id(token)
+        company_id = None if type(company_id) != int else int(company_id)
+        if company_id != None:
+            # [{'name':'hoge', 'youtube_url':'hoge.com', ・・・},・・・]
+            videos = get_video_post(company_id)
+            return Response(
+                {
+                    'message': 'success!',
+                    'videos': videos
+                },
+                status=status.HTTP_200_OK
+            )
     elif request.method == 'POST':
         # 動画公開時の情報に対してバリデーション
         if not video_post_validation(request.POST):
@@ -50,10 +55,11 @@ def video_view(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         data = get_request_data(request)  # リクエストパラメータの取得
-        set_video_post(data)
         # 仮保存した動画を削除する
         for file_path in data['delete']:
             remove_video(file_path)
+        set_video_post(data)
+
         # make_movie(data)  # 動画加工
         return Response(
             {
@@ -66,9 +72,8 @@ def video_view(request):
     elif request.method == 'DELETE':
         print()
 
+
 # session用
-
-
 def randomSTR(n):
     randlst = [random.choice(string.ascii_letters + string.digits)
                for i in range(n)]
