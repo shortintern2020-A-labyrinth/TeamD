@@ -67,7 +67,7 @@ export default {
   },
   toast: {
     position: 'top-center',
-    duration: 500,
+    duration: 1500,
   },
   router: {
     middleware: ['user_auth'],
