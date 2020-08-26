@@ -65,7 +65,7 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-
+        <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
         <v-btn color="info" x-large @click="submit">投稿</v-btn>
       </v-card-actions>
     </v-container>
@@ -92,6 +92,7 @@ export default {
       })
   },
   data: () => ({
+    loading: false,
     valid: false,
     title: '',
     description: '',
@@ -202,6 +203,7 @@ export default {
         formData.append('insert_text', text)
       }
 
+      this.loading = true
       await this.$axios
         .$post('company/video/', formData, {
           headers: {
@@ -210,10 +212,13 @@ export default {
         })
         .then((response) => {
           console.log(response)
+          this.$toast.success('投稿に作成しました！！！')
         })
         .catch((error) => {
           console.log(error)
+          this.$toast.error('投稿に失敗しました')
         })
+      this.loading = false
     },
   },
 }
