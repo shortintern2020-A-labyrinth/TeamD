@@ -53,17 +53,15 @@ def video_view(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         data = get_request_data(request)  # リクエストパラメータの取得
-        
+
         data = making_movie(data) #動画加工
 
         #data = upload_movie(data) #動画アップロード
 
-        '''
         # 仮保存した動画を削除する
-        for file_path in data['delete']:
-            remove_video(file_path)
+        # for file_path in data['delete']:
+        #     remove_video(file_path)
         set_video_post(data) # 公開した動画のURLをデータベースにいれる
-        # make_movie(data)  # 動画加工
         return Response(
             {
                 'message': 'success'
@@ -101,7 +99,7 @@ def return_preview(request):
             },
             status=status.HTTP_200_OK
         )
-        
+
     except:
         return Response(
             {
@@ -251,7 +249,7 @@ def update_company_details(request):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
-    
+
 
     # 運営に申請メール送信
     # subject="企業からの申請依頼のお知らせ"

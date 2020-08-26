@@ -107,9 +107,9 @@ export default {
     movieNumber: 1,
   }),
   methods: {
-    changeFile(file, index) {
+    changeFile(event, index) {
       // ファイルが選択されたら変数に入れる
-      this.uploadFiles[index - 1] = file
+      this.uploadFiles[index - 1] = event.target.files[0]
     },
 
     addText(text, index) {

@@ -19,8 +19,4 @@ class Migration(migrations.Migration):
                 ('company_id', models.IntegerField()),
             ],
         ),
-        migrations.RemoveField(
-            model_name='video',
-            name='category_id',
-        ),
     ]
