@@ -10,25 +10,63 @@
           <v-textarea v-model="description" :counter="10" label="動画詳細説明欄※" required></v-textarea>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="4">
           <v-select v-model="selectedCategory" :items="categories" label="動画カテゴリ" outlined></v-select>
         </v-col>
 
-        <!-- TODO: 本当はここは入力フォームを複数個作成するべきたけど、めんどくさくてできていない -->
-        <v-col cols="12">
+        <v-col cols="8">
           <v-text-field v-model="keywords" label="キーワード(カンマ区切りで複数入力できます)"></v-text-field>
         </v-col>
 
-        <v-col cols="4">
-          <v-file-input label="動画※" filled prepend-icon="mdi-movie" @change="changeFile"></v-file-input>
+        <v-col cols="12">
+          <v-slider
+            v-model="movieNumber"
+            color="info"
+            min="1"
+            max="9"
+            thumb-label="always"
+            label="動画の数"
+            messages="※数を変更すると、全ての動画が初期化されます"
+            @change="clearMovie"
+          ></v-slider>
         </v-col>
-        <v-col cols="8">動画プレビュー画面</v-col>
+
+        <v-col v-for="i in movieNumber" :key="i" cols="12">
+          <v-card>
+            <v-card-title>動画 {{ i }}</v-card-title>
+            <v-row>
+              <v-col cols="6">
+                <!-- <v-file-input
+                ref="video"
+                label="動画※"
+                filled
+                prepend-icon="mdi-movie"
+                @change="changeFile($event, i)"
+                ></v-file-input>-->
+                <input ref="video" type="file" @change="changeFile($event, i)" />
+              </v-col>
+              <v-col cols="6">動画プレビュー画面</v-col>
+              <v-col cols="8">
+                <v-text-field label="動画に入れるテキスト" @change="addText($event, i)" />
+              </v-col>
+              <v-col cols="4">
+                <v-select
+                  v-model="selectedCategory"
+                  :items="textPosition"
+                  label="テキストを入れる場所"
+                  outlined
+                  @change="addPosition($event, i)"
+                ></v-select>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
       </v-row>
 
       <v-card-actions>
         <v-spacer></v-spacer>
 
-        <v-btn color="secondary" bold @click="submit">Submit</v-btn>
+        <v-btn color="info" x-large @click="submit">投稿</v-btn>
       </v-card-actions>
     </v-container>
   </v-form>
@@ -36,39 +74,131 @@
 
 <script>
 export default {
+  created() {
+    this.$axios
+      .$get('categories/')
+      .then((response) => {
+        this.categories = response.map((row) => {
+          return row.name
+        })
+        this.categoryIDs = response.map((row) => {
+          return row.id
+        })
+        this.selectedCategory = this.categories[0]
+      })
+      .catch(() => {
+        this.$toast.error('データ取得時にエラーが発生しました')
+      })
+  },
   data: () => ({
     valid: false,
     title: '',
     description: '',
-    categories: ['競馬', '伝統工芸'],
     selectedCategory: '',
+    categories: [],
+    categoryIDs: [],
+    textPosition: ['中央', '下'],
     // 空白区切りのkeywordが複数個入力されている
     keywords: '',
     companyID: 1,
-    uploadFiles: [],
+    uploadFiles: [null],
+    uploadFileTexts: [''],
+    uploadFileTextPositions: [''],
+    movieNumber: 1,
   }),
   methods: {
-    changeFile(file) {
+    changeFile(file, index) {
       // ファイルが選択されたら変数に入れる
-      this.uploadFiles[0] = file
+      this.uploadFiles[index - 1] = file
+    },
+
+    addText(text, index) {
+      this.uploadFileTexts[index - 1] = text
+      console.log(this.uploadFileTexts)
+    },
+
+    addPosition(text, index) {
+      this.uploadFileTextPositions[index - 1] = text
+      console.log(this.uploadFileTextPositions)
+    },
+
+    clearMovie() {
+      for (let i = 0; i < this.movieNumber; i++) {
+        const video = this.$refs.video[i]
+        video.type = 'text'
+        video.type = 'file'
+      }
+
+      // 初期化
+      const arr = Array(this.movieNumber)
+      this.uploadFiles = arr
+
+      // 長さ以上であれば、切り取るし、短ければ追加する
+      if (this.uploadFileTexts.length > this.movieNumber) {
+        this.uploadFileTexts = this.uploadFileTexts.slice(0, this.movieNumber)
+      } else if (this.uploadFileTexts.length < this.movieNumber) {
+        const diff = this.movieNumber - this.uploadFileTexts.length
+        for (let i = 0; i < diff; i++) {
+          this.uploadFileTexts.push('')
+        }
+      }
+
+      if (this.uploadFileTextPositions.length > this.movieNumber) {
+        this.uploadFileTextPositions = this.uploadFileTextPositions.slice(
+          0,
+          this.movieNumber
+        )
+      } else if (this.uploadFileTextPositions.length < this.movieNumber) {
+        const diff = this.movieNumber - this.uploadFileTextPositions.length
+        for (let i = 0; i < diff; i++) {
+          this.uploadFileTextPositions.push('')
+        }
+      }
     },
 
     async submit() {
       const formData = new FormData()
       formData.append('title', this.title)
       formData.append('description', this.description)
-      // TODO: とりあえず固定値を入力している
-      formData.append('category_id', 1)
-      // TODO: とりあえず固定値を入力している
-      formData.append('company_id', 1)
+      // const categoryArrayIndex = this.categories.findIndex(
+      //   this.selectedCategory
+      // )
+      // TODO: ここは変更しないといけない
+      formData.append('category_id', this.categoryIDs[1])
+      formData.append('token', this.$auth.getToken('local'))
       // カンマ区切りにして一つの文字列にして送信する
       const keyword = this.keywords.replace(' ', ',')
       formData.append('keywords', keyword)
 
-      // moviesのset
+      // moviesのset && validation
       for (let i = 0; i < this.uploadFiles.length; i++) {
         const movie = this.uploadFiles[i]
+        if (movie === null || movie === undefined) {
+          this.$toast.error('登録していない動画があります')
+          return
+        }
         formData.append('movies', movie)
+      }
+
+      // 一応長さチェック
+      if (
+        this.uploadFiles.length !== this.uploadFileTexts.length ||
+        this.uploadFiles.length !== this.uploadFileTextPositions.length
+      ) {
+        this.$toast.error(
+          '処理にエラーがあります。画面をリロードして再度記入してください'
+        )
+        return
+      }
+
+      for (let i = 0; i < this.uploadFileTextPositions.length; i++) {
+        const position = this.uploadFileTextPositions[i]
+        formData.append('insert_position', position)
+      }
+
+      for (let i = 0; i < this.uploadFileTexts.length; i++) {
+        const text = this.uploadFileTexts[i]
+        formData.append('insert_text', text)
       }
 
       await this.$axios
@@ -78,7 +208,7 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response.data.status)
+          console.log(response)
         })
         .catch((error) => {
           console.log(error)
