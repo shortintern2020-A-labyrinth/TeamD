@@ -87,9 +87,9 @@ def return_preview(request):
         #動画加工
         data = making_movie(data)
         # 仮保存した動画を削除する
-        remove_video(data['delete'])
+        # remove_video(data['delete'])
         #編集後の動画返却
-        path = data['youtube']['paths'][0]
+        path = data['edit']['combine']['paths']
         return Response(
             {
                 'message': 'success',
