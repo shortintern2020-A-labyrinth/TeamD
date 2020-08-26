@@ -17,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from session.redis import SessionRedis
 from company.util.models import get_company_id
-# from movie.models import combine_material, make_movie
+from movie.models import making_movie
 
 
 @csrf_exempt
@@ -55,10 +55,14 @@ def video_view(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         data = get_request_data(request)  # リクエストパラメータの取得
+        data = making_movie(data)
+
+        '''
         # 仮保存した動画を削除する
         for file_path in data['delete']:
             remove_video(file_path)
         set_video_post(data)
+        '''
 
         # make_movie(data)  # 動画加工
         return Response(
