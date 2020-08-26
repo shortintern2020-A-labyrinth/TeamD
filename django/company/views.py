@@ -28,8 +28,7 @@ def video_view(request):
         _, company_id = get_company_id(token)
         company_id = None if type(company_id) != int else int(company_id)
         if company_id != None:
-            # [{'name':'hoge', 'youtube_url':'hoge.com', ・・・},・・・]
-            videos = get_video_post(company_id)
+            videos = get_video_post(company_id) # [{'name':'hoge', 'youtube_url':'hoge.com', ・・・},・・・]
             return Response(
                 {
                     'message': 'success!',

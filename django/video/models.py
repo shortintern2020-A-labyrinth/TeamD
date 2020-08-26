@@ -61,27 +61,20 @@ def get_request_data(request):
     data['youtube'] = {}
     data['youtube']['title'] = '' if not 'title' in post else post['title']
     data['youtube']['description'] = '' if not 'description' in post else post['description']
-    data['youtube']['category_id'] = '' if not 'category_id' in post else post[
-        'category_id']
+    data['youtube']['category_id'] = '' if not 'category_id' in post else post['category_id']
     data['youtube']['keywords'] = '' if not 'keywords' in post else post['keywords']
     data['youtube']['paths'] = []  # [path1, path2,,,,]
 
-    insert_text = [
-    ] if not 'insert-text' in post else post.getlist('insert-text')
-    insert_position = [
-    ] if not 'insert-position' in post else post.getlist('insert-position')
-    videos = [] if not 'movies' in request.FILES else request.FILES.getlist(
-        'movies')
+    insert_text = [] if not 'insert_text' in post else post.getlist('insert_text')
+    insert_position = [] if not 'insert_position' in post else post.getlist('insert_position')
+    videos = [] if not 'movies' in request.FILES else request.FILES.getlist('movies')
 
     data['edit'] = {}
     data['edit']['insert'] = {}
     data['edit']['material'] = {}
-    data['edit']['material']['paths'] = [
-        save_video(video) for video in videos]  # [path1, path2,,,]
-    data['edit']['insert']['text'] = [
-        text for text in insert_text]  # テキスト1, テキスト2, ・・・・
-    data['edit']['insert']['position'] = [
-        position for position in insert_position]  # 'bottom', 'center', ・・・
+    data['edit']['material']['paths'] = [save_video(video) for video in videos]  # [path1, path2,,,]
+    data['edit']['insert']['text'] = [text for text in insert_text]  # テキスト1, テキスト2, ・・・・
+    data['edit']['insert']['position'] = [ for position in insert_position]  # 'bottom', 'center', ・・・
     data['edit']['insert']['paths'] = []  # [newpath1, newpath2, ・・・]
     data['edit']['combine'] = {}
     data['edit']['combine']['paths'] = []
