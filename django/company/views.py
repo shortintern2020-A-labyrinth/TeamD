@@ -84,14 +84,19 @@ def return_preview(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         data = get_request_data(request)
-
         #動画加工
-        edited_movie = making_movie(data)
-
+        data = making_movie(data)
         # 仮保存した動画を削除する
-        remove_video(data['delete']):
-        
+        remove_video(data['delete'])
         #編集後の動画返却
+        path = data['youtube']['paths'][0]
+        return Response(
+            {
+                'message': 'success',
+                'path': path
+            },
+            status=status.HTTP_200_OK
+        )
         
     except:
         return Response(
@@ -100,8 +105,6 @@ def return_preview(request):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
-
-
 
 # session用
 
@@ -244,9 +247,6 @@ def update_company_details(request):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
-
-
-def return_preview(request):
     
 
     # 運営に申請メール送信
