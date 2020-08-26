@@ -5,7 +5,7 @@ resource "google_cloud_run_service" "mywebapp" {
   template {
     spec {
       containers {
-        image = "gcr.io/a4shittyo/django"
+        image = "gcr.io/a4shittyo-app/django"
       }
     }
   }

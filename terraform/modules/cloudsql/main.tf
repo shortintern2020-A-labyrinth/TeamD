@@ -5,10 +5,11 @@ locals {
 resource "google_compute_global_address" "private_ip_address" {
   provider = google-beta
 
-  name          = var.private_ip_name
+  # name          = var.private_ip_name
+  name          = "private-appserver-ip"
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
-  prefix_length = 16
+  prefix_length = 24
   network       = local.network
   depends_on    = [local.network]
 }
@@ -29,9 +30,9 @@ resource "random_id" "db_name_suffix" {
 resource "google_sql_database_instance" "instance" {
   provider = google-beta
 
-  name   = "private-instance-${random_id.db_name_suffix.hex}"
+  name             = "private-instance-${random_id.db_name_suffix.hex}"
   database_version = var.database_version
-  region = var.region
+  region           = var.region
 
   depends_on = [google_service_networking_connection.private_vpc_connection]
 

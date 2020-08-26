@@ -19,9 +19,9 @@ variable "region" {
 }
 
 variable "user_name" {
-  default     = "DB_USER"
+  default = "DB_USER"
 }
 
 variable "user_password" {
-  default     = "DB_PASSWORD"
+  default = "DB_PASSWORD"
 }
