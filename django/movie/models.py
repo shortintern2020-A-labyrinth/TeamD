@@ -8,7 +8,7 @@ import numpy as np
 def making_movie(data):
     print(data)
     num_material = len(data['edit']['material']['paths'])  # マテリアル(素材動画)の数
-    font = '/fonts/Kyokasho.ttc'  # 事前にダウンロードしておく
+    font = 'fonts/ProN.ttc'  # 事前にダウンロードしておく
     fontsize = 64
     fontcolor = (255, 255, 255, 0)
     for i in range(num_material):
