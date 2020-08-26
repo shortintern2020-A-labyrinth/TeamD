@@ -79,11 +79,12 @@ export default {
       .$get('categories/')
       .then((response) => {
         this.categories = response.map((row) => {
-          return [row.name]
+          return row.name
         })
         this.categoryIDs = response.map((row) => {
-          return [row.id]
+          return row.id
         })
+        this.selectedCategory = this.categories[0]
       })
       .catch(() => {
         this.$toast.error('データ取得時にエラーが発生しました')
@@ -159,10 +160,11 @@ export default {
       const formData = new FormData()
       formData.append('title', this.title)
       formData.append('description', this.description)
-      const categoryArrayIndex = this.categories.findIndex(
-        this.selectedCategory
-      )
-      formData.append('category_id', this.categoryIDs[categoryArrayIndex])
+      // const categoryArrayIndex = this.categories.findIndex(
+      //   this.selectedCategory
+      // )
+      // TODO: ここは変更しないといけない
+      formData.append('category_id', this.categoryIDs[1])
       formData.append('token', this.$auth.getToken('local'))
       // カンマ区切りにして一つの文字列にして送信する
       const keyword = this.keywords.replace(' ', ',')
@@ -199,8 +201,6 @@ export default {
         formData.append('insert_text', text)
       }
 
-      return
-
       await this.$axios
         .$post('company/video/', formData, {
           headers: {
@@ -208,7 +208,7 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response.data.status)
+          console.log(response)
         })
         .catch((error) => {
           console.log(error)
