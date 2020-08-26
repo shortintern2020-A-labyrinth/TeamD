@@ -12,13 +12,6 @@
     <v-card-text class="text--primary">
       <div>{{ video.description }}</div>
     </v-card-text>
-
-    <v-card-actions>
-      <div></div>
-      <v-spacer></v-spacer>
-      <v-btn color="info" text>編集 TODO: 消す？</v-btn>
-      <v-btn color="error" text>削除 TODO: 消す？</v-btn>
-    </v-card-actions>
   </v-card>
 </template>
 
