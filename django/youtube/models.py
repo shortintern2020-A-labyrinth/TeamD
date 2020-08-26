@@ -51,7 +51,7 @@ VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
 
 def get_authenticated_service(args):
     flow = flow_from_clientsecrets(CLIENT_SECRETS_FILE, scope=YOUTUBE_UPLOAD_SCOPE, message=MISSING_CLIENT_SECRETS_MESSAGE)
-
+    #ここを解決する
     storage = Storage("youtube/oauth2.json")
     credentials = storage.get()
 
@@ -136,5 +136,12 @@ def upload_youtube(file,title,description,category,keywords,privacyStatus):
     except HttpError as e:
         print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
 
-def upload_movie():
-    return
+def upload_movie(data):
+    file = data['youtube']['paths'] 
+    title = data['youtube']['title'] 
+    description = data['youtube']['title'] 
+    category = data['youtube']['title'] 
+    keywords = data['youtube']['title'] 
+    privacyStatus = 'public'
+    upload_youtube(file,title,description,category,keywords,privacyStatus)
+    return data

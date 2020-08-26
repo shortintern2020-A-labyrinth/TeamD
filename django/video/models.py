@@ -40,7 +40,7 @@ def get_video_post(company_id):
 def save_video(video):
     fs = FileSystemStorage()
     file_name = fs.save(video.name, video)
-    file_path = '/tmp/{}'.format(file_name)  # fs.url(file_name)だと文字コードが変わってしまう
+    file_path = 'tmp/{}'.format(file_name)  # fs.url(file_name)だと文字コードが変わってしまう
     return file_path
 
 
@@ -48,7 +48,7 @@ def save_video(video):
 def remove_video(file_path):
     get_video(file_path)
     fs = FileSystemStorage()
-    file_name = file_path[5:]
+    file_name = file_path[4:]
     fs.delete(file_name)
 
 
@@ -64,7 +64,7 @@ def get_request_data(request):
     data['youtube']['category_id'] = '' if not 'category_id' in post else post['category_id']
     data['youtube']['keywords'] = '' if not 'keywords' in post else post['keywords']
     data['youtube']['paths'] = []  # [path1, path2,,,,] # 加工後の動画のパスが入る
-
+    
     insert_text = [] if not 'insert_text' in post else post.getlist('insert_text')
     insert_position = [] if not 'insert_position' in post else post.getlist('insert_position')
     videos = [] if not 'movies' in request.FILES else request.FILES.getlist('movies')
