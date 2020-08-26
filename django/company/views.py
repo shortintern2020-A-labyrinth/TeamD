@@ -1,4 +1,3 @@
-# coding: UTF-8
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -57,7 +56,7 @@ def video_view(request):
         # 仮保存した動画を削除する
         for file_path in data['delete']:
             remove_video(file_path)
-        set_video_post(data)
+        set_video_post(data) # 公開した動画のURLをデータベースにいれる
 
         # make_movie(data)  # 動画加工
         return Response(
