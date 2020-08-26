@@ -7,7 +7,7 @@ import string, random
 
 def making_movie(data):
     print(data)
-    random = [random.choice(string.ascii_letters+ string.digits) for i in range(10)]
+    rand =''.join([random.choice(string.ascii_letters + string.digits) for i in range(10)])
     num_material = len(data['edit']['material']['paths'])  # マテリアル(素材動画)の数
     font = 'fonts/ProN.ttc'  # 事前にダウンロードしておく
     fontsize = 64
@@ -23,14 +23,14 @@ def making_movie(data):
                     fontsize,
                     fontcolor,
                     data['edit']['insert']['position'][i]]]
-        out = insert_text(data['edit']['material']['paths'][i],message, 'tmp/insert_text'+str(i)+'_'+ random+'.mp4')
+        out = insert_text(data['edit']['material']['paths'][i],message, 'tmp/insert_text'+str(i)+'_'+ rand+'.mp4')
         data['edit']['insert']['paths'].append(out)
         data['delete'].append(out)
     if num_material == 1:
         data['edit']['combine']['paths'] = data['edit']['insert']['paths']
     else:
         out = combine_material(
-            data['edit']['insert']['paths'], output='tmp/combine_out'+ random +'.mp4')
+            data['edit']['insert']['paths'], output='tmp/combine_out'+ rand +'.mp4')
         data['edit']['combine']['paths'].append(out)
         data['delete'].append(out)
     return data
