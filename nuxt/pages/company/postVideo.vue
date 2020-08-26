@@ -10,12 +10,11 @@
           <v-textarea v-model="description" :counter="10" label="動画詳細説明欄※" required></v-textarea>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="4">
           <v-select v-model="selectedCategory" :items="categories" label="動画カテゴリ" outlined></v-select>
         </v-col>
 
-        <!-- TODO: 本当はここは入力フォームを複数個作成するべきたけど、めんどくさくてできていない -->
-        <v-col cols="12">
+        <v-col cols="8">
           <v-text-field v-model="keywords" label="キーワード(カンマ区切りで複数入力できます)"></v-text-field>
         </v-col>
 
@@ -54,7 +53,7 @@
                 <v-select
                   v-model="selectedCategory"
                   :items="textPosition"
-                  label="動画を入れる場所"
+                  label="テキストを入れる場所"
                   outlined
                   @change="addPosition($event, i)"
                 ></v-select>
@@ -67,7 +66,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
 
-        <v-btn color="secondary" bold @click="submit">Submit</v-btn>
+        <v-btn color="info" x-large @click="submit">投稿</v-btn>
       </v-card-actions>
     </v-container>
   </v-form>
@@ -75,13 +74,29 @@
 
 <script>
 export default {
+  created() {
+    this.$axios
+      .$get('categories/')
+      .then((response) => {
+        this.categories = response.map((row) => {
+          return [row.name]
+        })
+        this.categoryIDs = response.map((row) => {
+          return [row.id]
+        })
+      })
+      .catch(() => {
+        this.$toast.error('データ取得時にエラーが発生しました')
+      })
+  },
   data: () => ({
     valid: false,
     title: '',
     description: '',
-    categories: ['競馬', '伝統工芸'],
-    textPosition: ['中央', '下'],
     selectedCategory: '',
+    categories: [],
+    categoryIDs: [],
+    textPosition: ['中央', '下'],
     // 空白区切りのkeywordが複数個入力されている
     keywords: '',
     companyID: 1,
@@ -144,10 +159,11 @@ export default {
       const formData = new FormData()
       formData.append('title', this.title)
       formData.append('description', this.description)
-      // TODO: とりあえず固定値を入力している
-      formData.append('category_id', 1)
-      // TODO: とりあえず固定値を入力している
-      formData.append('company_id', 1)
+      const categoryArrayIndex = this.categories.findIndex(
+        this.selectedCategory
+      )
+      formData.append('category_id', this.categoryIDs[categoryArrayIndex])
+      formData.append('token', this.$auth.getToken('local'))
       // カンマ区切りにして一つの文字列にして送信する
       const keyword = this.keywords.replace(' ', ',')
       formData.append('keywords', keyword)
