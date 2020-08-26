@@ -1,3 +1,4 @@
+# coding: UTF-8
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -7,31 +8,35 @@ import json
 import random
 import string
 import time
-from .models import Company, Urls
-from video.models import video_post_validation, material_video_validation, save_video, remove_video, get_video_post, get_request_data
+from .models import Company
+from video.models import video_post_validation, material_video_validation, save_video, remove_video, get_video_post, get_request_data, set_video_post
 from .util.models import post_mail
 from django.utils import timezone
 import hashlib
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from session.redis import SessionRedis
-from movie.models import combine_material
+from company.util.models import get_company_id
+# from movie.models import combine_material, make_movie
 
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
 def video_view(request):
     if request.method == 'GET':
-        company_id = int(request.GET.get('company_id'))
-        # [{'name':'hoge', 'youtube_url':'hoge.com', ・・・},・・・]
-        videos = get_video_post(company_id)
-        return Response(
-            {
-                'message': 'success!',
-                'videos': videos
-            },
-            status=status.HTTP_200_OK
-        )
+        token = request.GET.get('token')
+        _, company_id = get_company_id(token)
+        company_id = None if type(company_id) != int else int(company_id)
+        if company_id != None:
+            # [{'name':'hoge', 'youtube_url':'hoge.com', ・・・},・・・]
+            videos = get_video_post(company_id)
+            return Response(
+                {
+                    'message': 'success!',
+                    'videos': videos
+                },
+                status=status.HTTP_200_OK
+            )
     elif request.method == 'POST':
         # 動画公開時の情報に対してバリデーション
         if not video_post_validation(request.POST):
@@ -49,23 +54,13 @@ def video_view(request):
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
-        # data['title']='タイトル', data['description']='概要'・・・
-        data = json.loads(json.dumps(request.POST))
-        # file_infos = [{'name':'ファイル名', 'path':'/tmp/ファイル名'}, ・・・]
-        file_infos = [save_video(video)
-                      for video in request.FILES.getlist('movies')]
-        data['file_infos'] = file_infos
+        data = get_request_data(request)  # リクエストパラメータの取得
+        # 仮保存した動画を削除する
+        for file_path in data['delete']:
+            remove_video(file_path)
+        set_video_post(data)
 
-        # コーダイからdataを受け取る
-        # 動画をつなげて/tmp/output.mp4にする
-        path_ary = [d.get('path')[1:] for d in data['file_infos']]
-        output = combine_material(path_ary)
-        data['file_infos'] = data['file_infos'].append(output)
-        '''
-        #youtube投稿
-        upload_youtube(output['path'],data['title'],data['description'],data['category_id'],data['keywords'],'public')
-        '''
-
+        # make_movie(data)  # 動画加工
         return Response(
             {
                 'message': 'success'
@@ -77,9 +72,8 @@ def video_view(request):
     elif request.method == 'DELETE':
         print()
 
+
 # session用
-
-
 def randomSTR(n):
     randlst = [random.choice(string.ascii_letters + string.digits)
                for i in range(n)]
@@ -150,7 +144,7 @@ def register_temporary_company(request):
             token = hashlib.sha1(tmp_str.encode('utf-8')).hexdigest()
             # compnayテーブルにインサート
             company = Company(name=name, email=email, password=password,
-                            description=description, is_accepted=0, tokens=token)
+                              description=description, is_accepted=0, tokens=token)
             company.save()
 
             # urlsの登録
