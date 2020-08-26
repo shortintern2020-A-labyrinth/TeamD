@@ -19,9 +19,14 @@ variable "region" {
 }
 
 variable "user_name" {
-  default = "DB_USER"
+  default = "test"
 }
 
 variable "user_password" {
-  default = "DB_PASSWORD"
+  default = "test"
+}
+
+variable "instance_name" {
+  description = "Name of the postgres instance (PROJECT_ID:REGION:INSTANCE_NAME))"
+  type        = string
 }

@@ -4,6 +4,7 @@ locals {
   region           = "asia-northeast1" # asia-northeast1
   project_id       = "a4shittyo-app"   # GCP Project ID
   subnetwork       = "vpc-subnet"      # Subnetwork name
+  db_instance_name = "db"
 }
 
 // Configure the Google Cloud provider
@@ -21,6 +22,7 @@ provider "google-beta" {
 
 module "cloudsql" {
   source           = "./modules/cloudsql"
+  instance_name    = local.db_instance_name
   network          = local.network
   database_version = local.database_version
   private_ip_name  = "10.20.0.100/24" # Private IP Name
@@ -29,16 +31,16 @@ module "cloudsql" {
 }
 
 module "cloudrun" {
-  source = "./modules/cloudrun"
-
-  project = local.project_id
-  region  = local.region
+  source            = "./modules/cloudrun"
+  project           = local.project_id
+  region            = local.region
+  database_instance = local.db_instance_name
 }
 
 module "memorystore" {
   source        = "./modules/memorystore"
   display_name  = "redis"        # Display Name
-  ip_range      = ""             #
+  ip_range      = "10.30.0.0/24" #
   location      = ""             # Zone
   name          = "redis-sittyo" # Instance name
   network       = local.network

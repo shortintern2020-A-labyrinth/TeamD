@@ -30,7 +30,7 @@ resource "random_id" "db_name_suffix" {
 resource "google_sql_database_instance" "instance" {
   provider = google-beta
 
-  name             = "private-instance-${random_id.db_name_suffix.hex}"
+  name             = var.instance_name
   database_version = var.database_version
   region           = var.region
 
