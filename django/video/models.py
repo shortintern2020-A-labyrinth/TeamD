@@ -1,4 +1,3 @@
-# coding: UTF-8
 from company.models import Video
 from django.core.files.storage import FileSystemStorage
 import os
@@ -58,30 +57,25 @@ def get_request_data(request):
     post = request.POST
     data = {}
 
+    # YouTube投稿に関する部分
     data['youtube'] = {}
     data['youtube']['title'] = '' if not 'title' in post else post['title']
     data['youtube']['description'] = '' if not 'description' in post else post['description']
-    data['youtube']['category_id'] = '' if not 'category_id' in post else post[
-        'category_id']
+    data['youtube']['category_id'] = '' if not 'category_id' in post else post['category_id']
     data['youtube']['keywords'] = '' if not 'keywords' in post else post['keywords']
-    data['youtube']['paths'] = []  # [path1, path2,,,,]
+    data['youtube']['paths'] = []  # [path1, path2,,,,] # 加工後の動画のパスが入る
+    
+    insert_text = [] if not 'insert_text' in post else post.getlist('insert_text')
+    insert_position = [] if not 'insert_position' in post else post.getlist('insert_position')
+    videos = [] if not 'movies' in request.FILES else request.FILES.getlist('movies')
 
-    insert_text = [
-    ] if not 'insert_text' in post else post.getlist('insert_text')
-    insert_position = [
-    ] if not 'insert_position' in post else post.getlist('insert_position')
-    videos = [] if not 'movies' in request.FILES else request.FILES.getlist(
-        'movies')
-
+    # 動画加工に関する部分
     data['edit'] = {}
     data['edit']['insert'] = {}
     data['edit']['material'] = {}
-    data['edit']['material']['paths'] = [
-        save_video(video) for video in videos]  # [path1, path2,,,]
-    data['edit']['insert']['text'] = [
-        text for text in insert_text]  # テキスト1, テキスト2, ・・・・
-    data['edit']['insert']['position'] = [
-        position for position in insert_position]  # 'bottom', 'center', ・・・
+    data['edit']['material']['paths'] = [save_video(video) for video in videos]  # [path1, path2,,,]
+    data['edit']['insert']['text'] = [text for text in insert_text]  # テキスト1, テキスト2, ・・・・
+    data['edit']['insert']['position'] = [position for position in insert_position]  # 'bottom', 'center', ・・・
     data['edit']['insert']['paths'] = []  # [newpath1, newpath2, ・・・]
     data['edit']['combine'] = {}
     data['edit']['combine']['paths'] = []
@@ -99,5 +93,5 @@ def set_video_post(data):
     company_id = None if type(company_id) != int else int(company_id)
     if company_id != None:
         video = Video(name=data['youtube']['title'], description=data['youtube']
-                      ['description'], youtube_url='hoge/fuga.com', company_id=company_id)
+                      ['description'], youtube_url='hoge/fuga.com', company_id=company_id,category_id=int(data['youtube']['category_id']))
         video.save()

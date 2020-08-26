@@ -52,10 +52,11 @@ paths:
           name: "urls"
           type: "string"
           description: "複数OK urlとタイプを記入(array型。下記Moels参照)
-                      \ntype:
-                      \n1 : 企業サイトURL
-                      \n2: 商品販売サイトURL
-                      \n3: GoogleFormURL"
+            \ntype:
+            \n1 : 企業サイトURL
+            \n2: 商品販売サイトURL
+            \n3: GoogleFormURL"
+
       responses:
         200:
           "description": "success"
@@ -241,10 +242,10 @@ paths:
           name: "urls"
           type: "string"
           description: "複数OK urlとタイプを記入(array型。下記Moels参照)
-                      \ntype:
-                      \n1 : 企業サイトURL
-                      \n2: 商品販売サイトURL
-                      \n3: GoogleFormURL"
+            \ntype:
+            \n1 : 企業サイトURL
+            \n2: 商品販売サイトURL
+            \n3: GoogleFormURL"
       responses:
         200:
           "description": "success"
@@ -316,7 +317,7 @@ paths:
         - in: "formData"
           name: "movies"
           type: "file"
-          description: "アップロードされた動画（型などは仮設定）"
+          description: "アップロードされた動画"
           required: true
         - in: "formData"
           name: "insert-text"

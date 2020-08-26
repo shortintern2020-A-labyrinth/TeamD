@@ -34,6 +34,10 @@ class Video(models.Model):
         null=False,
         blank=False
     )
+    category_id = models.IntegerField(
+        null=False,
+        blank=False,
+    )
 
 class Company(models.Model):
     name = models.CharField(

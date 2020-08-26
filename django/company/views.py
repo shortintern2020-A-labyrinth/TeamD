@@ -1,4 +1,3 @@
-# coding: UTF-8
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -28,8 +27,7 @@ def video_view(request):
         _, company_id = get_company_id(token)
         company_id = None if type(company_id) != int else int(company_id)
         if company_id != None:
-            # [{'name':'hoge', 'youtube_url':'hoge.com', ・・・},・・・]
-            videos = get_video_post(company_id)
+            videos = get_video_post(company_id) # [{'name':'hoge', 'youtube_url':'hoge.com', ・・・},・・・]
             return Response(
                 {
                     'message': 'success!',
@@ -64,9 +62,7 @@ def video_view(request):
         # 仮保存した動画を削除する
         for file_path in data['delete']:
             remove_video(file_path)
-        set_video_post(data)
-        '''
-
+        set_video_post(data) # 公開した動画のURLをデータベースにいれる
         # make_movie(data)  # 動画加工
         return Response(
             {
