@@ -72,6 +72,39 @@ def video_view(request):
     elif request.method == 'DELETE':
         print()
 
+@api_view(['POST'])
+def return_preview(request):
+    try:
+        # バリデーション
+        if not material_video_validation(request.FILES):
+            return Response(
+                {
+                    'message': 'material_video_validation error'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        data = get_request_data(request)
+
+        #動画加工
+        edited_movie = making_movie(data)
+
+        # 仮保存した動画を削除する
+        remove_video(data['delete']):
+        
+        #編集後の動画返却
+        
+    except:
+        return Response(
+            {
+                'message': 'failed'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+
+# session用
+
 
 # session用
 def randomSTR(n):
@@ -211,6 +244,10 @@ def update_company_details(request):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+def return_preview(request):
+    
 
     # 運営に申請メール送信
     # subject="企業からの申請依頼のお知らせ"
