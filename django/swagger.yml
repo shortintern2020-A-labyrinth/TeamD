@@ -39,6 +39,8 @@ paths:
               description:
                 type: string
                 description: description
+        400:
+          "description": "failed"
   /api/company/register/:
     post:
       tags:
