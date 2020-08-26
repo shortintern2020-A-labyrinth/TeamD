@@ -23,9 +23,9 @@ from youtube.models import upload_movie
 @api_view(['GET', 'POST'])
 def video_view(request):
     if request.method == 'GET':
-        token = request.GET.get('token')
+        token = request.headers['Authorization']
         _, company_id = get_company_id(token)
-        company_id = None if type(company_id) != int else int(company_id)
+        company_id = None if company_id == None else int(company_id)
         if company_id != None:
             videos = get_video_post(company_id) # [{'name':'hoge', 'youtube_url':'hoge.com', ・・・},・・・]
             return Response(
