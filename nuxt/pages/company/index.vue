@@ -13,15 +13,22 @@
 import VideoCard from '../../components/videoCard'
 
 export default {
+  middleware: 'user_auth',
+  created() {
+    this.$axios
+      .$get('company/video/')
+      .then((response) => {
+        this.videos = response.videos
+      })
+      .catch(() => {
+        this.$toast.error('データ取得時にエラーが発生しました')
+      })
+  },
   components: {
     VideoCard,
   },
   data: () => ({
-    videos: [
-      { id: 1, title: 'sample', description: 'hogehoge' },
-      { id: 2, title: 'sample', description: 'hogehoge' },
-      { id: 3, title: 'sample', description: 'hogehoge' },
-    ],
+    videos: [],
   }),
   // created() {
   //   this.$axios

@@ -45,9 +45,9 @@ def return_company_info(request):
 @api_view(['GET', 'POST'])
 def video_view(request):
     if request.method == 'GET':
-        token = request.GET.get('token')
+        token = request.headers['Authorization']
         _, company_id = get_company_id(token)
-        company_id = None if type(company_id) != int else int(company_id)
+        company_id = None if company_id == None else int(company_id)
         if company_id != None:
             videos = get_video_post(company_id) # [{'name':'hoge', 'youtube_url':'hoge.com', ・・・},・・・]
             return Response(
@@ -243,34 +243,41 @@ def register_temporary_company(request):
 
 @api_view(['PUT'])
 def update_company_details(request):
-    try:
-        data = json.loads(request.body)
-        company_id = data['id']
-        description = data['description']
-        company = Company.objects.get(id=company_id)
-        company.description = description
-        company.save()
-        # urlsの登録
-        urls = data['urls']
-        if urls:
-            for url in urls:
-                value = url['value']
-                type = url['type']
+    data = json.loads(request.body)
+    print(data)
+    token = request.headers['Authorization']
+    _, company_id = get_company_id(token)
+    company_id = None if company_id == None else int(company_id)
+    description = data['description']
+    company = Company.objects.get(id=company_id)
+    company.description = description
+    company.save()
+    # urlsの登録
+    urls = data['urls']
+    if urls:
+        for url in urls:
+            value = url['value']
+            type = url['type']
+            try:
+                urls = Urls.objects.get(type=type, company_id=company.id)
+                urls.value = value
+            except Urls.DoesNotExist:
                 urls = Urls(value=value, type=type, company_id=company.id)
-                urls.save()
-        return JsonResponse(
-            {
-                'message': 'success'
-            },
-            status=status.HTTP_200_OK
-        )
-    except:
-        return Response(
-            {
-                'message': 'failed'
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
+            urls.save()
+    return JsonResponse(
+        {
+            'message': 'success'
+        },
+        status=status.HTTP_200_OK
+    )
+    # try:
+    # except:
+    #     return Response(
+    #         {
+    #             'message': 'failed'
+    #         },
+    #         status=status.HTTP_400_BAD_REQUEST
+    #     )
 
 
     # 運営に申請メール送信
