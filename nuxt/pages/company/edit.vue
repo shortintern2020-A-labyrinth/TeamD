@@ -5,10 +5,6 @@
       <v-container>
         <v-row>
           <v-col cols="12">
-            <v-text-field v-model="companyName" label="企業名" required></v-text-field>
-          </v-col>
-
-          <v-col cols="12">
             <v-textarea v-model="companyDesc" label="企業概要説明" />
           </v-col>
 
@@ -18,7 +14,7 @@
             <v-text-field v-model="companyURL" label="企業サイトURL"></v-text-field>
           </v-col>
           <v-col cols="12">
-            <v-text-field v-model="goodURL" label="商品販売サイトURL"></v-text-field>
+            <v-text-field v-model="ecURL" label="商品販売サイトURL"></v-text-field>
           </v-col>
           <v-col cols="12">
             <v-text-field v-model="googleFormURL" label="GoogleFormURL"></v-text-field>
@@ -39,19 +35,25 @@ export default {
   middleware: 'user_auth',
   data: () => ({
     valid: false,
-    companyName: '',
     companyDesc: '',
+    companyURL: '',
+    ecURL: '',
+    googleFormURL: '',
     companyPattern: ['企業サイト', '商品販売サイト', 'googleForm'],
   }),
   methods: {
     async edit() {
-      // TODO: とりあえずこれだけ
       const data = {
-        name: this.companyName,
         description: this.companyDesc,
+        urls: [
+          { type: 1, value: this.companyURL },
+          { type: 2, value: this.ecURL },
+          { type: 3, value: this.googleFormURL },
+        ],
       }
+      console.log(data)
       await this.$axios
-        .$post('company/register/', data, {
+        .$put('company/edit/', data, {
           headers: {
             'Content-Type': 'application/json',
           },
