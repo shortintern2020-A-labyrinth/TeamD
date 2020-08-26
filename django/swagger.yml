@@ -17,6 +17,28 @@ schemes:
   - "https"
   - "http"
 paths:
+  /api/company/:
+    get:
+      tags:
+        - "company"
+      summary: "企業情報返却"
+      description: "企業情報返却\n"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: companyのname
+              description:
+                type: string
+                description: description
   /api/company/register/:
     post:
       tags:

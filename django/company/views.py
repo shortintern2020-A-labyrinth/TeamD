@@ -7,7 +7,7 @@ import json
 import random
 import string
 import time
-from .models import Company
+from .models import Company, Urls
 from video.models import video_post_validation, material_video_validation, save_video, remove_video, get_video_post, get_request_data, set_video_post
 from .util.models import post_mail
 from django.utils import timezone
@@ -18,6 +18,28 @@ from session.redis import SessionRedis
 from company.util.models import get_company_id
 from movie.models import making_movie
 from youtube.models import upload_movie
+
+@api_view(['GET'])
+def return_company_info(request):
+    try:
+        sessionRedis = SessionRedis()
+        token = request.headers['Authorization']
+        str_time, company_id = sessionRedis.get(token)
+        company = Company.objects.get(id=company_id)
+        return Response(
+                {
+                    'name': company.name,
+                    'description': company.description
+                },
+                status=status.HTTP_200_OK
+            )
+    except:
+        return Response(
+                {
+                    'message': 'failed!'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
