@@ -47,8 +47,8 @@ def save_video(video):
 
 # 動画の削除
 def remove_video(file_path):
-    get_video(file_path)
     fs = FileSystemStorage()
+    # tmp/hogehoge.mp4 の tmp/を消すためのコード
     file_name = file_path[4:]
     fs.delete(file_name)
 
@@ -62,7 +62,7 @@ def create_english_description(data):
             description += '{}\n'.format(c.translate(text))
         else:
             description += '\n'
-    return description 
+    return description
 
 
 # パラメータ取得
@@ -77,9 +77,9 @@ def get_request_data(request):
     # YouTube投稿に関する部分
     data['youtube'] = {}
     data['youtube']['title'] = '' if not 'title' in post else post['title']
-    if len(data['youtube']['title']+"/{}.format(c.translate(data['youtube']['title']))") <= 80:
+    if data['youtube']['title'] != '' and len(data['youtube']['title']+"/{}".format(c.translate(data['youtube']['title']))) <= 80:
         data['youtube']['title'] += '/{}'.format(c.translate(data['youtube']['title']))
-    
+
     '''
     花火職人の技術/Fireworks craftsmanship
     '''
