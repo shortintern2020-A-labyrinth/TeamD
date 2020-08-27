@@ -1,4 +1,4 @@
-from company.models import Video, Urls
+from company.models import Video, Urls, Company
 from django.core.files.storage import FileSystemStorage
 import os
 from company.util.models import get_company_id
@@ -64,16 +64,29 @@ def get_request_data(request):
     data['youtube']['title'] = '' if not 'title' in post else post['title']
     _, company_id = get_company_id(data['token'])
     company_id = None if company_id is None else int(company_id)
+    company = Company.objects.get(id=company_id)
     urls = [url for url in Urls.objects.filter(company_id=company_id).values()]
     data['youtube']['description'] = ''
+    data['youtube']['description'] += '{}\n'.format(company.name)
+    data['youtube']['description'] += '{}\n\n'.format(company.description)
     for url in urls:
         if url['type'] == 1:
-            data['youtube']['description'] += '企業サイト：{}\n'.format(url['value'])
+            data['youtube']['description'] += 'ホームページ：{}\n'.format(url['value'])
         elif url['type'] == 2:
-            data['youtube']['description'] += '商品販売サイト：{}\n'.format(url['value'])
+            data['youtube']['description'] += '商品購入はこちら：{}\n'.format(url['value'])
         elif url['type'] == 3:
-            data['youtube']['description'] += 'GoogleForm：{}\n\n'.format(url['value'])
-    data['youtube']['description'] += '' if not 'description' in post else post['description']
+            data['youtube']['description'] += '体験応募はこちら：{}\n'.format(url['value'])
+    data['youtube']['description'] += '' if not 'description' in post else '\n{}'.format(post['description'])
+    '''
+    ほげほげ会社
+    ほげふがなことをしています！
+
+    ホームページ：~~~~.com
+    商品購入はこちら：~~~.com
+    体験応募はこちら：~~~~.com
+
+    ほげほげ技術の裏側を撮影してみました〜
+    '''
     data['youtube']['category_id'] = '' if not 'category_id' in post else post['category_id']
     data['youtube']['keywords'] = '' if not 'keywords' in post else post['keywords']
     data['youtube']['paths'] = []  # [path1, path2,,,,] # 加工後の動画のパスが入る
