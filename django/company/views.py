@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django import forms
 
-import json
+import json, base64
 import random
 import string
 import time
@@ -106,7 +106,8 @@ def return_preview(request):
     path = data['edit']['combine']['paths']
     with open(path[0], 'rb') as f:
         movie_binary = f.read()
-    return HttpResponse(movie_binary, content_type='video/mp4')
+        b64 = base64.b64encode(movie_binary)
+    return HttpResponse(b64, content_type='video/mp4')
 
     # try:
     #     # バリデーション

@@ -48,7 +48,7 @@
               </v-col>
               <v-col cols="6">
                 <v-btn @click="requestPreview(i)">プレビュー</v-btn>
-                <video :src="src" controls />
+                <video :src="src" controls type="video/mp4" />
               </v-col>
               <v-col cols="8">
                 <v-text-field label="動画に入れるテキスト" @change="addText($event, i)" />
@@ -94,6 +94,7 @@ export default {
       .catch(() => {
         this.$toast.error('データ取得時にエラーが発生しました')
       })
+    // this.src = require('@/assets/sample1.mp4')
   },
   data: () => ({
     src: '',
@@ -194,9 +195,7 @@ export default {
         })
         .then((response) => {
           this.loading = false
-          const b64 = window.btoa(unescape(encodeURIComponent(response)))
-          const src = 'data:video/mp4;base64,' + b64
-          this.src = src
+          this.src = 'data:video/mp4;base64,' + response
           this.$toast.success('ok')
         })
         .catch((error) => {
