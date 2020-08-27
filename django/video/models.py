@@ -2,6 +2,7 @@ from company.models import Video, Urls, Company
 from django.core.files.storage import FileSystemStorage
 import os
 from company.util.models import get_company_id
+from translate.gtrans import Translate
 
 
 # 動画情報のバリデーション
@@ -52,16 +53,37 @@ def remove_video(file_path):
     fs.delete(file_name)
 
 
+def create_english_description(data):
+    c = Translate()
+    description = '------ english ------\n'
+    split_text = data['youtube']['description'].split('\n')
+    for text in split_text:
+        if text != '':
+            description += '{}\n'.format(c.translate(text))
+        else:
+            description += '\n'
+    return description 
+
+
 # パラメータ取得
 def get_request_data(request):
     post = request.POST
     data = {}
+    company = {}
+    c = Translate()
 
     data['token'] = '' if not 'token' in post else post['token']
 
     # YouTube投稿に関する部分
     data['youtube'] = {}
     data['youtube']['title'] = '' if not 'title' in post else post['title']
+    if len(data['youtube']['title']+"/{}.format(c.translate(data['youtube']['title']))") <= 80:
+        data['youtube']['title'] += '/{}'.format(c.translate(data['youtube']['title']))
+    
+    '''
+    花火職人の技術/Fireworks craftsmanship
+    '''
+
     _, company_id = get_company_id(data['token'])
     company_id = None if company_id is None else int(company_id)
     company = Company.objects.get(id=company_id)
@@ -77,15 +99,23 @@ def get_request_data(request):
         elif url['type'] == 3:
             data['youtube']['description'] += '体験応募はこちら：{}\n'.format(url['value'])
     data['youtube']['description'] += '' if not 'description' in post else '\n{}'.format(post['description'])
+    english_description = create_english_description(data)
+    data['youtube']['description'] += english_description
     '''
-    ほげほげ会社
-    ほげふがなことをしています！
+    ほげほげ
+    私達の企業は主にものづくりをしています
 
-    ホームページ：~~~~.com
-    商品購入はこちら：~~~.com
-    体験応募はこちら：~~~~.com
+    ホームページ：hoge_company_url
+    商品購入はこちら：fuga_ec_url
 
-    ほげほげ技術の裏側を撮影してみました〜
+    花火は難しいです------ english ------
+    Hogehoge
+    Our company is mainly manufacturing
+
+    Home page: hoge_company_url
+    Click here to purchase the product: fuga_ec_url
+
+    Fireworks is difficult
     '''
     data['youtube']['category_id'] = '' if not 'category_id' in post else post['category_id']
     data['youtube']['keywords'] = '' if not 'keywords' in post else post['keywords']
@@ -100,7 +130,7 @@ def get_request_data(request):
     data['edit']['insert'] = {}
     data['edit']['material'] = {}
     data['edit']['material']['paths'] = [save_video(video) for video in videos]  # [path1, path2,,,]
-    data['edit']['insert']['text'] = [text for text in insert_text]  # テキスト1, テキスト2, ・・・・
+    data['edit']['insert']['text'] = ["{}\n\n{}".format(c.translate(text),text) for text in insert_text]  # テキスト1, テキスト2, ・・・・
     data['edit']['insert']['position'] = [position for position in insert_position]  # 'bottom', 'center', ・・・
     data['edit']['insert']['paths'] = []  # [newpath1, newpath2, ・・・]
     data['edit']['combine'] = {}
