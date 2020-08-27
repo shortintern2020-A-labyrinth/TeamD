@@ -4,7 +4,7 @@
 
 ```sh
 cd ../django # DjangoのDockerfileをビルドしたいので
-gcloud builds submit --tag gcr.io/a4shittyo-app/django
+gcloud builds submit --timeout=1800s --tag gcr.io/a4shittyo-app/django
 ```
 
 ### GCP の初期設定

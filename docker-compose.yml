@@ -1,8 +1,8 @@
-version: '3.7'
+version: "3.7"
 
 services:
   db:
-    image: mysql:latest
+    image: mysql:5.7
     restart: always
     container_name: mysql
     environment:
@@ -17,7 +17,7 @@ services:
     volumes:
       - mysqldata:/var/lib/mysql
       - ./.docker/mysql/conf:/etc/mysql/conf.d
-  
+
   redis:
     image: redis:latest
     ports:
