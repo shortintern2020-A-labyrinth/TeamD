@@ -36,18 +36,13 @@
           <v-card>
             <v-card-title>動画 {{ i }}</v-card-title>
             <v-row>
-              <v-col cols="6">
-                <!-- <v-file-input
-                ref="video"
-                label="動画※"
-                filled
-                prepend-icon="mdi-movie"
-                @change="changeFile($event, i)"
-                ></v-file-input>-->
+              <v-col cols="12">
                 <input ref="video" type="file" @change="changeFile($event, i)" />
               </v-col>
-              <v-col cols="6">
+              <v-col cols="2">
                 <v-btn @click="requestPreview(i)">プレビュー</v-btn>
+              </v-col>
+              <v-col cols="10">
                 <video :src="src" controls type="video/mp4" />
               </v-col>
               <v-col cols="8">

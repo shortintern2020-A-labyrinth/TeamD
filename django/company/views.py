@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django import forms
 
-import json, base64
+import json, base64, io, os
 import random
 import string
 import time
@@ -97,37 +97,47 @@ def video_view(request):
 
 @api_view(['POST'])
 def return_preview(request):
-    data = get_request_data(request)
-    #動画加工
-    data = making_movie(data)
-    # 仮保存した動画を削除する
-    # remove_video(data['delete'])
-    #編集後の動画返却
-    path = data['edit']['combine']['paths']
-    with open(path[0], 'rb') as f:
-        movie_binary = f.read()
-        b64 = base64.b64encode(movie_binary)
-    return HttpResponse(b64, content_type='video/mp4')
+    try:
+        # バリデーション
+        if not material_video_validation(request.FILES):
+            return Response(
+                {
+                    'message': 'material_video_validation error'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        data = get_request_data(request)
 
-    # try:
-    #     # バリデーション
-    #     # if not material_video_validation(request.FILES):
-    #     #     return Response(
-    #     #         {
-    #     #             'message': 'material_video_validation error'
-    #     #         },
-    #     #         status=status.HTTP_400_BAD_REQUEST
-    #     #     )
+        #動画加工
+        data = making_movie(data)
 
-    # except:
-    #     return Response(
-    #         {
-    #             'message': 'failed'
-    #         },
-    #         status=status.HTTP_400_BAD_REQUEST
-    #     )
+        # 仮保存した動画を削除する
+        # remove_video(data['delete'])
 
-# session用
+        #編集後の動画返却
+        path = data['edit']['combine']['paths']
+        file_path = path[0]
+
+        paths = file_path.split('/')
+        paths[1] = "after-" + paths[1]
+        after_file = '/'.join(paths)
+
+        s = "ffmpeg -i {} -vcodec libx264 {}".format(file_path, after_file)
+
+        # コーデックをh264に設定した
+        os.system(s)
+
+        video = io.open(after_file, 'r+b').read()
+        encoded_video = base64.b64encode(video)
+
+        return HttpResponse(encoded_video.decode('ascii'), content_type='video/mp4')
+    except:
+        return Response(
+            {
+                'message': 'failed'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 # session用
