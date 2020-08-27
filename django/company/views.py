@@ -75,7 +75,6 @@ def video_view(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         data = get_request_data(request)  # リクエストパラメータの取得
-
         # data = making_movie(data) #動画加工
 
         #data = upload_movie(data) #動画アップロード

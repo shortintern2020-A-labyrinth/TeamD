@@ -53,10 +53,23 @@ def remove_video(file_path):
     fs.delete(file_name)
 
 
+def create_english_description(data):
+    c = Translate()
+    description = '------ english ------\n'
+    split_text = data['youtube']['description'].split('\n')
+    for text in split_text:
+        if text != '':
+            description += '{}\n'.format(c.translate(text))
+        else:
+            description += '\n'
+    return description 
+
+
 # パラメータ取得
 def get_request_data(request):
     post = request.POST
     data = {}
+    company = {}
     c = Translate()
 
     data['token'] = '' if not 'token' in post else post['token']
@@ -73,13 +86,11 @@ def get_request_data(request):
 
     _, company_id = get_company_id(data['token'])
     company_id = None if company_id is None else int(company_id)
-    company = Company.objects.get(id=company_id)
-    urls = [url for url in Urls.objects.filter(company_id=company_id).values()]
+    company = Company.objects.get(id=1)
+    urls = [url for url in Urls.objects.filter(company_id=1).values()]
     data['youtube']['description'] = ''
     data['youtube']['description'] += '{}\n'.format(company.name)
-    data['youtube']['description'] += '{}\n'.format(company.description)
-    data['youtube']['description'] += '---------------\n'
-    data['youtube']['description'] += '{}\n\n'.format(c.translate(company.description))
+    data['youtube']['description'] += '{}\n\n'.format(company.description)
     for url in urls:
         if url['type'] == 1:
             data['youtube']['description'] += 'ホームページ：{}\n'.format(url['value'])
@@ -88,23 +99,23 @@ def get_request_data(request):
         elif url['type'] == 3:
             data['youtube']['description'] += '体験応募はこちら：{}\n'.format(url['value'])
     data['youtube']['description'] += '' if not 'description' in post else '\n{}'.format(post['description'])
-    data['youtube']['description'] += '' if not 'description' in post else '\n---------------'.format(post['description'])
-    data['youtube']['description'] += '' if not 'description' in post else '\n{}'.format(c.translate(post['description']))
-    
+    english_description = create_english_description(data)
+    data['youtube']['description'] += english_description
     '''
-    ほげほげ会社
-    私達の企業は主にものづくりをしています！
-    --------------------
+    ほげほげ
+    私達の企業は主にものづくりをしています
+
+    ホームページ：hoge_company_url
+    商品購入はこちら：fuga_ec_url
+
+    花火は難しいです------ english ------
+    Hogehoge
     Our company is mainly manufacturing
 
+    Home page: hoge_company_url
+    Click here to purchase the product: fuga_ec_url
 
-    ホームページ：~~~~.com
-    商品購入はこちら：~~~.com
-    体験応募はこちら：~~~~.com
-
-    ほげほげ技術の裏側を撮影してみました
-    --------------------
-    I took a picture of the behind-the-scenes of the buzzing technology
+    Fireworks is difficult
     '''
     data['youtube']['category_id'] = '' if not 'category_id' in post else post['category_id']
     data['youtube']['keywords'] = '' if not 'keywords' in post else post['keywords']
