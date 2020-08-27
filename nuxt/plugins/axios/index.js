@@ -2,7 +2,7 @@ export let axios
 
 export default ({ store, $axios }) => {
   // TODO: ここは環境変数使って
-  $axios.defaults.baseURL = 'http://localhost:8000/api/'
+  $axios.defaults.baseURL = 'https://a4shittyo-app-dlukj7emra-an.a.run.app/api/'
 
   $axios.onRequest((config) => {
     // ここでaxiosのリクエストにtokenをいれる
