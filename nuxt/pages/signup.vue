@@ -1,26 +1,15 @@
 <template>
   <v-card class="mx-auto" max-width="500">
-    <v-card-title>
-      サインアップ
-    </v-card-title>
+    <v-card-title>サインアップ</v-card-title>
     <v-form v-model="valid">
       <v-container>
         <v-row>
           <v-col cols="12">
-            <v-text-field
-              v-model="companyName"
-              label="企業名※"
-              required
-            ></v-text-field>
+            <v-text-field v-model="companyName" label="企業名※" required></v-text-field>
           </v-col>
 
           <v-col cols="12">
-            <v-text-field
-              v-model="email"
-              :rules="emailRules"
-              label="メールアドレス※"
-              required
-            ></v-text-field>
+            <v-text-field v-model="email" :rules="emailRules" label="メールアドレス※" required></v-text-field>
           </v-col>
 
           <v-col cols="12">
@@ -28,6 +17,8 @@
               v-model="password"
               :counter="10"
               label="パスワード※"
+              append-icon="mdi-eye-off"
+              type="password"
               required
             ></v-text-field>
           </v-col>
@@ -35,26 +26,20 @@
           <v-col cols="12">
             <v-textarea v-model="companyDesc" label="企業概要説明" />
           </v-col>
-
           <v-col cols="12">
-            URL
-          </v-col>
+            <v-row>
+              <v-col cols="12">URL</v-col>
 
-          <v-col cols="4">
-            <v-select
-              :items="companyPattern"
-              :v-model="selectedComapnyPatten"
-              label="URLの種類"
-              outlined
-            ></v-select>
-          </v-col>
-          <v-col cols="8">
-            <v-text-field
-              v-model="password"
-              :counter="10"
-              label="URL"
-              required
-            ></v-text-field>
+              <v-col cols="12">
+                <v-text-field v-model="companyURL" label="企業サイトURL"></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field v-model="ecURL" label="商品販売サイトURL"></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field v-model="googleFormURL" label="GoogleFormURL"></v-text-field>
+              </v-col>
+            </v-row>
           </v-col>
         </v-row>
         <v-card-actions>
@@ -77,18 +62,24 @@ export default {
     email: '',
     companyName: '',
     companyDesc: '',
+    companyURL: '',
+    ecURL: '',
+    googleFormURL: '',
     selectedComapnyPatten: '',
     emailRules: [(v) => !!v || 'E-mail is required'],
-    companyPattern: ['企業サイト', '商品販売サイト'],
   }),
   methods: {
     async signup() {
-      // TODO: とりあえずこれだけ
       const data = {
         email: this.email,
         password: this.password,
         name: this.companyName,
         description: this.companyDesc,
+        urls: [
+          { type: 1, value: this.companyURL },
+          { type: 2, value: this.ecURL },
+          { type: 3, value: this.googleFormURL },
+        ],
       }
       await this.$axios
         .$post('company/register/', data, {
@@ -96,12 +87,14 @@ export default {
             'Content-Type': 'application/json',
           },
         })
-        .then((response) => {
-          console.log(response)
-          this.$router.push('/company/login/')
+        .then(() => {
+          this.$toast.success('登録メールを送りました！承認してください')
         })
         .catch((error) => {
           console.log(error)
+          this.$toast.error(
+            '申請中にエラーが発生しました。再度送信してください'
+          )
         })
     },
   },

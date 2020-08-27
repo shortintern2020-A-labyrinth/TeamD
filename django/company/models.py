@@ -34,6 +34,10 @@ class Video(models.Model):
         null=False,
         blank=False
     )
+    category_id = models.IntegerField(
+        null=False,
+        blank=False,
+    )
 
 class Company(models.Model):
     name = models.CharField(
@@ -41,7 +45,9 @@ class Company(models.Model):
             null=False,
             blank=False
     )
-    email = models.EmailField()
+    email = models.EmailField(
+        unique=True
+    )
     password = models.CharField(
         max_length=128,
         null=False,
@@ -63,6 +69,20 @@ class Category(models.Model):
     )
     name = models.CharField(
         max_length=255,
+        null=False,
+        blank=False
+    )
+
+class Urls(models.Model):
+    value = models.TextField(
+        null=False,
+        blank=False
+    )
+    type = models.IntegerField(
+        null=False,
+        blank=False,
+    ) # 1: 企業サイト 2: 商品販売, 3:googleForm
+    company_id = models.IntegerField(
         null=False,
         blank=False
     )

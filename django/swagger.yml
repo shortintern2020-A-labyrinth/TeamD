@@ -17,6 +17,30 @@ schemes:
   - "https"
   - "http"
 paths:
+  /api/company/:
+    get:
+      tags:
+        - "company"
+      summary: "企業情報返却"
+      description: "企業情報返却\n"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: companyのname
+              description:
+                type: string
+                description: description
+        400:
+          "description": "failed"
   /api/company/register/:
     post:
       tags:
@@ -49,9 +73,13 @@ paths:
           description: "company description"
           required: true
         - in: "query"
-          name: "url"
-          type: "integer"
-          description: "複数OK urlとタイプを記入"
+          name: "urls"
+          type: "string"
+          description: "複数OK urlとタイプを記入(array型。下記Moels参照)
+            \ntype:
+            \n1 : 企業サイトURL
+            \n2: 商品販売サイトURL
+            \n3: GoogleFormURL"
 
       responses:
         200:
@@ -115,7 +143,7 @@ paths:
                 type: string
                 description: The user token
   /api/categories/:
-    post:
+    get:
       summary: ""
       description: ""
       consumes:
@@ -217,21 +245,36 @@ paths:
     put:
       tags:
         - "company"
-      summary: "概要修正"
-      description: "login"
+      summary: "企業概要修正"
+      description: "企業のdescription修正"
       consumes:
         - "application/json"
       produces:
         - "application/json"
       parameters:
         - in: "query"
-          name: "domain_id"
+          name: "id"
           type: "integer"
-          description: "Domain id"
+          description: "companyのid"
           required: true
+        - in: "query"
+          name: "description"
+          type: "string"
+          description: "企業概要"
+          required: true
+        - in: "query"
+          name: "urls"
+          type: "string"
+          description: "複数OK urlとタイプを記入(array型。下記Moels参照)
+            \ntype:
+            \n1 : 企業サイトURL
+            \n2: 商品販売サイトURL
+            \n3: GoogleFormURL"
       responses:
         200:
-          "description": "A successful response."
+          "description": "success"
+        400:
+          "description": "failed"
   /api/company/video/:
     get:
       tags:
@@ -244,13 +287,24 @@ paths:
         - "application/json"
       parameters:
         - in: "query"
-          name: "domain_id"
-          type: "integer"
-          description: "Domain id"
+          name: "token"
+          type: "string"
+          description: "company_idを取得するためのトークン"
           required: true
       responses:
         200:
-          "description": "A successful response."
+          description: OK
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                youtube_url:
+                  type: string
+                  example: http://~~~~.com
+                name:
+                  type: string
+                  example: 謎の伝統工芸！
     post:
       tags:
         - "company"
@@ -259,41 +313,46 @@ paths:
       consumes:
         - "multipart/form-data"
       parameters:
-        - in: "query"
+        - in: "formData"
           name: "title"
           type: "string"
           description: "YouTubeのタイトル"
           required: true
-        - in: "query"
+        - in: "formData"
           name: "description"
           type: "string"
           description: "　YouTubeの概要欄"
           required: true
-        - in: "query"
+        - in: "formData"
           name: "category_id"
           type: "string"
           description: "動画のカテゴリーID"
           required: true
-        - in: "query"
-          name: "company_id"
+        - in: "formData"
+          name: "token"
           type: "integer"
-          description: "投稿元企業のid"
+          description: "company_idを取得するためのトークン"
           required: true
-        - in: "query"
+        - in: "formData"
           name: "keywords"
-          type: "array"
+          type: "string"
           description: "動画のキーワード"
           required: false
-          items:
-            type: string
-        - in: "query"
+        - in: "formData"
           name: "movies"
-          type: "array"
-          description: "アップロードされた動画（型などは仮設定）"
+          type: "file"
+          description: "アップロードされた動画"
           required: true
-          items:
-            type: string
-            format: binary
+        - in: "formData"
+          name: "insert-text"
+          type: "string"
+          description: "挿入したい文字"
+          required: false
+        - in: "formData"
+          name: "insert-position"
+          type: "string"
+          description: "文字の挿入位置"
+          required: false
       responses:
         200:
           "description": "動画投稿の成功"
@@ -379,27 +438,6 @@ paths:
           "description": "update error"
 
 definitions:
-  # PostVideoRequest:
-  #   type: "object"
-  #   properties:
-  #     data:
-  #       type: "object"
-  #       properties:
-  #         title:
-  #           type: "string"
-  #         description:
-  #           type: "string"
-  #         category:
-  #           type: "string"
-  #         keywords:
-  #           type: "array"
-  #           items:
-  #             type: "string"
-  #             description: "動画に関連するキーワード"
-  #         movies:
-  #           type: "array"
-  #           items:
-  #             $ref: "#/definitions/Material"
   PostMaterialRequest:
     type: "object"
     properties:
@@ -420,3 +458,16 @@ definitions:
       order:
         type: "integer"
         example: "1"
+
+  urls:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        type:
+          type: "integer"
+          format: "1"
+          example: 1
+        value:
+          type: "string"
+          example: "http~~"

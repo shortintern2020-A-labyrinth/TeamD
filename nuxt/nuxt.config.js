@@ -1,5 +1,8 @@
 import colors from 'vuetify/es5/util/colors'
 
+// dotenvの読み込み
+require('dotenv').config()
+
 export default {
   /*
    ** Nuxt rendering mode
@@ -37,7 +40,7 @@ export default {
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: ['@/plugins/axios/index'],
+  plugins: ['@/plugins/axios/index', '@/plugins/youtube'],
   /*
    ** Auto import components
    ** See https://nuxtjs.org/api/configuration-components
@@ -46,7 +49,7 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: ['@nuxt/typescript-build', '@nuxtjs/vuetify'],
+  buildModules: ['@nuxt/typescript-build', '@nuxtjs/vuetify', '@nuxtjs/dotenv'],
   /*
    ** Nuxt.js modules
    */
@@ -55,10 +58,18 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     '@nuxtjs/auth',
+    '@nuxtjs/toast',
   ],
-  router: {
-    middleware: ['user_auth'],
+  dotenv: {
+    /* module options */
+    filename:
+      process.env.NODE_ENV !== 'prod' ? './env/.env.prod' : './env/.env.dev',
   },
+  toast: {
+    position: 'top-center',
+    duration: 1500,
+  },
+  router: {},
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options

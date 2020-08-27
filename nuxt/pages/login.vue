@@ -1,24 +1,19 @@
 <template>
   <v-card class="mx-auto" max-width="500">
-    <v-card-title>
-      ログイン
-    </v-card-title>
+    <v-card-title>ログイン</v-card-title>
     <v-form v-model="valid">
       <v-container>
         <v-row>
           <v-col cols="12">
-            <v-text-field
-              v-model="email"
-              :rules="emailRules"
-              label="メールアドレス※"
-              required
-            ></v-text-field>
+            <v-text-field v-model="email" :rules="emailRules" label="メールアドレス※" required></v-text-field>
           </v-col>
 
           <v-col cols="12">
             <v-text-field
               v-model="password"
               :counter="10"
+              append-icon="mdi-eye-off"
+              type="password"
               label="パスワード※"
               required
             ></v-text-field>
@@ -56,6 +51,7 @@ export default {
         email: this.email,
         password: this.password,
       }
+      this.$toast.show('ログイン中...')
       await this.$axios
         .$post('company/login/', data, {
           headers: {
@@ -63,14 +59,16 @@ export default {
           },
         })
         .then((response) => {
+          this.$toast.success('認証成功！！！')
           this.$auth.setToken('local', response.token)
           // TODO: これでユーザー登録しないとisLoggedINが認証されない
           this.$auth.setUser({ name: 'hogehoge' })
-          this.$router.push('/company/')
         })
         .catch((error) => {
           console.log(error)
+          this.$toast.error('認証エラーが発生しました')
         })
+      this.$router.push('/company/')
     },
   },
 }

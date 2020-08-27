@@ -161,16 +161,17 @@ STATIC_URL = '/static/'
 
 # mail(テスト用)
 # コンソールにメール送信内容表示
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'django'
-EMAIL_PORT = 25
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_HOST = 'django'
+# EMAIL_PORT = 25
 
 # mail (本番用) -> 申請通り次第SMTPサーバとしてsendgrid使う予定
-# EMAIL_HOST = 'smtp.sendgrid.net'
-# EMAIL_HOST_USER = 'hoge@gmail.com'
-# EMAIL_HOST_PASSWORD = 'hogefuga'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = env('SENDGRID_USER')
+EMAIL_HOST_PASSWORD = env('SENDGRID_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
+# 動画を一時保存するフォルダ
 MEDIA_URL = '/tmp/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'tmp')
