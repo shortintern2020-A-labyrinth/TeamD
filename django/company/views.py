@@ -110,9 +110,6 @@ def return_preview(request):
         #動画加工
         data = making_movie(data)
 
-        # 仮保存した動画を削除する
-        # remove_video(data['delete'])
-
         #編集後の動画返却
         path = data['edit']['combine']['paths']
         file_path = path[0]
@@ -128,6 +125,13 @@ def return_preview(request):
 
         video = io.open(after_file, 'r+b').read()
         encoded_video = base64.b64encode(video)
+
+        # file削除
+        for file_path in data['delete']:
+            remove_video(file_path)
+
+        # after-〇〇.mp4 削除
+        remove_video(after_file)
 
         return HttpResponse(encoded_video.decode('ascii'), content_type='video/mp4')
     except:
