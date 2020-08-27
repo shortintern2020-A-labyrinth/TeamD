@@ -81,7 +81,7 @@ class Urls(models.Model):
     type = models.IntegerField(
         null=False,
         blank=False,
-    )
+    ) # 1: 企業サイト 2: 商品販売, 3:googleForm
     company_id = models.IntegerField(
         null=False,
         blank=False

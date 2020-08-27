@@ -1,6 +1,7 @@
 FROM python:buster
 
 RUN apt-get update
+
 RUN apt-get install libgl1-mesa-glx
 RUN apt-get install libx264-dev
 RUN apt-get install -y ffmpeg
