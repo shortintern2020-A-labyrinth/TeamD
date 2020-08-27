@@ -110,7 +110,7 @@ def combine_material(input, output='tmp/output.mp4'):
             ret, frame = material.read()
     # data[file_infos] =　data[file_infos].append([{'name':'出力名'},{'path':'出力path'}]) とういう状態をコーダイが欲しい
     # views.pyで data[file_infos] = data[file_infos].append(combine_movie(data[file_infos]))で呼び出す
-    return {'name': output, 'path': output}
+    return output
 
 
 def insert_text(input, message, output='output.mp4'):
