@@ -86,8 +86,8 @@ def get_request_data(request):
 
     _, company_id = get_company_id(data['token'])
     company_id = None if company_id is None else int(company_id)
-    company = Company.objects.get(id=1)
-    urls = [url for url in Urls.objects.filter(company_id=1).values()]
+    company = Company.objects.get(id=company_id)
+    urls = [url for url in Urls.objects.filter(company_id=company_id).values()]
     data['youtube']['description'] = ''
     data['youtube']['description'] += '{}\n'.format(company.name)
     data['youtube']['description'] += '{}\n\n'.format(company.description)
@@ -130,7 +130,7 @@ def get_request_data(request):
     data['edit']['insert'] = {}
     data['edit']['material'] = {}
     data['edit']['material']['paths'] = [save_video(video) for video in videos]  # [path1, path2,,,]
-    data['edit']['insert']['text'] = [text for text in insert_text]  # テキスト1, テキスト2, ・・・・
+    data['edit']['insert']['text'] = ["{}\n\n{}".format(c.translate(text),text) for text in insert_text]  # テキスト1, テキスト2, ・・・・
     data['edit']['insert']['position'] = [position for position in insert_position]  # 'bottom', 'center', ・・・
     data['edit']['insert']['paths'] = []  # [newpath1, newpath2, ・・・]
     data['edit']['combine'] = {}
