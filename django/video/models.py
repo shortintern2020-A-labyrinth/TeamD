@@ -130,7 +130,7 @@ def get_request_data(request):
     data['edit']['insert'] = {}
     data['edit']['material'] = {}
     data['edit']['material']['paths'] = [save_video(video) for video in videos]  # [path1, path2,,,]
-    data['edit']['insert']['text'] = ["{}\n\n{}".format(c.translate(text),text) for text in insert_text]  # テキスト1, テキスト2, ・・・・
+    data['edit']['insert']['text'] = [text if text == '' else '{}\n\n{}'.format(c.translate(text),text) for text in insert_text]
     data['edit']['insert']['position'] = [position for position in insert_position]  # 'bottom', 'center', ・・・
     data['edit']['insert']['paths'] = []  # [newpath1, newpath2, ・・・]
     data['edit']['combine'] = {}
