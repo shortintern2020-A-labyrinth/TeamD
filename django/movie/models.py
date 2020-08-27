@@ -6,11 +6,10 @@ import string, random
 
 
 def making_movie(data):
-    print(data)
     rand =''.join([random.choice(string.ascii_letters + string.digits) for i in range(10)])
     num_material = len(data['edit']['material']['paths'])  # マテリアル(素材動画)の数
     font = 'fonts/ProN.ttc'  # 事前にダウンロードしておく
-    fontsize = 64
+    fontsize = 40
     fontcolor = (255, 255, 255, 0)
     for i in range(num_material):
         # 動画時間取得
@@ -33,6 +32,7 @@ def making_movie(data):
             data['edit']['insert']['paths'], output='tmp/combine_out'+ rand +'.mp4')
         data['edit']['combine']['paths'].append(out)
         data['delete'].append(out)
+    data['youtube']['paths'] = data['edit']['combine']['paths']
     return data
 
 

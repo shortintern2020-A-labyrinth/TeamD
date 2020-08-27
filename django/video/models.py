@@ -55,13 +55,13 @@ def remove_video(file_path):
 
 def create_english_description(data):
     c = Translate()
-    description = '------ english ------\n'
+    description = '------ english ------ '
     split_text = data['youtube']['description'].split('\n')
     for text in split_text:
         if text != '':
-            description += '{}\n'.format(c.translate(text))
+            description += '{}'.format(c.translate(text))
         else:
-            description += '\n'
+            description += ''
     return description
 
 
@@ -78,7 +78,7 @@ def get_request_data(request):
     data['youtube'] = {}
     data['youtube']['title'] = '' if not 'title' in post else post['title']
     if data['youtube']['title'] != '' and len(data['youtube']['title']+"/{}".format(c.translate(data['youtube']['title']))) <= 80:
-        data['youtube']['title'] += '/{}'.format(c.translate(data['youtube']['title']))
+        data['youtube']['title'] += ' - {}'.format(c.translate(data['youtube']['title']))
 
     '''
     花火職人の技術/Fireworks craftsmanship
@@ -89,18 +89,19 @@ def get_request_data(request):
     company = Company.objects.get(id=company_id)
     urls = [url for url in Urls.objects.filter(company_id=company_id).values()]
     data['youtube']['description'] = ''
-    data['youtube']['description'] += '{}\n'.format(company.name)
-    data['youtube']['description'] += '{}\n\n'.format(company.description)
+    data['youtube']['description'] += '{}'.format(company.name)
+    data['youtube']['description'] += '{}'.format(company.description)
     for url in urls:
         if url['type'] == 1:
-            data['youtube']['description'] += 'ホームページ：{}\n'.format(url['value'])
+            data['youtube']['description'] += 'ホームページ：{}'.format(url['value'])
         elif url['type'] == 2:
-            data['youtube']['description'] += '商品購入はこちら：{}\n'.format(url['value'])
+            data['youtube']['description'] += '商品購入はこちら：{}'.format(url['value'])
         elif url['type'] == 3:
-            data['youtube']['description'] += '体験応募はこちら：{}\n'.format(url['value'])
-    data['youtube']['description'] += '' if not 'description' in post else '\n{}'.format(post['description'])
+            data['youtube']['description'] += '体験応募はこちら：{}'.format(url['value'])
+    data['youtube']['description'] += '' if not 'description' in post else '{}'.format(post['description'])
     english_description = create_english_description(data)
-    data['youtube']['description'] += english_description
+    data['youtube']['description'] = english_description
+
     '''
     ほげほげ
     私達の企業は主にものづくりをしています
@@ -130,7 +131,7 @@ def get_request_data(request):
     data['edit']['insert'] = {}
     data['edit']['material'] = {}
     data['edit']['material']['paths'] = [save_video(video) for video in videos]  # [path1, path2,,,]
-    data['edit']['insert']['text'] = [text if text == '' else '{}\n\n{}'.format(c.translate(text),text) for text in insert_text]
+    data['edit']['insert']['text'] = [text if text == '' else '{} -- {}'.format(c.translate(text),text) for text in insert_text]
     data['edit']['insert']['position'] = [position for position in insert_position]  # 'bottom', 'center', ・・・
     data['edit']['insert']['paths'] = []  # [newpath1, newpath2, ・・・]
     data['edit']['combine'] = {}

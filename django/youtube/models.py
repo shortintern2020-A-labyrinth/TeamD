@@ -137,11 +137,11 @@ def upload_youtube(file,title,description,category,keywords,privacyStatus):
         print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
 
 def upload_movie(data):
-    file = data['youtube']['paths'] 
-    title = data['youtube']['title'] 
-    description = data['youtube']['description'] 
-    category = data['youtube']['category_id'] 
-    keywords = data['youtube']['keywords'] 
+    file = data['youtube']['paths'][0]
+    title = data['youtube']['title']
+    description = data['youtube']['description']
+    category = data['youtube']['category_id']
+    keywords = data['youtube']['keywords']
     privacyStatus = 'public'
     upload_youtube(file,title,description,category,keywords,privacyStatus)
     return data

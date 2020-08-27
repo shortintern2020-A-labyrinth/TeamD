@@ -3,6 +3,8 @@
 # Installation of dependent libraries and softwares is required to use this script
 # ex. nasm, yasm, libmp3lame-dev, libopus-dev, libvorbis-dev, libvpx-dev...
 
+apt-get install -y libopus-dev
+
 set -ex
 
 # setup
@@ -28,9 +30,10 @@ cd $temp_dir
 git clone https://git.ffmpeg.org/ffmpeg.git
 cd ffmpeg
 git checkout n3.4.2
-./configure --enable-libopenh264 --enable-libmp3lame --enable-libopus --enable-libvorbis --enable-libvpx
-make -j `nproc`
-make install
+# export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+# ./configure --enable-libopenh264 --enable-libmp3lame --enable-libopus --enable-libvorbis --enable-libvpx
+# make -j `nproc`
+# make install
 
 # cleanup
 cd
