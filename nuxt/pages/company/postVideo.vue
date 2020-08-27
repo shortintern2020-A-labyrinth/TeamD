@@ -43,7 +43,7 @@
                 <v-btn @click="requestPreview(i)">プレビュー</v-btn>
               </v-col>
               <v-col cols="10">
-                <video :src="src" controls type="video/mp4" />
+                <video :src="previewSrc[i]" controls type="video/mp4" />
               </v-col>
               <v-col cols="8">
                 <v-text-field label="動画に入れるテキスト" @change="addText($event, i)" />
@@ -89,10 +89,9 @@ export default {
       .catch(() => {
         this.$toast.error('データ取得時にエラーが発生しました')
       })
-    // this.src = require('@/assets/sample1.mp4')
   },
   data: () => ({
-    src: '',
+    previewSrc: [''],
     loading: false,
     valid: false,
     title: '',
@@ -157,6 +156,15 @@ export default {
           this.uploadFileTextPositions.push('')
         }
       }
+
+      if (this.previewSrc.length > this.movieNumber) {
+        this.previewSrc = this.previewSrc.slice(0, this.movieNumber)
+      } else if (this.previewSrc.length < this.movieNumber) {
+        const diff = this.movieNumber - this.previewSrc.length
+        for (let i = 0; i < diff; i++) {
+          this.previewSrc.push('')
+        }
+      }
     },
 
     async requestPreview(i) {
@@ -190,7 +198,7 @@ export default {
         })
         .then((response) => {
           this.loading = false
-          this.src = 'data:video/mp4;base64,' + response
+          this.previewSrc[i] = 'data:video/mp4;base64,' + response
           this.$toast.success('ok')
         })
         .catch((error) => {
