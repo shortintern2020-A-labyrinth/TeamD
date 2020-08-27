@@ -2,10 +2,6 @@ variable "display_name" {
   description = "Instance Name"
 }
 
-variable "ip_range" {
-  description = "IP Range"
-}
-
 variable "location" {
   description = "Zone"
 }

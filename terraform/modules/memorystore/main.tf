@@ -7,6 +7,5 @@ resource "google_redis_instance" "cache" {
   project            = var.project
   redis_version      = var.redis_version
   region             = var.region
-  reserved_ip_range  = var.ip_range
   tier               = var.tier
 }
