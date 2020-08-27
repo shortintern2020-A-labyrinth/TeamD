@@ -1,7 +1,7 @@
 FROM python:buster
 
 RUN apt-get update
-RUN apt-get install libgl1-mesa-glx
+RUN apt-get install -y libgl1-mesa-glx
 
 ENV PYTHONUNBUFFERED 1
 RUN mkdir /code
