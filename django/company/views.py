@@ -200,7 +200,7 @@ def register_temporary_company(request):
             token = hashlib.sha1(tmp_str.encode('utf-8')).hexdigest()
             # compnayテーブルにインサート
             company = Company(name=name, email=email, password=password,
-                              description=description, is_accepted=0, tokens=token)
+                                description=description, is_accepted=0, tokens=token)
             company.save()
 
             # urlsの登録
@@ -208,6 +208,8 @@ def register_temporary_company(request):
             for url in urls:
                 value = url['value']
                 type = url['type']
+                if value == '':
+                    continue
                 urls = Urls(value=value, type=type, company_id=company.id)
                 urls.save()
 
@@ -239,41 +241,42 @@ def register_temporary_company(request):
 
 @api_view(['PUT'])
 def update_company_details(request):
-    data = json.loads(request.body)
-    print(data)
-    token = request.headers['Authorization']
-    _, company_id = get_company_id(token)
-    company_id = None if company_id == None else int(company_id)
-    description = data['description']
-    company = Company.objects.get(id=company_id)
-    company.description = description
-    company.save()
-    # urlsの登録
-    urls = data['urls']
-    if urls:
-        for url in urls:
-            value = url['value']
-            type = url['type']
-            try:
-                urls = Urls.objects.get(type=type, company_id=company.id)
-                urls.value = value
-            except Urls.DoesNotExist:
-                urls = Urls(value=value, type=type, company_id=company.id)
-            urls.save()
-    return JsonResponse(
-        {
-            'message': 'success'
-        },
-        status=status.HTTP_200_OK
-    )
-    # try:
-    # except:
-    #     return Response(
-    #         {
-    #             'message': 'failed'
-    #         },
-    #         status=status.HTTP_400_BAD_REQUEST
-    #     )
+    try:
+      data = json.loads(request.body)
+      token = request.headers['Authorization']
+      _, company_id = get_company_id(token)
+      company_id = None if company_id == None else int(company_id)
+      description = data['description']
+      company = Company.objects.get(id=company_id)
+      company.description = description
+      company.save()
+      # urlsの登録
+      urls = data['urls']
+      if urls:
+          for url in urls:
+              value = url['value']
+              if value == '':
+                continue
+              type = url['type']
+              try:
+                  urls = Urls.objects.get(type=type, company_id=company.id)
+                  urls.value = value
+              except Urls.DoesNotExist:
+                  urls = Urls(value=value, type=type, company_id=company.id)
+              urls.save()
+      return JsonResponse(
+          {
+              'message': 'success'
+          },
+          status=status.HTTP_200_OK
+      )
+    except:
+        return Response(
+            {
+                'message': 'failed'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 
     # 運営に申請メール送信

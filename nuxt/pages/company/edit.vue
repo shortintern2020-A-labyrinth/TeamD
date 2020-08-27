@@ -8,7 +8,7 @@
             <v-textarea v-model="companyDesc" label="企業概要説明" />
           </v-col>
 
-          <v-col cols="12">URL</v-col>
+          <v-col cols="12">URL (※新しいURLを設定すると更新されます)</v-col>
 
           <v-col cols="12">
             <v-text-field v-model="companyURL" label="企業サイトURL"></v-text-field>
@@ -33,6 +33,16 @@
 <script>
 export default {
   middleware: 'user_auth',
+  created() {
+    this.$axios
+      .$get('company/')
+      .then((response) => {
+        this.companyDesc = response.description
+      })
+      .catch(() => {
+        this.$toast.error('データ取得時にエラーが発生しました')
+      })
+  },
   data: () => ({
     valid: false,
     companyDesc: '',

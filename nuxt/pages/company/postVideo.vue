@@ -45,7 +45,9 @@
                 ></v-file-input>-->
                 <input ref="video" type="file" @change="changeFile($event, i)" />
               </v-col>
-              <v-col cols="6">動画プレビュー画面</v-col>
+              <v-col cols="6">
+                <v-btn @click="requestPreview(i)">プレビュー</v-btn>
+              </v-col>
               <v-col cols="8">
                 <v-text-field label="動画に入れるテキスト" @change="addText($event, i)" />
               </v-col>
@@ -156,6 +158,44 @@ export default {
           this.uploadFileTextPositions.push('')
         }
       }
+    },
+
+    async previewRequest(i) {
+      const formData = new FormData()
+      formData.append('token', this.$auth.getToken('local'))
+      // カンマ区切りにして一つの文字列にして送信する
+      const keyword = this.keywords.replace(' ', ',')
+      formData.append('keywords', keyword)
+
+      // moviesのset && validation
+      const movie = this.uploadFiles[i]
+      if (movie === null || movie === undefined) {
+        this.$toast.error('動画を登録してください')
+        return
+      }
+      formData.append('movies', movie)
+
+      const position = this.uploadFileTextPositions[i]
+      formData.append('insert_position', position)
+
+      const text = this.uploadFileTexts[i]
+      formData.append('insert_text', text)
+
+      this.loading = true
+      await this.$axios
+        .$post('company/material/preview/', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then((response) => {
+          console.log(response)
+        })
+        .catch((error) => {
+          console.log(error)
+          this.$toast.error('Preview動画作成に失敗しました')
+        })
+      this.loading = false
     },
 
     async submit() {

@@ -187,4 +187,6 @@ Temporary Items
 
 # Local History for Visual Studio Code
 .history/
+
 django/tmp/
+gcp-cred.json

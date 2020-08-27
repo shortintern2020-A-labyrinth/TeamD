@@ -139,9 +139,9 @@ def upload_youtube(file,title,description,category,keywords,privacyStatus):
 def upload_movie(data):
     file = data['youtube']['paths'] 
     title = data['youtube']['title'] 
-    description = data['youtube']['title'] 
-    category = data['youtube']['title'] 
-    keywords = data['youtube']['title'] 
+    description = data['youtube']['description'] 
+    category = data['youtube']['category_id'] 
+    keywords = data['youtube']['keywords'] 
     privacyStatus = 'public'
     upload_youtube(file,title,description,category,keywords,privacyStatus)
     return data
