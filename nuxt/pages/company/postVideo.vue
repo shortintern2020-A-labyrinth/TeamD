@@ -1,5 +1,6 @@
 <template>
   <v-form v-model="valid">
+    <nuxt-link to="/company/needs">おすすめタイトル例</nuxt-link>
     <v-container>
       <v-row>
         <v-col cols="12">
@@ -47,6 +48,7 @@
               </v-col>
               <v-col cols="6">
                 <v-btn @click="requestPreview(i)">プレビュー</v-btn>
+                <video :src="src" controls />
               </v-col>
               <v-col cols="8">
                 <v-text-field label="動画に入れるテキスト" @change="addText($event, i)" />
@@ -94,6 +96,7 @@ export default {
       })
   },
   data: () => ({
+    src: '',
     loading: false,
     valid: false,
     title: '',
@@ -160,7 +163,8 @@ export default {
       }
     },
 
-    async previewRequest(i) {
+    async requestPreview(i) {
+      const index = i - 1
       const formData = new FormData()
       formData.append('token', this.$auth.getToken('local'))
       // カンマ区切りにして一つの文字列にして送信する
@@ -168,17 +172,17 @@ export default {
       formData.append('keywords', keyword)
 
       // moviesのset && validation
-      const movie = this.uploadFiles[i]
+      const movie = this.uploadFiles[index]
       if (movie === null || movie === undefined) {
         this.$toast.error('動画を登録してください')
         return
       }
       formData.append('movies', movie)
 
-      const position = this.uploadFileTextPositions[i]
+      const position = this.uploadFileTextPositions[index]
       formData.append('insert_position', position)
 
-      const text = this.uploadFileTexts[i]
+      const text = this.uploadFileTexts[index]
       formData.append('insert_text', text)
 
       this.loading = true
@@ -189,13 +193,17 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response)
+          this.loading = false
+          const b64 = window.btoa(unescape(encodeURIComponent(response)))
+          const src = 'data:video/mp4;base64,' + b64
+          this.src = src
+          this.$toast.success('ok')
         })
         .catch((error) => {
           console.log(error)
           this.$toast.error('Preview動画作成に失敗しました')
+          this.loading = false
         })
-      this.loading = false
     },
 
     async submit() {
