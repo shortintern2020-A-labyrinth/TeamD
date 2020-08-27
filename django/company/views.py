@@ -13,7 +13,7 @@ from .util.models import post_mail
 from django.utils import timezone
 import hashlib
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from session.redis import SessionRedis
 from company.util.models import get_company_id
 from movie.models import making_movie
@@ -97,38 +97,34 @@ def video_view(request):
 
 @api_view(['POST'])
 def return_preview(request):
-    try:
-        # バリデーション
-        if not material_video_validation(request.FILES):
-            return Response(
-                {
-                    'message': 'material_video_validation error'
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        data = get_request_data(request)
-        #動画加工
-        data = making_movie(data)
-        # 仮保存した動画を削除する
-        # remove_video(data['delete'])
-        #編集後の動画返却
-        path = data['edit']['combine']['paths']
-        edited_file = open(path, "rb")
-        return Response(
-            {
-                'message': 'success',
-                'path': edited_file
-            },
-            status=status.HTTP_200_OK
-        )
+    data = get_request_data(request)
+    #動画加工
+    data = making_movie(data)
+    # 仮保存した動画を削除する
+    # remove_video(data['delete'])
+    #編集後の動画返却
+    path = data['edit']['combine']['paths']
+    with open(path[0], 'rb') as f:
+        movie_binary = f.read()
+    return HttpResponse(movie_binary, content_type='video/mp4')
 
-    except:
-        return Response(
-            {
-                'message': 'failed'
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
+    # try:
+    #     # バリデーション
+    #     # if not material_video_validation(request.FILES):
+    #     #     return Response(
+    #     #         {
+    #     #             'message': 'material_video_validation error'
+    #     #         },
+    #     #         status=status.HTTP_400_BAD_REQUEST
+    #     #     )
+
+    # except:
+    #     return Response(
+    #         {
+    #             'message': 'failed'
+    #         },
+    #         status=status.HTTP_400_BAD_REQUEST
+    #     )
 
 # session用
 
