@@ -20,6 +20,7 @@ class AuthMiddleware(object):
         if request.path == "/api/company/login/" or request.path == "/api/company/register/" or request.path == "/api/company/logout/" or request.path == "/api/admin/accept/company/":
             return None
         else:
+            return None
             if 'Authorization' not in request.headers:
                 return JsonResponse(
                     {

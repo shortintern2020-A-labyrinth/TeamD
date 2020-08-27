@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django import forms
 
-import json
+import json, base64, io, os
 import random
 import string
 import time
@@ -13,7 +13,7 @@ from .util.models import post_mail
 from django.utils import timezone
 import hashlib
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from session.redis import SessionRedis
 from company.util.models import get_company_id
 from movie.models import making_movie
@@ -107,21 +107,30 @@ def return_preview(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         data = get_request_data(request)
+
         #動画加工
         data = making_movie(data)
+
         # 仮保存した動画を削除する
         # remove_video(data['delete'])
+
         #編集後の動画返却
         path = data['edit']['combine']['paths']
-        edited_file = open(path, "rb")
-        return Response(
-            {
-                'message': 'success',
-                'path': edited_file
-            },
-            status=status.HTTP_200_OK
-        )
+        file_path = path[0]
 
+        paths = file_path.split('/')
+        paths[1] = "after-" + paths[1]
+        after_file = '/'.join(paths)
+
+        s = "ffmpeg -i {} -vcodec libx264 {}".format(file_path, after_file)
+
+        # コーデックをh264に設定した
+        os.system(s)
+
+        video = io.open(after_file, 'r+b').read()
+        encoded_video = base64.b64encode(video)
+
+        return HttpResponse(encoded_video.decode('ascii'), content_type='video/mp4')
     except:
         return Response(
             {
@@ -129,8 +138,6 @@ def return_preview(request):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
-
-# session用
 
 
 # session用

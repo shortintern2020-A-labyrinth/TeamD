@@ -1,5 +1,6 @@
 <template>
   <v-form v-model="valid">
+    <nuxt-link to="/company/needs">おすすめタイトル例</nuxt-link>
     <v-container>
       <v-row>
         <v-col cols="12">
@@ -35,18 +36,14 @@
           <v-card>
             <v-card-title>動画 {{ i }}</v-card-title>
             <v-row>
-              <v-col cols="6">
-                <!-- <v-file-input
-                ref="video"
-                label="動画※"
-                filled
-                prepend-icon="mdi-movie"
-                @change="changeFile($event, i)"
-                ></v-file-input>-->
+              <v-col cols="12">
                 <input ref="video" type="file" @change="changeFile($event, i)" />
               </v-col>
-              <v-col cols="6">
+              <v-col cols="2">
                 <v-btn @click="requestPreview(i)">プレビュー</v-btn>
+              </v-col>
+              <v-col cols="10">
+                <video :src="src" controls type="video/mp4" />
               </v-col>
               <v-col cols="8">
                 <v-text-field label="動画に入れるテキスト" @change="addText($event, i)" />
@@ -92,8 +89,10 @@ export default {
       .catch(() => {
         this.$toast.error('データ取得時にエラーが発生しました')
       })
+    // this.src = require('@/assets/sample1.mp4')
   },
   data: () => ({
+    src: '',
     loading: false,
     valid: false,
     title: '',
@@ -160,7 +159,8 @@ export default {
       }
     },
 
-    async previewRequest(i) {
+    async requestPreview(i) {
+      const index = i - 1
       const formData = new FormData()
       formData.append('token', this.$auth.getToken('local'))
       // カンマ区切りにして一つの文字列にして送信する
@@ -168,17 +168,17 @@ export default {
       formData.append('keywords', keyword)
 
       // moviesのset && validation
-      const movie = this.uploadFiles[i]
+      const movie = this.uploadFiles[index]
       if (movie === null || movie === undefined) {
         this.$toast.error('動画を登録してください')
         return
       }
       formData.append('movies', movie)
 
-      const position = this.uploadFileTextPositions[i]
+      const position = this.uploadFileTextPositions[index]
       formData.append('insert_position', position)
 
-      const text = this.uploadFileTexts[i]
+      const text = this.uploadFileTexts[index]
       formData.append('insert_text', text)
 
       this.loading = true
@@ -189,13 +189,15 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response)
+          this.loading = false
+          this.src = 'data:video/mp4;base64,' + response
+          this.$toast.success('ok')
         })
         .catch((error) => {
           console.log(error)
           this.$toast.error('Preview動画作成に失敗しました')
+          this.loading = false
         })
-      this.loading = false
     },
 
     async submit() {
