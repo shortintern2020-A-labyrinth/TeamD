@@ -6,6 +6,8 @@ import json
 from default.models import get_video_category
 
 
+# 中原航大
+# GET: カテゴリー一覧の取得
 @api_view(['GET'])
 def category_view(request):
     # [{'id':18, 'name':'ショートムービー'}, ・・・]

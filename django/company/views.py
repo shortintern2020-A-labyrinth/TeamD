@@ -41,6 +41,11 @@ def return_company_info(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+
+# 中原航大
+# /api/company/ 時の処理
+# GET: 投稿ビデオの取得
+# POST: 動画投稿
 @csrf_exempt
 @api_view(['GET', 'POST'])
 def video_view(request):
@@ -76,7 +81,6 @@ def video_view(request):
             )
         data = get_request_data(request)  # リクエストパラメータの取得
         data = making_movie(data) #動画加工
-
         data = upload_movie(data) #動画アップロード
 
         # 仮保存した動画を削除する

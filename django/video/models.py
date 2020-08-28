@@ -5,9 +5,11 @@ from company.util.models import get_company_id
 from translate.gtrans import Translate
 
 
+# 中原航大
 # 動画情報のバリデーション
 def video_post_validation(data):
     try:
+        # 投稿する上で必要な情報に対してバリデーション
         if data['title'] == '' or data['description'] == '' or data['category_id'] == '' or data['token'] == '':
             return False
         if data['title'] == None or data['description'] == None or data['category_id'] == None or data['token'] == '':
@@ -17,10 +19,12 @@ def video_post_validation(data):
         return False
 
 
+# 中原航大
 # 素材動画のバリデーション
 def material_video_validation(data):
     try:
         videos = data.getlist('movies')
+        # 動画の有無でバリデーションをかける
         if len(videos) == 0:
             return False
         if videos == None:
@@ -30,6 +34,7 @@ def material_video_validation(data):
         return False
 
 
+# 中原航大
 # 投稿動画の取得
 def get_video_post(company_id):
     videos = Video.objects.filter(company_id=company_id).values()
@@ -37,6 +42,7 @@ def get_video_post(company_id):
     return list_videos
 
 
+# 中原航大
 # 動画の保存
 def save_video(video):
     fs = FileSystemStorage()
@@ -45,18 +51,21 @@ def save_video(video):
     return file_path
 
 
+# 中原航大
 # 動画の削除
 def remove_video(file_path):
     fs = FileSystemStorage()
-    # tmp/hogehoge.mp4 の tmp/を消すためのコード
-    file_name = file_path[4:]
+    file_name = file_path[4:] # パスからファイル名だけ取り出す tmp/hoge.mp4 → hoge.mp4
     fs.delete(file_name)
 
 
+# 中原航大
+# 詳細を英語翻訳する
 def create_english_description(data):
     c = Translate()
     description = '------ english ------ '
     split_text = data['youtube']['description'].split('\n')
+    # 1文ずつ翻訳する
     for text in split_text:
         if text != '':
             description += '{}'.format(c.translate(text))
@@ -65,14 +74,15 @@ def create_english_description(data):
     return description
 
 
+# 中原航大
 # パラメータ取得
 def get_request_data(request):
-    post = request.POST
-    data = {}
+    post = request.POST # postリクエストの中身
+    data = {} 
     company = {}
-    c = Translate()
+    c = Translate() # 翻訳するためのクラス
 
-    data['token'] = '' if not 'token' in post else post['token']
+    data['token'] = '' if not 'token' in post else post['token'] # トークン取得
 
     # YouTube投稿に関する部分
     data['youtube'] = {}
@@ -143,6 +153,7 @@ def get_request_data(request):
     return data
 
 
+# 中原航大
 # 投稿したビデオをデータベースに追加
 def set_video_post(data):
     _, company_id = get_company_id(data['token'])

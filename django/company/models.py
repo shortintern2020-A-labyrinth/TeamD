@@ -14,6 +14,8 @@ class Choice(models.Model):
     votes = models.IntegerField(default=0)
 
 
+# 中原航大
+# 投稿する動画
 class Video(models.Model):
     name = models.CharField(
         max_length=60,
@@ -39,6 +41,7 @@ class Video(models.Model):
         blank=False,
     )
 
+
 class Company(models.Model):
     name = models.CharField(
             max_length=60,
@@ -60,7 +63,10 @@ class Company(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_accepted = models.SmallIntegerField()
     tokens =  models.TextField()
-    
+
+
+# 中原航大
+# 投稿時のカテゴリー 
 class Category(models.Model):
     id = models.IntegerField(
         null=False,
@@ -72,6 +78,7 @@ class Category(models.Model):
         null=False,
         blank=False
     )
+
 
 class Urls(models.Model):
     value = models.TextField(
