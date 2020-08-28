@@ -75,13 +75,13 @@ def video_view(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         data = get_request_data(request)  # リクエストパラメータの取得
-        # data = making_movie(data) #動画加工
+        data = making_movie(data) #動画加工
 
-        #data = upload_movie(data) #動画アップロード
+        data = upload_movie(data) #動画アップロード
 
         # 仮保存した動画を削除する
-        # for file_path in data['delete']:
-        #     remove_video(file_path)
+        for file_path in data['delete']:
+            remove_video(file_path)
         set_video_post(data) # 公開した動画のURLをデータベースにいれる
         return Response(
             {
@@ -96,47 +96,52 @@ def video_view(request):
 
 @api_view(['POST'])
 def return_preview(request):
-    try:
-        # バリデーション
-        if not material_video_validation(request.FILES):
-            return Response(
-                {
-                    'message': 'material_video_validation error'
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        data = get_request_data(request)
-
-        #動画加工
-        data = making_movie(data)
-
-        # 仮保存した動画を削除する
-        # remove_video(data['delete'])
-
-        #編集後の動画返却
-        path = data['edit']['combine']['paths']
-        file_path = path[0]
-
-        paths = file_path.split('/')
-        paths[1] = "after-" + paths[1]
-        after_file = '/'.join(paths)
-
-        s = "ffmpeg -i {} -vcodec libx264 {}".format(file_path, after_file)
-
-        # コーデックをh264に設定した
-        os.system(s)
-
-        video = io.open(after_file, 'r+b').read()
-        encoded_video = base64.b64encode(video)
-
-        return HttpResponse(encoded_video.decode('ascii'), content_type='video/mp4')
-    except:
+    # バリデーション
+    if not material_video_validation(request.FILES):
         return Response(
             {
-                'message': 'failed'
+                'message': 'material_video_validation error'
             },
             status=status.HTTP_400_BAD_REQUEST
         )
+    data = get_request_data(request)
+
+    #動画加工
+    data = making_movie(data)
+
+    #編集後の動画返却
+    path = data['edit']['combine']['paths']
+    file_path = path[0]
+
+    paths = file_path.split('/')
+    paths[1] = "after-" + paths[1]
+    after_file = '/'.join(paths)
+
+    s = "ffmpeg -i {} -vcodec libx264 {}".format(file_path, after_file)
+
+    # コーデックをh264に設定した
+    os.system(s)
+
+    video = io.open(after_file, 'r+b').read()
+    encoded_video = base64.b64encode(video)
+
+    # file削除
+    for file_path in data['delete']:
+        remove_video(file_path)
+
+    # after-〇〇.mp4 削除
+    remove_video(after_file)
+
+    return HttpResponse(encoded_video.decode('ascii'), content_type='video/mp4')
+    # try:
+
+    # except:
+    #     return Response(
+    #         {
+    #             'message': 'failed'
+    #         },
+    #         status=status.HTTP_400_BAD_REQUEST
+    #     )
 
 
 # session用
@@ -194,59 +199,51 @@ def logout(request):
 
 @csrf_exempt
 def register_temporary_company(request):
-    try:
-        if request.method == 'GET':
-            return Response({})
-        elif request.method == 'POST':
-            data = json.loads(request.body)
-            name = data['name']
-            email = data['email']
-            password = data['password']
-            description = data['description']
+    if request.method == 'GET':
+        return Response({})
+    elif request.method == 'POST':
+        data = json.loads(request.body)
+        name = data['name']
+        email = data['email']
+        password = data['password']
+        description = data['description']
 
-            # 会員登録用トークン生成（メールアドレス + パスワード + システム日付のハッシュ値とする）
-            date = timezone.now()
-            tmp_str = email + password + date.strftime('%Y%m%d%H%M%S%f')
-            token = hashlib.sha1(tmp_str.encode('utf-8')).hexdigest()
-            # compnayテーブルにインサート
-            company = Company(name=name, email=email, password=password,
-                                description=description, is_accepted=0, tokens=token)
-            company.save()
+        # 会員登録用トークン生成（メールアドレス + パスワード + システム日付のハッシュ値とする）
+        date = timezone.now()
+        tmp_str = email + password + date.strftime('%Y%m%d%H%M%S%f')
+        token = hashlib.sha1(tmp_str.encode('utf-8')).hexdigest()
+        # compnayテーブルにインサート
+        company = Company(name=name, email=email, password=password,
+                            description=description, is_accepted=0, tokens=token)
+        company.save()
 
-            # urlsの登録
-            urls = data['urls']
-            for url in urls:
-                value = url['value']
-                type = url['type']
-                if value == '':
-                    continue
-                urls = Urls(value=value, type=type, company_id=company.id)
-                urls.save()
+        # urlsの登録
+        urls = data['urls']
+        for url in urls:
+            value = url['value']
+            type = url['type']
+            if value == '':
+                continue
+            urls = Urls(value=value, type=type, company_id=company.id)
+            urls.save()
 
-            # 運営に申請メール送信
-            subject = "企業からの申請依頼のお知らせ"
-            to_email = "A4sittyo@gmail.com"
-            body = "企業名: " + name + "\n メールアドレス:" + email + "\n 企業概要: " + \
-                description + "\n　申請する rakutenpv.app/api/admin/accept/company?token=" + token
-            post_mail(subject, email, [to_email], body)
+        # 運営に申請メール送信
+        subject = "企業からの申請依頼のお知らせ"
+        to_email = "A4sittyo@gmail.com"
+        body = "企業名: " + name + "\n メールアドレス:" + email + "\n 企業概要: " + \
+            description + "\n　申請する rakutenpv.app/api/admin/accept/company?token=" + token
+        post_mail(subject, email, [to_email], body)
 
-            return JsonResponse(
-                {
-                    'message': 'registerd successfully!'
-                },
-                status=status.HTTP_200_OK
-            )
-        elif request.method == 'PUT':
-            print()
-        elif request.method == 'DELETE':
-            print()
-    except:
         return JsonResponse(
             {
-                'message': 'register failed!'
+                'message': 'registerd successfully!'
             },
-            status=status.HTTP_400_BAD_REQUEST
+            status=status.HTTP_200_OK
         )
+    elif request.method == 'PUT':
+        print()
+    elif request.method == 'DELETE':
+        print()
 
 
 @api_view(['PUT'])
