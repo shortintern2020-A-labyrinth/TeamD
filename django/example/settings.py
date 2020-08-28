@@ -71,8 +71,12 @@ MIDDLEWARE = [
     'example.middleware.AuthMiddleware',
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",  # TODO: デプロイ時変更
+    "https://a4shittyo-frontend.web.app",
+    "https://a4shittyo-frontend.firebaseapp.com"
 ]
 
 ROOT_URLCONF = 'example.urls'
@@ -102,10 +106,10 @@ WSGI_APPLICATION = 'example.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': env('DATABASE_NAME'),  # 　作成したデータベース名
-        'PASSWORD': env('DATABASE_PASSWORD'),
-        'USER': env('DATABASE_USER'),  # ログインユーザー
-        'HOST': env('DATABASE_HOST'),  # コンテナ名
+        'NAME': 'test',  # 　作成したデータベース名
+        'PASSWORD': 'test',
+        'USER': 'test',  # ログインユーザー
+        'HOST': env('db_private_ip'),  # コンテナ名
         'PORT': '3306',
     }
 }
@@ -113,7 +117,7 @@ DATABASES = {
 SESSION_ENGINE = 'redis_sessions.session'
 
 SESSION_REDIS = {
-    'host': env('REDIS_HOST'),
+    'host': env('redis_host'),
     'port': 6379,
     'db': 0,
     'prefix': 'session',

@@ -8,6 +8,7 @@ resource "google_compute_global_address" "private_ip_address" {
   # name          = var.private_ip_name
   name          = "private-ip-address"
   purpose       = "VPC_PEERING"
+  address = "10.2.0.0"
   address_type  = "INTERNAL"
   prefix_length = 16
   network       = "projects/${var.project}/global/networks/default"
