@@ -12,6 +12,8 @@ def post_mail(subject="題名", from_email="A4sittyo@gmail.com", to_email=["naok
     return HttpResponse('<h1>email send complete.</h1>')
 
 
+# 中原航大
+# company_idの取得
 def get_company_id(token):
     # sessionからvalueを取得
     sessionRedis = SessionRedis()
