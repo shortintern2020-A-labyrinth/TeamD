@@ -232,15 +232,16 @@ export default {
       }
       formData.append('description', this.description)
 
+      console.log(this.selectedCategory)
       if (this.selectedCategory === '') {
         this.$toast.error('カテゴリを登録してください')
         return
       } else if (this.selectedCategory === 'ショートムービー') {
-        formData.append('category_id', 18)
+        formData.append('category_id', 1)
       } else if (this.selectedCategory === '教育') {
-        formData.append('category_id', 27)
+        formData.append('category_id', 1)
       } else if (this.selectedCategory === 'ドキュメンタリー') {
-        formData.append('category_id', 35)
+        formData.append('category_id', 1)
       }
 
       formData.append('token', this.$auth.getToken('local'))

@@ -120,14 +120,14 @@ def resumable_upload(insert_request):
             print("Sleeping %f seconds and then retrying..." % sleep_seconds)
             time.sleep(sleep_seconds)
 
-def upload_youtube(file,title,description,category,keywords,privacyStatus):
-    argparser.add_argument("--file", help="Video file to upload",default=file)
+def upload_youtube(movie_file,title,description,category,keywords,privacyStatus):
+    argparser.add_argument("--file", help="Video file to upload",default=movie_file)
     argparser.add_argument("--title", help="Video title", default=title)
     argparser.add_argument("--description",help="Video description",default=description)
     argparser.add_argument("--category", default=category,help="Numeric video category. " +"See https://developers.google.com/youtube/v3/docs/videoCategories/list")
     argparser.add_argument("--keywords", help="Video keywords, comma separated",default=keywords)
     argparser.add_argument("--privacyStatus", choices=VALID_PRIVACY_STATUSES,default=privacyStatus,help="Video privacy status.")
-    args = argparser.parse_args()
+    args = argparser.parse_args([])
     if not os.path.exists(args.file):
         exit("Please specify a valid file using the --file= parameter.")
     youtube = get_authenticated_service(args)
@@ -137,11 +137,11 @@ def upload_youtube(file,title,description,category,keywords,privacyStatus):
         print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
 
 def upload_movie(data):
-    file = data['youtube']['paths'][0]
+    movie_file = data['youtube']['paths'][0]
     title = data['youtube']['title']
     description = data['youtube']['description']
     category = data['youtube']['category_id']
     keywords = data['youtube']['keywords']
     privacyStatus = 'public'
-    upload_youtube(file,title,description,category,keywords,privacyStatus)
+    upload_youtube(movie_file,title,description,category,keywords,privacyStatus)
     return data
