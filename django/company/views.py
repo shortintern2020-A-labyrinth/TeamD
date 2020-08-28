@@ -83,7 +83,7 @@ def video_view(request):
         data = making_movie(data) #動画加工
         data = upload_movie(data) #動画アップロード
 
-        仮保存した動画を削除する
+        # 仮保存した動画を削除する
         for file_path in data['delete']:
             remove_video(file_path)
         set_video_post(data) # 公開した動画のURLをデータベースにいれる
