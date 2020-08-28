@@ -1,3 +1,8 @@
+# cotribution
+
+フロントについては
+全て近藤大翔が作成しました。
+
 # rakutenPV
 ? Project name: sample
 ? Programming language: TypeScript
