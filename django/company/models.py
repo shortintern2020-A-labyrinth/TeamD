@@ -41,7 +41,7 @@ class Video(models.Model):
         blank=False,
     )
 
-
+#鎌塚直己
 class Company(models.Model):
     name = models.CharField(
             max_length=60,
@@ -79,7 +79,7 @@ class Category(models.Model):
         blank=False
     )
 
-
+#鎌塚直己
 class Urls(models.Model):
     value = models.TextField(
         null=False,

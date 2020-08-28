@@ -1,3 +1,4 @@
+# 鎌塚直己
 from django.urls import path
 
 from .views import register_temporary_company, login, logout, video_view, update_company_details, return_preview, return_company_info
