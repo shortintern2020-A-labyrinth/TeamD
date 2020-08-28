@@ -1,9 +1,18 @@
 # Deploy it with Terraform
 
+### デプロイ先の構成要素
+
+![terraform-build](../images/terraform.png)
+
+### Contributors
+
+[Yoshikawa Taiki](https://github.com/yoshikawa)
+
 ### Docker Image を gcr にアップロード
 
 ```sh
 cd ../django # DjangoのDockerfileをビルドしたいので
+vim .env     # .env でsendgridのアカウント、パスワードを指定してください
 gcloud builds submit --timeout=1800s --tag gcr.io/a4shittyo-app/django
 ```
 
@@ -46,10 +55,15 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 gcloud iam service-accounts keys create CREDENTIALS_FILE.json --iam-account=terraform@$PROJECT_ID.iam.gserviceaccount.com --project $PROJECT_ID
 ```
 
-**Google API が足りないというエラーが出たら、URL 先から APIwo 有効化してください**
+**Google API が足りないというエラーが出たら、URL 先から API を有効化してください**
 
 ```sh
 terraform init
 terraform plan
 terraform apply
 ```
+
+### References
+
+[Build it with Terraform](https://hackersandslackers.com/terraform-with-google-cloud/)
+[Cloud Run から Cloud SQL や Memorystore への繋ぎ方](https://allabout-tech.hatenablog.com/entry/2020/06/30/133859)

@@ -1,3 +1,19 @@
+#             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#                     Version 2, December 2004
+
+#  Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+
+#  Everyone is permitted to copy and distribute verbatim or modified
+#  copies of this license document, and changing it is allowed as long
+#  as the name is changed.
+
+#             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#    TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+#   0. You just DO WHAT THE FUCK YOU WANT TO.
+
+# WTFPLなので、オープンソース
+# よしかわたいき https://github.com/yoshikawa 
 locals {
   db_network = join("/", ["projects", var.project, "global", "networks", var.network])
 }
@@ -8,7 +24,7 @@ resource "google_compute_global_address" "private_ip_address" {
   # name          = var.private_ip_name
   name          = "private-ip-address"
   purpose       = "VPC_PEERING"
-  address = "10.2.0.0"
+  address       = "10.2.0.0"
   address_type  = "INTERNAL"
   prefix_length = 16
   network       = "projects/${var.project}/global/networks/default"
@@ -18,7 +34,7 @@ resource "google_compute_global_address" "private_ip_address" {
 resource "google_service_networking_connection" "private_vpc_connection" {
   provider = google-beta
 
-  network       = "projects/${var.project}/global/networks/default"
+  network                 = "projects/${var.project}/global/networks/default"
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
 }
@@ -28,7 +44,7 @@ resource "google_cloud_run_service" "mywebapp" {
   project  = var.project
   location = var.region
 
-    depends_on = [
+  depends_on = [
     google_vpc_access_connector.connector,
     google_redis_instance.cache
   ]
@@ -41,15 +57,15 @@ resource "google_cloud_run_service" "mywebapp" {
           container_port = 8000
         }
         env {
-          name = "redis_host"
+          name  = "redis_host"
           value = google_redis_instance.cache.host
         }
         env {
-          name = "redis_port"
+          name  = "redis_port"
           value = google_redis_instance.cache.port
         }
         env {
-          name = "db_private_ip"
+          name  = "db_private_ip"
           value = google_sql_database_instance.instance.private_ip_address
         }
       }
@@ -72,7 +88,7 @@ resource "google_sql_database_instance" "instance" {
   provider = google-beta
 
   database_version = var.database_version
-  project = var.project
+  project          = var.project
   name             = var.instance_name
   region           = var.region
 
@@ -96,26 +112,26 @@ resource "google_sql_user" "users" {
 }
 
 resource "google_redis_instance" "cache" {
-  display_name       = var.display_name
-  name               = var.name
-  memory_size_gb     = var.size
-  location_id        = var.location
-  project            = var.project
-  redis_version      = var.redis_version
-  region             = var.region
-  tier               = var.tier
+  display_name   = var.display_name
+  name           = var.name
+  memory_size_gb = var.size
+  location_id    = var.location
+  project        = var.project
+  redis_version  = var.redis_version
+  region         = var.region
+  tier           = var.tier
 }
 
 
 # Add a private VPC connector to for private access from Cloud Run to CloudSQL(MySQL) and Memorystore(redis).
 resource "google_vpc_access_connector" "connector" {
   provider = google-beta
-  
+
   name          = "connector"
   ip_cidr_range = "10.0.0.0/28"
-  region  = var.region
-  network = "default"
-  project = var.project
+  region        = var.region
+  network       = "default"
+  project       = var.project
 
   depends_on = [
     google_vpc_access_connector.connector
