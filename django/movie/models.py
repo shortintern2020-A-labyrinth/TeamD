@@ -1,4 +1,4 @@
-# 動画加工するだけ
+#Kazuo Subaru
 import cv2
 from PIL import Image, ImageFont, ImageDraw
 import numpy as np

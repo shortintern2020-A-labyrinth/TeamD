@@ -1,4 +1,4 @@
-#引数まとめるのは今度やります。頑張ります。
+#Kazuo Subaru
 import http.client
 import httplib2
 import os
