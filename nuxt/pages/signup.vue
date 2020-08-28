@@ -88,7 +88,9 @@ export default {
           },
         })
         .then(() => {
-          this.$toast.success('登録メールを送りました！承認してください')
+          this.$toast.success(
+            '企業側にメールを送りました！承認されるのをお待ちください'
+          )
         })
         .catch((error) => {
           console.log(error)

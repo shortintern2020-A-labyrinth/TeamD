@@ -8,7 +8,7 @@
         </v-col>
 
         <v-col cols="12">
-          <v-textarea v-model="description" :counter="10" label="動画詳細説明欄※" required></v-textarea>
+          <v-textarea v-model="description" label="動画詳細説明欄※" required></v-textarea>
         </v-col>
 
         <v-col cols="4">
@@ -35,29 +35,31 @@
         <v-col v-for="i in movieNumber" :key="i" cols="12">
           <v-card>
             <v-card-title>動画 {{ i }}</v-card-title>
-            <v-row>
-              <v-col cols="12">
-                <input ref="video" type="file" @change="changeFile($event, i)" />
-              </v-col>
-              <v-col cols="2">
-                <v-btn @click="requestPreview(i)">プレビュー</v-btn>
-              </v-col>
-              <v-col cols="10">
-                <video :src="src" controls type="video/mp4" />
-              </v-col>
-              <v-col cols="8">
-                <v-text-field label="動画に入れるテキスト" @change="addText($event, i)" />
-              </v-col>
-              <v-col cols="4">
-                <v-select
-                  v-model="selectedCategory"
-                  :items="textPosition"
-                  label="テキストを入れる場所"
-                  outlined
-                  @change="addPosition($event, i)"
-                ></v-select>
-              </v-col>
-            </v-row>
+            <v-card-text>
+              <v-row>
+                <v-col cols="12">
+                  <input ref="video" type="file" @change="changeFile($event, i)" />
+                </v-col>
+                <v-col cols="2">
+                  <v-btn @click="requestPreview(i)">プレビュー</v-btn>
+                </v-col>
+                <v-col cols="10">
+                  <video width="640" height="480" :src="previewSrc[i]" controls type="video/mp4" />
+                </v-col>
+                <v-col cols="8">
+                  <v-text-field label="動画に入れるテキスト" @change="addText($event, i)" />
+                </v-col>
+                <v-col cols="4">
+                  <v-select
+                    v-model="selectedCategory"
+                    :items="textPosition"
+                    label="テキストを入れる場所"
+                    outlined
+                    @change="addPosition($event, i)"
+                  ></v-select>
+                </v-col>
+              </v-row>
+            </v-card-text>
           </v-card>
         </v-col>
       </v-row>
@@ -89,10 +91,9 @@ export default {
       .catch(() => {
         this.$toast.error('データ取得時にエラーが発生しました')
       })
-    // this.src = require('@/assets/sample1.mp4')
   },
   data: () => ({
-    src: '',
+    previewSrc: [''],
     loading: false,
     valid: false,
     title: '',
@@ -157,6 +158,15 @@ export default {
           this.uploadFileTextPositions.push('')
         }
       }
+
+      if (this.previewSrc.length > this.movieNumber) {
+        this.previewSrc = this.previewSrc.slice(0, this.movieNumber)
+      } else if (this.previewSrc.length < this.movieNumber) {
+        const diff = this.movieNumber - this.previewSrc.length
+        for (let i = 0; i < diff; i++) {
+          this.previewSrc.push('')
+        }
+      }
     },
 
     async requestPreview(i) {
@@ -176,9 +186,17 @@ export default {
       formData.append('movies', movie)
 
       const position = this.uploadFileTextPositions[index]
+      if (position === null || position === '') {
+        this.$toast.error('テキストを入れる場所を設定してください')
+        return
+      }
       formData.append('insert_position', position)
 
       const text = this.uploadFileTexts[index]
+      if (text === null || text === '') {
+        this.$toast.error('テキストを挿入してください')
+        return
+      }
       formData.append('insert_text', text)
 
       this.loading = true
@@ -190,7 +208,7 @@ export default {
         })
         .then((response) => {
           this.loading = false
-          this.src = 'data:video/mp4;base64,' + response
+          this.previewSrc[i] = 'data:video/mp4;base64,' + response
           this.$toast.success('ok')
         })
         .catch((error) => {
@@ -202,13 +220,29 @@ export default {
 
     async submit() {
       const formData = new FormData()
+      if (this.title === '') {
+        this.$toast.error('動画タイトルを登録してください')
+        return
+      }
       formData.append('title', this.title)
+
+      if (this.description === null) {
+        this.$toast.error('動画詳細説明を登録してください')
+        return
+      }
       formData.append('description', this.description)
-      // const categoryArrayIndex = this.categories.findIndex(
-      //   this.selectedCategory
-      // )
-      // TODO: ここは変更しないといけない
-      formData.append('category_id', this.categoryIDs[1])
+
+      if (this.selectedCategory === '') {
+        this.$toast.error('カテゴリを登録してください')
+        return
+      } else if (this.selectedCategory === 'ショートムービー') {
+        formData.append('category_id', 18)
+      } else if (this.selectedCategory === '教育') {
+        formData.append('category_id', 27)
+      } else if (this.selectedCategory === 'ドキュメンタリー') {
+        formData.append('category_id', 35)
+      }
+
       formData.append('token', this.$auth.getToken('local'))
       // カンマ区切りにして一つの文字列にして送信する
       const keyword = this.keywords.replace(' ', ',')

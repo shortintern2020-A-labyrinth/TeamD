@@ -6,28 +6,22 @@ on:
       - main
 
 jobs:
-  build:
+  generate-deploy:
+    name: GENERATE and DEPLOY
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [8.x, 10.x, 12.x]
-
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: npm install, generate
+          node-version: "12.x"
+      - name: Install dependencies
         working-directory: ./nuxt
-        run: |
-          npm install
-          npm run generate --if-present
-      - name: deploy to Firebase Hosting
+        run: yarn
+      - name: Generate static page
         working-directory: ./nuxt
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: yarn generate
+      - name: Deploy to Firebase Hosting
+        working-directory: ./nuxt
+        run: yarn deploy --token=${{ secrets.FIREBASE_TOKEN }}

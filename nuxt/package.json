@@ -10,7 +10,8 @@
     "generate": "nuxt-ts generate",
     "lint:js": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "lint": "npm run lint:js",
-    "test": "jest"
+    "test": "jest",
+    "deploy": "firebase deploy"
   },
   "dependencies": {
     "@nuxt/typescript-runtime": "^1.0.0",
@@ -38,6 +39,7 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-nuxt": "^1.0.0",
     "eslint-plugin-prettier": "^3.1.4",
+    "firebase-tools": "^8.9.2",
     "jest": "^26.1.0",
     "prettier": "^2.0.5",
     "ts-jest": "^26.1.3",
