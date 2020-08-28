@@ -4,7 +4,7 @@ from rest_framework import status
 import time, datetime
 from session.redis import SessionRedis
 
-# TODO: これは要調査
+# 鎌塚直己
 class AuthMiddleware(object):
     def __init__(self, get_response):
         self.get_response = get_response

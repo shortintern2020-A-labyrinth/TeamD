@@ -148,6 +148,8 @@ def return_preview(request):
     #     )
 
 
+# 鎌塚直己↓
+
 # session用
 def randomSTR(n):
     randlst = [random.choice(string.ascii_letters + string.digits)
