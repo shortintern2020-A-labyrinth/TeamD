@@ -8,6 +8,7 @@ from translate.gtrans import Translate
 # 中原航大
 # 動画情報のバリデーション
 def video_post_validation(data):
+    print(data)
     try:
         # 投稿する上で必要な情報に対してバリデーション
         if data['title'] == '' or data['description'] == '' or data['category_id'] == '' or data['token'] == '':
@@ -94,10 +95,10 @@ def get_request_data(request):
     花火職人の技術/Fireworks craftsmanship
     '''
 
-    _, company_id = get_company_id(data['token'])
-    company_id = None if company_id is None else int(company_id)
-    company = Company.objects.get(id=company_id)
-    urls = [url for url in Urls.objects.filter(company_id=company_id).values()]
+    # _, company_id = get_company_id(data['token'])
+    # company_id = None if company_id is None else int(company_id)
+    company = Company.objects.get(id=9)
+    urls = [url for url in Urls.objects.filter(company_id=9).values()]
     data['youtube']['description'] = ''
     data['youtube']['description'] += '{}'.format(company.name)
     data['youtube']['description'] += '{}'.format(company.description)
@@ -141,7 +142,7 @@ def get_request_data(request):
     data['edit']['insert'] = {}
     data['edit']['material'] = {}
     data['edit']['material']['paths'] = [save_video(video) for video in videos]  # [path1, path2,,,]
-    data['edit']['insert']['text'] = [text if text == '' else '{} -- {}'.format(c.translate(text),text) for text in insert_text]
+    data['edit']['insert']['text'] = [text if text == '' else '{}\n{}'.format(c.translate(text),text) for text in insert_text]
     data['edit']['insert']['position'] = [position for position in insert_position]  # 'bottom', 'center', ・・・
     data['edit']['insert']['paths'] = []  # [newpath1, newpath2, ・・・]
     data['edit']['combine'] = {}

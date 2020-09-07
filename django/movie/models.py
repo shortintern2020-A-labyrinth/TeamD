@@ -155,7 +155,7 @@ def insert_text(input, message, output='output.mp4'):
                     # position決め打ち(左右は現時点では真ん中のみ)
                     if section[6] == "下":
                         position = (int((W - w) / 2),
-                                    int(H - (font_size * 1.5)))
+                                    int(H - (font_size * 3)))
                     elif section[6] == "中央":
                         position = (int((W - w) / 2), int((H - h) / 2))
                     else:
